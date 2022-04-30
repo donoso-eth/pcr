@@ -1,0 +1,24 @@
+specVersion: 0.0.2
+schema:
+  file: schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: MinimalContract
+    network: localhost
+    source:
+      address: "0xBdd3AEAE360384410BFB65529B113bf13712cA2F"
+      abi: MinimalContract
+      startBlock: 31301672
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Payload
+      abis:
+        - name: MinimalContract
+          file: MinimalContract\abis\minimal_contract.json
+      eventHandlers:
+        - event: RewardCreated(indexed address,uint256)
+          handler: handleRewardCreated
+      file: MinimalContract\MinimalContract.wasm

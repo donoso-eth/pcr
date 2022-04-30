@@ -22,6 +22,7 @@ import { MenuModule } from 'primeng/menu';
 import { ChartModule} from 'primeng/chart'
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { GraphQlModule } from './dapp-injector/services/graph-ql/graph-ql.module';
 
 @NgModule({
   declarations: [
@@ -40,8 +41,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     MinimalContractModule,
     DappInjectorModule.forRoot({wallet:'local', defaultNetwork:'localhost'}),
     StoreModule.forRoot({web3: we3ReducerFunction}),
-    StoreModule.forRoot({web3: we3ReducerFunction}),,
-
+    GraphQlModule.forRoot({uri:"http://localhost:8000/subgraphs/name/angular-web3/pcr"})
 
   ],
   providers: [ConfigService, MenuService, ProductService],

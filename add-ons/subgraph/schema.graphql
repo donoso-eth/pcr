@@ -1,7 +1,5 @@
-type Gravatar @entity {
+type Payload @entity {
   id: ID!
   owner: Bytes
-  displayName: String
-  imageUrl: String
-  accepted: Boolean
+  payload:BigInt
 }

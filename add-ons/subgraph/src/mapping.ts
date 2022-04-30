@@ -1,26 +1,17 @@
-import { NewGravatar, UpdatedGravatar} from '../generated/GravatarRegistry/GravatarRegistry' 
+import { Payload } from '../generated/schema';
+import { RewardCreated } from '../generated/MinimalContract/MinimalContract';
+export function handleRewardCreated(event: RewardCreated): void {
+  event.params.admin.toHexString();
 
-import { Gravatar} from '../generated/schema'
+  let payloadString = event.params.admin.toHexString();
 
-export function handleNewGravatar(event: NewGravatar): void {
-  let gravatar = new Gravatar(event.params.id.toHex())
-  gravatar.owner = event.params.owner
-  gravatar.displayName = event.params.displayName
-  gravatar.imageUrl = event.params.imageUrl
-  gravatar.save()
-}
+  let payload = Payload.load(payloadString);
 
-export function handleUpdatedGravatar(event: UpdatedGravatar): void {
-  let id = event.params.id.toHex()
-  let gravatar = Gravatar.load(id)
-  if (gravatar == null) {
-    gravatar = new Gravatar(id)
+  if (payload === null) {
+    payload = new Payload(event.params.admin.toHexString());
+    payload.owner = event.params.admin;
+
   }
-  gravatar.owner = event.params.owner
-  gravatar.displayName = event.params.displayName
-  gravatar.imageUrl = event.params.imageUrl
-  gravatar.save()
+  payload.payload = event.params.payload;
+  payload.save()
 }
-
-
-

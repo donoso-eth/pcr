@@ -4,17 +4,10 @@ import { Subscription } from 'rxjs';
 
 const GET_POSTS = gql`
 {
-  gratitudeTokens(first: 5) {
+  payloads(first: 5) {
     id
-    status
-    sender
-    receiver
-  }
-  gratitudeCampaigns(first: 5) {
-    id
-    campaign_creator
-    name
-    status
+    owner
+    payload
   }
 }
 `;

@@ -5,6 +5,16 @@ import {Apollo, ApolloModule, APOLLO_OPTIONS} from 'apollo-angular';
 import {HttpLink} from 'apollo-angular/http';
 import {InMemoryCache} from '@apollo/client/core';
 
+const defaultOptions = {
+  watchQuery: {
+    fetchPolicy: 'no-cache',
+    errorPolicy: 'ignore',
+  },
+  query: {
+    fetchPolicy: 'no-cache',
+    errorPolicy: 'all',
+  },
+}
 
 @NgModule({
   declarations: [],
@@ -24,6 +34,7 @@ export class GraphQlModule {
             link: httpLink.create({
               uri: config.uri,
             }),
+            defaultOptions: defaultOptions
           };
         },
         deps: [HttpLink],

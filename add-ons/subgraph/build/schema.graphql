@@ -1,0 +1,5 @@
+type Payload @entity {
+  id: ID!
+  owner: Bytes
+  payload:BigInt
+}

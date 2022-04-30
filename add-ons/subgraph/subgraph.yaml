@@ -3,24 +3,22 @@ schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum/contract
-    name: GravatarRegistry
+    name: MinimalContract
     network: localhost
     source:
-      address: '0x5FbDB2315678afecb367f032d93F642f64180aa3'
-      abi: GravatarRegistry
-      startBlock: 1
+      address: '0xBdd3AEAE360384410BFB65529B113bf13712cA2F'
+      abi: MinimalContract
+      startBlock: 31301672
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
-        - Gravatar
+        - Payload
       abis:
-        - name: GravatarRegistry
-          file: ./abis/gravity.json
+        - name: MinimalContract
+          file: ./abis/minimal_contract.json
       eventHandlers:
-        - event: NewGravatar(uint256,address,string,string)
-          handler: handleNewGravatar
-        - event: UpdatedGravatar(uint256,address,string,string)
-          handler: handleUpdatedGravatar
+        - event: RewardCreated(indexed address,uint256)
+          handler: handleRewardCreated
       file: ./src/mapping.ts

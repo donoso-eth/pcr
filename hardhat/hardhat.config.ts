@@ -34,7 +34,7 @@ const defaultNetwork = 'localhost';
 
 const config: HardhatUserConfig = {
   solidity: {
-    version: '0.8.4',
+    version: '0.8.12',
     settings: {
       optimizer: {
         enabled: true,
@@ -45,13 +45,13 @@ const config: HardhatUserConfig = {
   defaultNetwork,
 
   networks: {
-    // hardhat: {
-    //   forking: {
-    //     //your rpc url here, in this case for Mumbai
-    //     url: `https://polygon-mumbai.g.alchemy.com/v2/${ALCHEMY_ID_MUMBAI}`,
-    //     blockNumber: 25953748,
-    //   },
-    // },
+    hardhat: {
+      forking: {
+        //your rpc url here, in this case for Mumbai 31301672
+        url: process.env.KOVAN_URL || "",
+        blockNumber: 31301672,
+      },
+    },
     localhost: {
       url: 'http://localhost:8545',
       chainId: 31337,

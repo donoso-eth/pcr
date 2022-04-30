@@ -6,6 +6,8 @@
 /out-tsc
 /bazel-out
 
+hardhat/artifacts/
+hardhat/typechain-types/
 # Node
 /node_modules
 npm-debug.log

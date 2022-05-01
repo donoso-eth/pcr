@@ -3,22 +3,59 @@ schema:
   file: schema.graphql
 dataSources:
   - kind: ethereum/contract
-    name: MinimalContract
+    name: PcrOptimisticOracle
     network: localhost
     source:
-      address: "0xBdd3AEAE360384410BFB65529B113bf13712cA2F"
-      abi: MinimalContract
+      address: "0xD7e08a940daC04aaADE543e02537A48296CA4035"
+      abi: PcrOptimisticOracle
       startBlock: 31301672
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
-        - Payload
+        - Reward
       abis:
-        - name: MinimalContract
-          file: MinimalContract\abis\minimal_contract.json
+        - name: PcrOptimisticOracle
+          file: PcrOptimisticOracle\abis\pcr_optimistic_oracle.json
       eventHandlers:
-        - event: RewardCreated(indexed address,uint256)
-          handler: handleRewardCreated
-      file: MinimalContract\MinimalContract.wasm
+        - event: RewardDeposit(uint256,uint256)
+          handler: handleRewardDeposit
+      file: PcrOptimisticOracle\PcrOptimisticOracle.wasm
+templates:
+  - name: PcrOptimisticOracle
+    kind: ethereum/contract
+    network: localhost
+    source:
+      abi: PcrOptimisticOracle
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      file: PcrOptimisticOracle\PcrOptimisticOracle.wasm
+      entities:
+        - Reward
+      abis:
+        - name: PcrOptimisticOracle
+          file: PcrOptimisticOracle\abis\pcr_optimistic_oracle.json
+      eventHandlers:
+        - event: RewardDeposit(uint256,uint256)
+          handler: handleRewardDeposit
+  - name: PcrToken
+    kind: ethereum/contract
+    network: localhost
+    source:
+      abi: PcrToken
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      file: PcrOptimisticOracle\PcrOptimisticOracle.wasm
+      entities:
+        - Reward
+      abis:
+        - name: PcrToken
+          file: PcrToken\abis\pcr_token.json
+      eventHandlers:
+        - event: RewardDistributed(address,address,uint256,uint256,uint256)
+          handler: handleRewardDistributed

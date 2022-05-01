@@ -1,1 +1,21 @@
-{"minimalContract":{"artifactsPath":"0-MinimalContract.sol/MinimalContract.json","name":"MinimalContract","ctor":[],"jsonName":"minimal_contract"}}
+{
+    "pcrToken": {
+      "name": "PcrToken",
+      "artifactsPath": "PcrToken.sol/PcrToken.json",
+      "jsonName": "pcr_token",
+      "ctor": []
+    },
+    "pcrHost": {
+      "name": "PcrHost",
+      "artifactsPath": "PcrHost.sol/PcrHost.json",
+      "jsonName": "pcr_host",
+      "ctor": []
+    },
+    "pcrOptimisticOracle": {
+      "name": "PcrOptimisticOracle",
+      "artifactsPath": "PcrOptimisticOracle.sol/PcrOptimisticOracle.json",
+      "jsonName": "pcr_optimistic_oracle",
+      "ctor": []
+    }
+  }
+  

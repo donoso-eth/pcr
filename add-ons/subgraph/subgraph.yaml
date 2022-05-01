@@ -3,22 +3,79 @@ schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum/contract
-    name: MinimalContract
+    name: PcrHost
     network: localhost
     source:
-      address: '0xBdd3AEAE360384410BFB65529B113bf13712cA2F'
-      abi: MinimalContract
+      address: '0xEc22b69767B5edD55b7DC6A4B6FD9ba4D0B3d320'
+      abi: PcrHost
       startBlock: 31301672
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
-        - Payload
+        - Reward
       abis:
-        - name: MinimalContract
-          file: ./abis/minimal_contract.json
+        - name: PcrHost
+          file: ./abis/host.json
       eventHandlers:
-        - event: RewardCreated(indexed address,uint256)
+        - event: PerpetualConditionalRewardCreated(address,address,string,indexed uint256,uint256,(address,uint256,uint256,uint256,bytes32,bytes),address,address)
           handler: handleRewardCreated
       file: ./src/mapping.ts
+  - kind: ethereum/contract
+    name: PcrOptimisticOracle
+    network: localhost
+    source:
+      address: '0xD7e08a940daC04aaADE543e02537A48296CA4035'
+      abi: PcrOptimisticOracle
+      startBlock: 31301672
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Reward
+      abis:
+        - name: PcrOptimisticOracle
+          file: ./abis/pcr_optimistic_oracle.json
+      eventHandlers:
+        - event: RewardDeposit(uint256,uint256)
+          handler: handleRewardDeposit
+      file: ./src/mapping.ts
+templates:
+  - name: PcrOptimisticOracle
+    kind: ethereum/contract
+    network: localhost
+    source:
+      abi: PcrOptimisticOracle
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      file: ./src/mapping.ts
+      entities:
+        - Reward
+      abis:
+        - name: PcrOptimisticOracle
+          file: ./abis/pcr_optimistic_oracle.json
+      eventHandlers:
+        - event: RewardDeposit(uint256,uint256)
+          handler: handleRewardDeposit
+  - name: PcrToken
+    kind: ethereum/contract
+    network: localhost
+    source:
+      abi: PcrToken
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      file: ./src/mapping.ts
+      entities:
+        - Reward
+      abis:
+        - name: PcrToken
+          file: ./abis/pcr_token.json
+      eventHandlers:
+        - event: RewardDistributed(address,address,uint256,uint256,uint256)
+          handler: handleRewardDistributed

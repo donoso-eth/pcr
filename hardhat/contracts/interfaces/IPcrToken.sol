@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 import {ISuperfluid, ISuperToken} from "@superfluid-finance/ethereum-contracts/contracts/apps/SuperAppBase.sol";
 import {IInstantDistributionAgreementV1} from "@superfluid-finance/ethereum-contracts/contracts/interfaces/agreements/IInstantDistributionAgreementV1.sol";
-
+import {DataTypes} from "../libraries/DataTypes.sol";
 
 /**
  * @title IPcrToken
@@ -16,19 +16,8 @@ interface IPcrToken {
      * @notice Initializes the PcrToken, setting the feed as the privileged minter, initializing the name and
      * symbol in the ERC20 Upgradeable contract.
      *
-     * @param rewardToken The token contract address for rewards
-     * @param name The name to set for this NFT.
-     * @param symbol The symbol to set for this NFT.
      */
-    function initialize(
-    address owner,
-    address optimistic_contract,
-    string memory name,
-    string memory symbol,
-    ISuperfluid host,
-    IInstantDistributionAgreementV1 ida,
-    ISuperToken rewardToken
-    ) external;
+     function initialize( DataTypes.PCRTOKEN_INITIALIZER calldata pcrTokenInitializer ) external ;
 
     /**
      * @notice Imint a PcrToken and add token owner to Index subscription

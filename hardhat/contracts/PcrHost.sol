@@ -8,8 +8,12 @@ import {ISuperfluid, ISuperToken} from "@superfluid-finance/ethereum-contracts/c
 import {IInstantDistributionAgreementV1} from "@superfluid-finance/ethereum-contracts/contracts/interfaces/agreements/IInstantDistributionAgreementV1.sol";
 
 import {IPcrToken} from "./interfaces/IPcrToken.sol";
-import {IOptimisticDistributor} from "./interfaces/IOptimisticDistributor.sol";
+import {IPcrOptimisticOracle} from "./interfaces/IPcrOptimisticOracle.sol";
 
+import {DataTypes} from "./libraries/DataTypes.sol";
+import {Events} from "./libraries/Events.sol";
+
+import "@openzeppelin/contracts/utils/Strings.sol";
 
 import "@uma/core/contracts/oracle/interfaces/FinderInterface.sol";
 
@@ -19,83 +23,87 @@ contract PcrHost {
 
   struct Pcr_addresses {
     address tokenContract;
-    address distributorContract;
+    address optimisticOracleContract;
   }
 
   mapping(address => mapping(uint256 => Pcr_addresses))
     private _pcrTokensContractsByUser;
   mapping(address => uint256) private _pcrTokensByUser;
 
-  struct IDA {
-    address tokenImpl;
-    address host;
-    address ida;
-    address superToken;
-  }
-
-struct OPTIMISTIC_DISTRIBUTOR {
-    address distributorImpl;
-    FinderInterface finder;
-    uint256 rewardAmount;
-    uint256 interval;
-    uint256 optimisticOracleLivenessTime;
-    bytes32 priceIdentifier;
-    bytes customAncillaryData;
-}
-
   constructor() {}
 
-  function createTokenContract(
-    IDA memory ida,
-    OPTIMISTIC_DISTRIBUTOR memory distributor
+  function createPcrReward(
+    DataTypes.IDA_INPUT memory _ida,
+    address _tokenContractImpl,
+    DataTypes.OPTIMISTIC_ORACLE_INPUT memory _optimisticOracleInput,
+    address _optimisticOracleImpl
   ) external {
     _pcrTokensIssued.increment();
 
+    uint256 id = _pcrTokensIssued.current();
+
     _pcrTokensByUser[msg.sender]++;
     uint256 _tokenId = _pcrTokensByUser[msg.sender];
-    address _tokenContract = Clones.clone(ida.tokenImpl);
-
-    console.log(ida.tokenImpl);
-
-    console.log(_tokenContract);
-
+    address _tokenContract = Clones.clone(_tokenContractImpl);
 
     //// TODO CLONE OPTIMISTIC CONTRACT
 
-    address _distributorContract = Clones.clone(distributor.distributorImpl);
+    address _optimisticOracleContract = Clones.clone(_optimisticOracleImpl);
 
-    _pcrTokensContractsByUser[msg.sender][_tokenId] = Pcr_addresses(
-      {tokenContract:_tokenContract,distributorContract:_distributorContract}) ;
+    _pcrTokensContractsByUser[msg.sender][_tokenId] = Pcr_addresses({
+      tokenContract: _tokenContract,
+      optimisticOracleContract: _optimisticOracleContract
+    });
 
+    string memory tokenSymbol = string(
+      abi.encodePacked("PCR", Strings.toString(id))
+    );
 
+    string memory tokenName = string(
+      abi.encodePacked(
+        "Perpetual Conditional Reward Token Nr: ",
+        Strings.toString(id)
+      )
+    );
 
-      //// INITIALIZE TOJEN cONTRACT WITH
+    //// INITIALIZE TOJEN cONTRACT WITH
+    DataTypes.PCRTOKEN_INITIALIZER memory pcrTokenInitializer;
+    pcrTokenInitializer = DataTypes.PCRTOKEN_INITIALIZER({
+      owner: msg.sender,
+      rewardId: id,
+      optimisticOracleContract: _optimisticOracleContract,
+      name: tokenName,
+      symbol: tokenSymbol,
+      ida: _ida
+    });
 
-    IPcrToken(_tokenContract).initialize(
+    IPcrToken(_tokenContract).initialize(pcrTokenInitializer);
+
+    DataTypes.PCR_OPTIMISTIC_ORACLE_INITIALIZER
+      memory pcrOptimisticOracleContractInitializer;
+    pcrOptimisticOracleContractInitializer = DataTypes
+      .PCR_OPTIMISTIC_ORACLE_INITIALIZER({
+        owner: msg.sender,
+        rewardId: id,
+        tokenContract: _tokenContract,
+        rewardToken: _ida.rewardToken,
+        optimisticOracleInput: _optimisticOracleInput
+      });
+
+    IPcrOptimisticOracle(_optimisticOracleContract).initialize(
+      pcrOptimisticOracleContractInitializer
+    );
+
+    emit Events.PerpetualConditionalRewardCreated(
       msg.sender,
-      _distributorContract,
-      "PCR",
-      "PCR",
-      ISuperfluid(ida.host),
-      IInstantDistributionAgreementV1(ida.ida),
-      ISuperToken(ida.superToken)
+      _ida.rewardToken,
+      string(abi.encodePacked(tokenSymbol,' ',tokenName)),
+      id,
+      block.timestamp + _optimisticOracleInput.interval,
+      _optimisticOracleInput,
+    _tokenContract,
+    _optimisticOracleContract
     );
-
-    console.log('555');
-
-    IOptimisticDistributor(_distributorContract).initialize(
-      distributor.finder,
-      _pcrTokensIssued.current(),
-      _tokenContract,
-      ida.superToken,
-      distributor.rewardAmount,
-      distributor.interval,
-      distributor.optimisticOracleLivenessTime,
-      distributor.priceIdentifier,
-      distributor.customAncillaryData
-    );
-
-
   }
 
   // ============= View Functions ============= ============= =============  //
@@ -121,7 +129,9 @@ struct OPTIMISTIC_DISTRIBUTOR {
     view
     returns (Pcr_addresses memory)
   {
-    Pcr_addresses memory _contractAdresses = _pcrTokensContractsByUser[_owner][_id];
+    Pcr_addresses memory _contractAdresses = _pcrTokensContractsByUser[_owner][
+      _id
+    ];
     return _contractAdresses;
   }
 

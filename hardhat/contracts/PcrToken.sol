@@ -17,6 +17,8 @@ import "@openzeppelin/contracts/utils/Strings.sol";
 import {ERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
 import {IDAv1Library} from "@superfluid-finance/ethereum-contracts/contracts/apps/IDAv1Library.sol";
 
+import {DataTypes} from "./libraries/DataTypes.sol";
+
 
 /**
  * The dividends rights token show cases two use cases
@@ -28,6 +30,8 @@ contract PcrToken is
   IPcrToken,
   IERC777Recipient
 {
+  
+
   uint32 public constant INDEX_ID = 0;
 
   // use the IDAv1Library for the InitData struct
@@ -39,7 +43,7 @@ contract PcrToken is
   bool public receiver = false;
 
   address public ADMIN;
-  address public INDEX_PUBLISHER;
+  address public TOKEN_INDEX_PUBLISHER_ADDRESS;
 
   address public OPTIMISTIC_DISTRUBUTOR_ADDRESS;
 
@@ -76,28 +80,21 @@ contract PcrToken is
     return 0;
   }
 
-  function initialize(
-    address owner,
-    address optimistic_contract,
-    string memory name,
-    string memory symbol,
-    ISuperfluid host,
-    IInstantDistributionAgreementV1 ida,
-    ISuperToken rewardToken
+  function initialize( DataTypes.PCRTOKEN_INITIALIZER calldata pcrTokenInitializer ) external override initializer {
+    __ERC20_init(pcrTokenInitializer.name, pcrTokenInitializer.symbol);
 
-  ) external override initializer {
-    __ERC20_init(name, symbol);
-    _host = host;
-    _ida = ida;
-    _rewardToken = rewardToken;
+      _host = ISuperfluid(pcrTokenInitializer.ida.host);
+      _ida = IInstantDistributionAgreementV1(pcrTokenInitializer.ida.ida);
+      _rewardToken = ISuperToken(pcrTokenInitializer.ida.rewardToken);
 
-    INDEX_PUBLISHER = address(this);
-    ADMIN = owner;
 
-    OPTIMISTIC_DISTRUBUTOR_ADDRESS = optimistic_contract;
+    TOKEN_INDEX_PUBLISHER_ADDRESS = address(this);
+    ADMIN = pcrTokenInitializer.owner;
+
+    OPTIMISTIC_DISTRUBUTOR_ADDRESS = pcrTokenInitializer.optimisticOracleContract;
 
     // assign it the host and ida addresses
-    _idaLib = IDAv1Library.InitData(host, ida);
+    _idaLib = IDAv1Library.InitData(_host, _ida);
     _idaLib.createIndex(_rewardToken, INDEX_ID);
 
     //transferOwnership(msg.sender);
@@ -144,7 +141,7 @@ contract PcrToken is
   function claim() external {
     // then adjust beneficiary subscription units
 
-    _idaLib.claim(_rewardToken, INDEX_PUBLISHER, INDEX_ID, msg.sender);
+    _idaLib.claim(_rewardToken, TOKEN_INDEX_PUBLISHER_ADDRESS, INDEX_ID, msg.sender);
   }
 
   /// @dev Distribute `amount` of cash among all token holders

@@ -29,7 +29,7 @@ function toUnder(camel: string) {
 }
 
 
-const artifactsPath = '../src/assets/artifacts/contracts/';
+const artifactsPath = './artifacts/contracts/';
 
  async function wire() {
 
@@ -55,12 +55,21 @@ const artifactsPath = '../src/assets/artifacts/contracts/';
         const name = jsonFile.substring(0, jsonFile.length - 5);
 
         const jsonName = toUnder(name) ;
+
+        if(contractArtifact.indexOf('interfaces') == -1){
         contractArtifacts.push({
           name: name,
           artifactsPath: contractArtifact,
           jsonName,
           ctor:[]
         });
+        console.log({
+          name: name,
+          artifactsPath: contractArtifact,
+          jsonName,
+          ctor:[]
+        })
+      }
       }
     }
   }
@@ -68,6 +77,7 @@ const artifactsPath = '../src/assets/artifacts/contracts/';
 
   /// checking constructor parameters
   for (const contract of contractArtifacts) {
+    console.log(join(artifactsPath, contract.artifactsPath))
     const contract_abi = JSON.parse(
       readFileSync(join(artifactsPath, contract.artifactsPath), 'utf-8')
     ).abi;

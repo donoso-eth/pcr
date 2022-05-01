@@ -17243,7 +17243,7 @@
   "resolved" "https://registry.npmjs.org/solidity-comments-extractor/-/solidity-comments-extractor-0.0.7.tgz"
   "version" "0.0.7"
 
-"solidity-coverage@^0.7.13", "solidity-coverage@^0.7.16":
+"solidity-coverage@^0.7.13":
   "integrity" "sha512-O8nuzJ9yXiKUx3NdzVvHrUW0DxoNVcGzq/I7NzewNO9EZE3wYAQ4l8BwcnV64r4aC/HB6Vnw/q2sF0BQHv/3fg=="
   "resolved" "https://registry.npmjs.org/solidity-coverage/-/solidity-coverage-0.7.21.tgz"
   "version" "0.7.21"

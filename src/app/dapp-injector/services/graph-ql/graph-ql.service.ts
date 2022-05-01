@@ -4,10 +4,11 @@ import { Subscription } from 'rxjs';
 
 const GET_POSTS = gql`
 {
-  payloads(first: 5) {
+  rewards(first: 5) {
     id
-    owner
-    payload
+    admin
+    rewardAmount
+    currentdeposit
   }
 }
 `;

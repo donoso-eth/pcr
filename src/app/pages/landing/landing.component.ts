@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import { AngularContract, DappBaseComponent, DappInjector } from 'angular-web3';
 import { doSignerTransaction } from 'src/app/dapp-injector/classes/transactor';
 import { GraphQlService } from 'src/app/dapp-injector/services/graph-ql/graph-ql.service';
-import { MinimalContract } from 'src/assets/contracts/interfaces/MinimalContract';
+import { PcrHost } from 'src/assets/contracts/interfaces/PcrHost';
 
 @Component({
   selector: 'app-landing',
@@ -12,7 +12,7 @@ import { MinimalContract } from 'src/assets/contracts/interfaces/MinimalContract
   styleUrls: ['./landing.component.scss'],
 })
 export class LandingComponent extends DappBaseComponent {
-  contract!: AngularContract<MinimalContract>;
+  contract!: AngularContract<PcrHost>;
   constructor(private router: Router, store: Store, dapp: DappInjector, private graphqlService:GraphQlService) {
     super(dapp, store);
   }
@@ -20,7 +20,7 @@ export class LandingComponent extends DappBaseComponent {
  async  connect() {
 
   
-    await  doSignerTransaction(this.contract.instance.testEvent(80))
+   // await  doSignerTransaction(this.contract.instance.testEvent(80))
     //this.router.navigate(['home'])
     console.log('que paso');
   }
@@ -34,9 +34,9 @@ export class LandingComponent extends DappBaseComponent {
   override async hookContractConnected(): Promise<void> {
     this.contract = this.dapp.defaultContract!;
   
-    this.contract.instance.on('RewardCreated',(args1,args2)=> {
-        console.log(args1, args2)
-    })
+    // this.contract.instance.on('RewardDeposit',(args1,args2)=> {
+    //     console.log(args1, args2)
+    // })
 
   }
 }

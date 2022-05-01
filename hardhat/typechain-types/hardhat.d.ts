@@ -153,25 +153,25 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.StoreInterface__factory>;
     getContractFactory(
-      name: "MinimalContract",
+      name: "IPcrOptimisticOracle",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.MinimalContract__factory>;
-    getContractFactory(
-      name: "IOptimisticDistributor",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.IOptimisticDistributor__factory>;
+    ): Promise<Contracts.IPcrOptimisticOracle__factory>;
     getContractFactory(
       name: "IPcrToken",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IPcrToken__factory>;
     getContractFactory(
-      name: "OptimisticDistributor",
+      name: "Events",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.OptimisticDistributor__factory>;
+    ): Promise<Contracts.Events__factory>;
     getContractFactory(
       name: "PcrHost",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.PcrHost__factory>;
+    getContractFactory(
+      name: "PcrOptimisticOracle",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.PcrOptimisticOracle__factory>;
     getContractFactory(
       name: "PcrToken",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -353,30 +353,30 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.StoreInterface>;
     getContractAt(
-      name: "MinimalContract",
+      name: "IPcrOptimisticOracle",
       address: string,
       signer?: ethers.Signer
-    ): Promise<Contracts.MinimalContract>;
-    getContractAt(
-      name: "IOptimisticDistributor",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.IOptimisticDistributor>;
+    ): Promise<Contracts.IPcrOptimisticOracle>;
     getContractAt(
       name: "IPcrToken",
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.IPcrToken>;
     getContractAt(
-      name: "OptimisticDistributor",
+      name: "Events",
       address: string,
       signer?: ethers.Signer
-    ): Promise<Contracts.OptimisticDistributor>;
+    ): Promise<Contracts.Events>;
     getContractAt(
       name: "PcrHost",
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.PcrHost>;
+    getContractAt(
+      name: "PcrOptimisticOracle",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.PcrOptimisticOracle>;
     getContractAt(
       name: "PcrToken",
       address: string,

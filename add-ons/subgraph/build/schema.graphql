@@ -1,5 +1,14 @@
-type Payload @entity {
+type Reward @entity {
   id: ID!
-  owner: Bytes
-  payload:BigInt
+   admin:String
+   rewardToken:String
+   token:String
+   earliestProposalTimestamp:BigInt
+   interval:BigInt
+   rewardAmount:BigInt
+   currentdeposit:BigInt
+   optimisticOracleLivenessTime:BigInt
+   priceIdentifier: Bytes
+   customAncillaryData: Bytes
+
 }

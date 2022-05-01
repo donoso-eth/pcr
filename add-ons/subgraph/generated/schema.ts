@@ -12,7 +12,7 @@ import {
   BigDecimal
 } from "@graphprotocol/graph-ts";
 
-export class Payload extends Entity {
+export class Reward extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
@@ -20,19 +20,19 @@ export class Payload extends Entity {
 
   save(): void {
     let id = this.get("id");
-    assert(id != null, "Cannot save Payload entity without an ID");
+    assert(id != null, "Cannot save Reward entity without an ID");
     if (id) {
       assert(
         id.kind == ValueKind.STRING,
-        "Cannot save Payload entity with non-string ID. " +
+        "Cannot save Reward entity with non-string ID. " +
           'Considering using .toHex() to convert the "id" to a string.'
       );
-      store.set("Payload", id.toString(), this);
+      store.set("Reward", id.toString(), this);
     }
   }
 
-  static load(id: string): Payload | null {
-    return changetype<Payload | null>(store.get("Payload", id));
+  static load(id: string): Reward | null {
+    return changetype<Reward | null>(store.get("Reward", id));
   }
 
   get id(): string {
@@ -44,25 +44,59 @@ export class Payload extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get owner(): Bytes | null {
-    let value = this.get("owner");
+  get admin(): string | null {
+    let value = this.get("admin");
     if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
-      return value.toBytes();
+      return value.toString();
     }
   }
 
-  set owner(value: Bytes | null) {
+  set admin(value: string | null) {
     if (!value) {
-      this.unset("owner");
+      this.unset("admin");
     } else {
-      this.set("owner", Value.fromBytes(<Bytes>value));
+      this.set("admin", Value.fromString(<string>value));
     }
   }
 
-  get payload(): BigInt | null {
-    let value = this.get("payload");
+  get rewardToken(): string | null {
+    let value = this.get("rewardToken");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set rewardToken(value: string | null) {
+    if (!value) {
+      this.unset("rewardToken");
+    } else {
+      this.set("rewardToken", Value.fromString(<string>value));
+    }
+  }
+
+  get token(): string | null {
+    let value = this.get("token");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set token(value: string | null) {
+    if (!value) {
+      this.unset("token");
+    } else {
+      this.set("token", Value.fromString(<string>value));
+    }
+  }
+
+  get earliestProposalTimestamp(): BigInt | null {
+    let value = this.get("earliestProposalTimestamp");
     if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
@@ -70,11 +104,113 @@ export class Payload extends Entity {
     }
   }
 
-  set payload(value: BigInt | null) {
+  set earliestProposalTimestamp(value: BigInt | null) {
     if (!value) {
-      this.unset("payload");
+      this.unset("earliestProposalTimestamp");
     } else {
-      this.set("payload", Value.fromBigInt(<BigInt>value));
+      this.set("earliestProposalTimestamp", Value.fromBigInt(<BigInt>value));
+    }
+  }
+
+  get interval(): BigInt | null {
+    let value = this.get("interval");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set interval(value: BigInt | null) {
+    if (!value) {
+      this.unset("interval");
+    } else {
+      this.set("interval", Value.fromBigInt(<BigInt>value));
+    }
+  }
+
+  get rewardAmount(): BigInt | null {
+    let value = this.get("rewardAmount");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set rewardAmount(value: BigInt | null) {
+    if (!value) {
+      this.unset("rewardAmount");
+    } else {
+      this.set("rewardAmount", Value.fromBigInt(<BigInt>value));
+    }
+  }
+
+  get currentdeposit(): BigInt | null {
+    let value = this.get("currentdeposit");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set currentdeposit(value: BigInt | null) {
+    if (!value) {
+      this.unset("currentdeposit");
+    } else {
+      this.set("currentdeposit", Value.fromBigInt(<BigInt>value));
+    }
+  }
+
+  get optimisticOracleLivenessTime(): BigInt | null {
+    let value = this.get("optimisticOracleLivenessTime");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set optimisticOracleLivenessTime(value: BigInt | null) {
+    if (!value) {
+      this.unset("optimisticOracleLivenessTime");
+    } else {
+      this.set("optimisticOracleLivenessTime", Value.fromBigInt(<BigInt>value));
+    }
+  }
+
+  get priceIdentifier(): Bytes | null {
+    let value = this.get("priceIdentifier");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set priceIdentifier(value: Bytes | null) {
+    if (!value) {
+      this.unset("priceIdentifier");
+    } else {
+      this.set("priceIdentifier", Value.fromBytes(<Bytes>value));
+    }
+  }
+
+  get customAncillaryData(): Bytes | null {
+    let value = this.get("customAncillaryData");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set customAncillaryData(value: Bytes | null) {
+    if (!value) {
+      this.unset("customAncillaryData");
+    } else {
+      this.set("customAncillaryData", Value.fromBytes(<Bytes>value));
     }
   }
 }

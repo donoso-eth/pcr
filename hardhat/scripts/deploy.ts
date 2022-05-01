@@ -4,6 +4,14 @@
 // When running the script with `npx hardhat run <script>` you'll find the Hardhat
 // Runtime Environment's members available in the global scope.
 
+
+
+// "PCR",
+// "PCR",
+// "0x5D8B4C2554aeB7e86F387B4d6c00Ac33499Ed01f",
+// "0xEB796bdb90fFA0f28255275e16936D25d3418603",
+// "0x804348D4960a61f2d5F9ce9103027A3E849E09b8"
+
 import { writeFileSync,readFileSync } from "fs";
 import {copySync, ensureDir,existsSync } from 'fs-extra'
 import { ethers,hardhatArguments } from "hardhat";
@@ -34,7 +42,7 @@ if (network == undefined) {
 
   const contract_config = JSON.parse(readFileSync( join(processDir,'contract.config.json'),'utf-8')) as {[key:string]: ICONTRACT_DEPLOY}
   
-  const deployContracts=["minimalContract"]
+  const deployContracts=["pcrToken","pcrHost","pcrOptimisticOracle"]
  
   // Hardhat always runs the compile task when running scripts with its command
   // line interface.

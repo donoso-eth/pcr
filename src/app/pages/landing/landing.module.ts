@@ -1,10 +1,13 @@
-import { NgModule } from '@angular/core';
+import { InjectionToken, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { LandingRoutingModule } from './landing-routing.module';
 import { LandingComponent } from './landing.component';
 import { ButtonModule } from 'primeng/button';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+
+
+
 @NgModule({
   declarations: [
     LandingComponent
@@ -15,6 +18,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
     ButtonModule,
     ProgressSpinnerModule
     
-  ]
+  ],
+
 })
 export class LandingModule { }

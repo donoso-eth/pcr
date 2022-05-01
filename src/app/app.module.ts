@@ -1,9 +1,8 @@
-import { NgModule } from '@angular/core';
+import { InjectionToken, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { MinimalContractModule } from './0-minimal-contract/minimal-contract.module';
 import { DappInjectorModule } from './dapp-injector/dapp-injector.module';
 import { StoreModule } from '@ngrx/store';
 import { we3ReducerFunction } from 'angular-web3';
@@ -24,6 +23,12 @@ import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { GraphQlModule } from './dapp-injector/services/graph-ql/graph-ql.module';
 
+import PcrHostMetadata from '../assets/contracts/pcr_host_metadata.json';
+import { ICONTRACT_METADATA } from 'angular-web3';
+export const contractMetadata = new InjectionToken<ICONTRACT_METADATA>('contractMetadata')
+
+export const contractProvider= {provide: 'contractMetadata', useValue:PcrHostMetadata };
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -38,13 +43,12 @@ import { GraphQlModule } from './dapp-injector/services/graph-ql/graph-ql.module
     BrowserAnimationsModule,
     HttpClientModule,
     AppRoutingModule,
-    MinimalContractModule,
     DappInjectorModule.forRoot({wallet:'local', defaultNetwork:'localhost'}),
     StoreModule.forRoot({web3: we3ReducerFunction}),
     GraphQlModule.forRoot({uri:"http://localhost:8000/subgraphs/name/angular-web3/pcr"})
 
   ],
-  providers: [ConfigService, MenuService, ProductService],
+  providers: [ConfigService, MenuService, ProductService,contractProvider],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

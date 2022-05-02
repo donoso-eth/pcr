@@ -9,6 +9,9 @@ import { TabViewModule } from 'primeng/tabview';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
+import { InputSwitchModule } from 'primeng/inputswitch';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
 @NgModule({
   declarations: [
     HomeComponent
@@ -16,10 +19,14 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
   imports: [
     CommonModule,
     HomeRoutingModule,
+    FormsModule,
+    ReactiveFormsModule,
+
     TabViewModule,
     ButtonModule,
     InputTextModule,
     InputTextareaModule,
+    InputSwitchModule
   ]
 })
 export class HomeModule { }

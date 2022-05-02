@@ -25,6 +25,7 @@ import { GraphQlModule } from './dapp-injector/services/graph-ql/graph-ql.module
 
 import PcrHostMetadata from '../assets/contracts/pcr_host_metadata.json';
 import { ICONTRACT_METADATA } from 'angular-web3';
+import { LoadingComponent } from './shared/components/loading/loading.component';
 export const contractMetadata = new InjectionToken<ICONTRACT_METADATA>('contractMetadata')
 
 export const contractProvider= {provide: 'contractMetadata', useValue:PcrHostMetadata };
@@ -32,6 +33,8 @@ export const contractProvider= {provide: 'contractMetadata', useValue:PcrHostMet
 @NgModule({
   declarations: [
     AppComponent,
+
+   LoadingComponent,
 
     AppTopBarComponent,
     AppMenuComponent,

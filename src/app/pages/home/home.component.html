@@ -1,25 +1,102 @@
 <div class="grid">
-    <div class="col-12">
-        <div style="position: relative;border-color: transparent;" class="card">
-            <h5>Pcr's Created</h5>
+  <div class="col-12">
+    <div style="position: relative; border-color: transparent" class="card">
+      <h5>Pcr's Created</h5>
 
-            <button pButton pRipple style="position: absolute; top: 15px; right: 20px" (click)="createPcr()"
-                type="button" label="New" class="p-button-rounded mr-2 mb-2"></button>
+      <button
+        pButton
+        pRipple
+        style="position: absolute; top: 15px; right: 20px"
+        (click)="createPcr()"
+        type="button"
+        label="New"
+        class="p-button-rounded mr-2 mb-2"
+      ></button>
 
-            <div class="grid p-fluid mr-top-20">
-                <div class="col-12">
-                    <div  class="card" *ngFor="let token of pcrTokens">
-                        {{ token.admin }}
-                        <br />
-                        <textarea formControlName="conditionCtrl" pInputTextarea placeholder="Your Message"
-                            [autoResize]="true" rows="6" cols="30">{{ token.customAncillaryData }}</textarea>
+      <div style="margin-top: 20px" class="grid p-fluid">
+        <div class="col-12">
+          <div style="position:relative" class="card" *ngFor="let token of pcrTokens;index as i">
+            <div style="position: absolute;right: 25px;">
+            <p-inputSwitch (onChange)="changeStatus($event.checked,i)"  [(ngModel)]="token.status"></p-inputSwitch>
+          </div>
+            <h6>{{ token.title }}</h6>
+            <br />
+            <textarea
+              pInputTextarea
+              placeholder="Your Message"
+              [autoResize]="true"
+              rows="6"
+              cols="30"
+              >{{ token.customAncillaryData }}</textarea
+            >
+            <div style="margin-top:20px" class="grid">
+            <div class="col-12 lg:col-6 xl:col-6">
+                <div style="background-color: var(--surface-ground);" class="card mb-0">
+                  <div class="flex justify-content-between mb-3">
+                    <div>
+                      <span class="block text-500 font-medium mb-3">Orders</span>
+                      <div class="text-900 font-medium text-xl">152</div>
                     </div>
+                
+                    <div style="width:40px;height:40px;border-radius: 20px;background: lightgreen;"></div>
+                  </div>
+                  <div class="mt-2 md:mt-0 ml-0 flex align-items-center">
+                    <div class="surface-300 border-round overflow-hidden w-10rem lg:w-6rem" [ngStyle]="{height: '8px'}">
+                        <div class="bg-green-500 h-full" [ngStyle]="{width: '35%'}"></div>
+                    </div>
+                    <span class="text-green-500 ml-3 font-medium">%35</span>
                 </div>
-            </div>
-        </div>
+                </div>
+              </div>
+              <div  class="col-12 lg:col-6 xl:col-6">
+                <div style="background-color: var(--surface-ground);" class="card mb-0">
+                  <div class="flex justify-content-between mb-3">
+                    <div>
+                      <span class="block text-500 font-medium mb-3">Revenue</span>
+                      <div [class]="+token.rewardAmount<= +token.currentdeposit ? 'text-green-500' : 'text-orange-500' " class="text-900 font-medium text-xl">${{token.currentdeposit}}</div>
+                    </div>
+                    <div
+                      class="flex align-items-center justify-content-center"
+                      [ngStyle]="{ width: '2.5rem', height: '2.5rem' }"
+                    >
+                    <img src="assets/images/tokens/{{token.image}}_icon.svg" style="margin-right: 5px;" />
 
-        <div class="card">
-            <h5>Pcr's Rewards Received</h5>
+                    </div>
+                  </div>
+                  <span   class="font-medium">{{token.rewardAmount}} </span>
+                  <span class="text-500">Required Reward Amount, please fund the reward </span>
+                </div>
+              </div>
+          </div>
+          <div style="position:relative;background-color: var(--surface-ground);" class="card mt-3 flex align-items-center justify-content-center">
+            <h4>Current Status</h4>
+
+          </div>
+          </div>
+          <div *ngIf="pcrTokens?.length == 0" class="card">
+            <div class="grid flex flex-column align-items-center">
+              <div
+                class="flex justify-content-center align-items-center bg-pink-500 border-circle"
+                style="height: 3.2rem; width: 3.2rem"
+              >
+                <i
+                  class="pi pi-fw pi-exclamation-circle text-2xl text-white"
+                ></i>
+          
+              </div>
+              <h1 class="text-900 font-bold text-5xl mb-2">Nothing Found</h1>
+              <span class="text-600"
+                >Please create a new Perpetual Conditional Reward</span
+              >
+            </div>
+          </div>
+  
         </div>
+      </div>
+
+      <div class="card">
+        <h5>Pcr's Rewards Received</h5>
+      </div>
     </div>
+  </div>
 </div>

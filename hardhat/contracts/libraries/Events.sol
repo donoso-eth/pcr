@@ -10,16 +10,8 @@ library Events {
      *
     
      */
-    event PerpetualConditionalRewardCreated(
-        address admin,
-        address rewardToken,
-        string token,
-        uint256 indexed pcrId,
-        uint256 earliestProposalTimestamp,
-        DataTypes.OPTIMISTIC_ORACLE_INPUT optimisticOracleInput,
-        address tokenContract,
-        address optimisticOracleContract
-    );
+    event PerpetualConditionalRewardCreated(DataTypes.REWARD_EVENT reward);
+
 
     event RewardDeposit(uint256 pcrId, uint256 depositAmount);
 

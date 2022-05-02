@@ -3,84 +3,94 @@
     "anonymous": false,
     "inputs": [
       {
-        "indexed": false,
-        "internalType": "address",
-        "name": "admin",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "rewardToken",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "token",
-        "type": "string"
-      },
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "pcrId",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "earliestProposalTimestamp",
-        "type": "uint256"
-      },
-      {
         "components": [
           {
-            "internalType": "contract FinderInterface",
-            "name": "finder",
+            "internalType": "address",
+            "name": "admin",
             "type": "address"
           },
           {
+            "internalType": "address",
+            "name": "rewardToken",
+            "type": "address"
+          },
+          {
+            "internalType": "string",
+            "name": "token",
+            "type": "string"
+          },
+          {
             "internalType": "uint256",
-            "name": "rewardAmount",
+            "name": "pcrId",
             "type": "uint256"
           },
           {
             "internalType": "uint256",
-            "name": "interval",
+            "name": "earliestProposalTimestamp",
             "type": "uint256"
           },
           {
-            "internalType": "uint256",
-            "name": "optimisticOracleLivenessTime",
-            "type": "uint256"
+            "components": [
+              {
+                "internalType": "contract FinderInterface",
+                "name": "finder",
+                "type": "address"
+              },
+              {
+                "internalType": "uint256",
+                "name": "rewardAmount",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "interval",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "optimisticOracleLivenessTime",
+                "type": "uint256"
+              },
+              {
+                "internalType": "bytes32",
+                "name": "priceIdentifier",
+                "type": "bytes32"
+              },
+              {
+                "internalType": "bytes",
+                "name": "customAncillaryData",
+                "type": "bytes"
+              }
+            ],
+            "internalType": "struct DataTypes.OPTIMISTIC_ORACLE_INPUT",
+            "name": "optimisticOracleInput",
+            "type": "tuple"
           },
           {
-            "internalType": "bytes32",
-            "name": "priceIdentifier",
-            "type": "bytes32"
+            "internalType": "address",
+            "name": "tokenContract",
+            "type": "address"
           },
           {
-            "internalType": "bytes",
-            "name": "customAncillaryData",
-            "type": "bytes"
+            "internalType": "address",
+            "name": "optimisticOracleContract",
+            "type": "address"
+          },
+          {
+            "internalType": "string",
+            "name": "title",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "url",
+            "type": "string"
           }
         ],
         "indexed": false,
-        "internalType": "struct DataTypes.OPTIMISTIC_ORACLE_INPUT",
-        "name": "optimisticOracleInput",
+        "internalType": "struct DataTypes.REWARD_EVENT",
+        "name": "reward",
         "type": "tuple"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "tokenContract",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "optimisticOracleContract",
-        "type": "address"
       }
     ],
     "name": "PerpetualConditionalRewardCreated",

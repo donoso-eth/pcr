@@ -196,3 +196,8 @@ export async function mineBlocks(
     });
   }
 }
+
+
+export async function setNextBlockTimestamp(hre: HardhatRuntimeEnvironment,timestamp: number): Promise<void> {
+  await hre.ethers.provider.send('evm_setNextBlockTimestamp', [timestamp]);
+}

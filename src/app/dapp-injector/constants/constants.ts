@@ -237,3 +237,32 @@ export const netWorkById = (chainId:number) => {
   }
   return noNetwork
 };
+
+
+export const global_address = {
+  kovan: {
+    host: '0xF0d7d1D47109bA426B9D8A3Cde1941327af1eea3',
+    cfa: '0xECa8056809e7e8db04A8fF6e4E82cD889a46FE2F',
+    ida: '0x556ba0b3296027Dd7BCEb603aE53dEc3Ac283d2b',
+    fDaix: '0xe3cb950cb164a31c66e32c320a800d477019dcff',
+    fDai: '0xb64845d53a373d35160b72492818f0d2f51292c0',
+    resolver:"0x851d3dd9dc97c1df1DA73467449B3893fc76D85B",
+    finder:"0xeD0169a88d267063184b0853BaAAAe66c3c154B2"
+  },
+  mumbai: {
+    host: '0xEB796bdb90fFA0f28255275e16936D25d3418603',
+    cfa: '0x49e565Ed1bdc17F3d220f72DF0857C26FA83F873',
+    ida: '0x804348D4960a61f2d5F9ce9103027A3E849E09b8',
+    fDaix: '0x5D8B4C2554aeB7e86F387B4d6c00Ac33499Ed01f',
+    fDai: '0x15F0Ca26781C3852f8166eD2ebce5D18265cceb7',
+    resolver:"0x8C54C83FbDe3C59e59dd6E324531FB93d4F504d3",
+    finder:"0xb22033fF04AD01fbE8d78ef4622a20626834271B"
+  },
+};
+
+export const global_tokens = [
+  { name: 'DAI', id: 0, image: 'dai', rewardToken:global_address.kovan.fDai, superToken:global_address.kovan.fDaix },
+ // { name: 'DAIx', id: 1, image: 'dai', rewardToken:global_address.kovan.fDaix,superToken:global_address.kovan.fDaix  },
+  // { name: 'USDCx', id: 2, image: 'usdc' },
+  // { name: 'USDC', id: 3, image: 'usdc' },
+];

@@ -1,14 +1,32 @@
 type Reward @entity {
   id: ID!
-   admin:String
-   rewardToken:String
-   token:String
-   earliestProposalTimestamp:BigInt
-   interval:BigInt
-   rewardAmount:BigInt
-   currentdeposit:BigInt
-   optimisticOracleLivenessTime:BigInt
-   priceIdentifier: Bytes
-   customAncillaryData: Bytes
+  title:String
+  url:String
+  admin: String
+  rewardToken: String
+  token: String
+  earliestProposalTimestamp: BigInt
+  interval: BigInt
+  rewardAmount: BigInt
+  currentdeposit: BigInt
+  optimisticOracleLivenessTime: BigInt
+  priceIdentifier: Bytes
+  customAncillaryData: Bytes
+}
 
+type Proposal @entity {
+ id: ID!
+ proposalData: String!
+ reward: Reward!
+ result: ProposalResult!
+ countYesVotes: BigInt!
+ countNoVotes: BigInt!
+}
+
+
+type ProposalSummary @entity {
+  id:ID!
+  reward:Reward!
+  timeStamp:BigInt
+  result:Bigint
 }

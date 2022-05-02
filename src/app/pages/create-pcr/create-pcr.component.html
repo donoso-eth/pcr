@@ -1,19 +1,17 @@
 <div class="grid p-fluid justify-content-center">
 	<div [formGroup]="rewardForm" class="col-12">
 		<div class="card">
-			<h5>Perpetual Conditional Reward Name</h5>
-			<div class="grid formgrid">
-				<div class="col-12 mb-2 lg:col-12 lg:mb-0">
-					<input  formControlName="titleCtrl" pInputText type="text" placeholder="Reward Name" />
-				</div>
-		
-			</div>
 
 			<div class="col-12">
 				<div style=" border-color: transparent;" class="card">
 				
 					<div class="grid p-fluid">
-						<div class="col-12 md:col-7">
+						<div style="position:relative" class="col-12 md:col-7">
+							
+							<h5>Perpetual Conditional Reward Name</h5>
+							<div class="p-inputgroup">
+								<input  formControlName="titleCtrl" pInputText type="text" placeholder="Reward Name" />
+							</div>
 							<h5>Condition for the Reward?</h5>
 							<div class="p-inputgroup">
 								<textarea formControlName="conditionCtrl"  pInputTextarea placeholder="Your Message" [autoResize]="true" rows="6" cols="30"></textarea>
@@ -22,7 +20,7 @@
 							<h6>KPI Check Url</h6>
 							<div class="p-inputgroup">
 						
-								<input formArrayName="urlCtrl" pInputText type="text" placeholder="Url" />
+								<input formControlName="urlCtrl" pInputText type="text" placeholder="Url" />
 							</div>
 						</div>
 				
@@ -66,7 +64,25 @@
 								</p-dropdown>
 								<p-inputNumber formControlName="intervalAmountCtrl" placeholder="Interval" mode="decimal" [showButtons]="true" [min]="0">
 								</p-inputNumber>
-						
+								<h5>Liveness Periodl</h5>
+								<p-dropdown [options]="intervals"   formControlName="livelinessCtrl"  placeholder="Select a Interval">
+									<ng-template pTemplate="selectedItem">
+										<div  style="display:inline-flex" class="country-item country-item-value" *ngIf="selectedToken">
+												<div>{{rewardForm.controls.livelinessCtrl.value.name}}</div>
+										</div>
+									</ng-template>
+									<ng-template let-interval pTemplate="interval">
+										<div class="flex align-items-center">
+									
+												<span>{{interval.name}}</span>
+										</div>
+									</ng-template>
+								</p-dropdown>
+								<p-inputNumber formControlName="livelinessAmountCtrl" placeholder="Interval" mode="decimal" [showButtons]="true" [min]="0">
+								</p-inputNumber>
+
+
+
 						</div>
 					</div>
 				</div>

@@ -33,13 +33,13 @@ export class LandingComponent extends DappBaseComponent {
   }
 
   override async hookContractConnected(): Promise<void> {
-    this.pcrOptimisticOracleContract = this.dapp.DAPP_STATE.pcrOptimisticOracleContract!;
+    // this.pcrOptimisticOracleContract = this.dapp.DAPP_STATE.pcrOptimisticOracleContract!;
   
-    console.log(this.pcrOptimisticOracleContract)
+    // console.log(this.pcrOptimisticOracleContract)
 
-    this.pcrOptimisticOracleContract.instance.on('RewardDeposit',(args1,args2)=> {
-        console.log(args1, args2)
-    })
+    // this.pcrOptimisticOracleContract.instance.on('RewardDeposit',(args1,args2)=> {
+    //     console.log(args1, args2)
+    // })
     this.router.navigate(['home'])
 
   }

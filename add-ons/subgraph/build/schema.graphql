@@ -1,14 +1,15 @@
 type Reward @entity {
   id: ID!
-   admin:String
-   rewardToken:String
-   token:String
-   earliestProposalTimestamp:BigInt
-   interval:BigInt
-   rewardAmount:BigInt
-   currentdeposit:BigInt
-   optimisticOracleLivenessTime:BigInt
-   priceIdentifier: Bytes
-   customAncillaryData: Bytes
-
+  title:String
+  url:String
+  admin: String
+  rewardToken: String
+  token: String
+  earliestProposalTimestamp: BigInt
+  interval: BigInt
+  rewardAmount: BigInt
+  currentdeposit: BigInt
+  optimisticOracleLivenessTime: BigInt
+  priceIdentifier: Bytes
+  customAncillaryData: Bytes
 }

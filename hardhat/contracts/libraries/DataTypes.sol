@@ -10,6 +10,15 @@ import "@uma/core/contracts/oracle/interfaces/FinderInterface.sol";
  * @notice A standard library of data types used throughout.
  */
 library DataTypes {
+
+  struct PCRHOST_CONFIG_INPUT  {
+    address pcrTokenImpl;
+    address pcrOptimisticOracleImpl;
+    string title;
+    string url;
+  }
+
+
   /**
    * @notice A struct containing the necessary information to launch the InstandDistricution agreemens
    *
@@ -51,4 +60,20 @@ library DataTypes {
     bytes32 priceIdentifier;
     bytes customAncillaryData;
   }
+
+
+  /////// EVENT TYPES
+  struct REWARD_EVENT {
+        address admin;
+        address rewardToken;
+        string token;
+        uint256 pcrId;
+        uint256 earliestProposalTimestamp;
+        DataTypes.OPTIMISTIC_ORACLE_INPUT optimisticOracleInput;
+        address tokenContract;
+        address optimisticOracleContract;
+        string title;
+        string url;
+  }
+
 }

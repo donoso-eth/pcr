@@ -17,6 +17,25 @@ import { FunctionFragment, Result } from "@ethersproject/abi";
 import { Listener, Provider } from "@ethersproject/providers";
 import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 
+export type PCRHOSTCONFIGINPUTStruct = {
+  pcrTokenImpl: string;
+  pcrOptimisticOracleImpl: string;
+  title: string;
+  url: string;
+};
+
+export type PCRHOSTCONFIGINPUTStructOutput = [
+  string,
+  string,
+  string,
+  string
+] & {
+  pcrTokenImpl: string;
+  pcrOptimisticOracleImpl: string;
+  title: string;
+  url: string;
+};
+
 export type IDAINPUTStruct = { host: string; ida: string; rewardToken: string };
 
 export type IDAINPUTStructOutput = [string, string, string] & {
@@ -63,7 +82,7 @@ export type PcrAddressesStructOutput = [string, string] & {
 export interface PcrHostInterface extends utils.Interface {
   functions: {
     "_pcrTokensIssued()": FunctionFragment;
-    "createPcrReward((address,address,address),address,(address,uint256,uint256,uint256,bytes32,bytes),address)": FunctionFragment;
+    "createPcrReward((address,address,string,string),(address,address,address),(address,uint256,uint256,uint256,bytes32,bytes))": FunctionFragment;
     "getNumbersOfPcrTokens()": FunctionFragment;
     "getTokensAddressByUserAndId(address,uint256)": FunctionFragment;
     "getTotalPcrTokensByUser(address)": FunctionFragment;
@@ -75,7 +94,11 @@ export interface PcrHostInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "createPcrReward",
-    values: [IDAINPUTStruct, string, OPTIMISTICORACLEINPUTStruct, string]
+    values: [
+      PCRHOSTCONFIGINPUTStruct,
+      IDAINPUTStruct,
+      OPTIMISTICORACLEINPUTStruct
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "getNumbersOfPcrTokens",
@@ -146,10 +169,9 @@ export interface PcrHost extends BaseContract {
     ): Promise<[BigNumber] & { _value: BigNumber }>;
 
     createPcrReward(
+      pcrHostConfig: PCRHOSTCONFIGINPUTStruct,
       _ida: IDAINPUTStruct,
-      _tokenContractImpl: string,
       _optimisticOracleInput: OPTIMISTICORACLEINPUTStruct,
-      _optimisticOracleImpl: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -170,10 +192,9 @@ export interface PcrHost extends BaseContract {
   _pcrTokensIssued(overrides?: CallOverrides): Promise<BigNumber>;
 
   createPcrReward(
+    pcrHostConfig: PCRHOSTCONFIGINPUTStruct,
     _ida: IDAINPUTStruct,
-    _tokenContractImpl: string,
     _optimisticOracleInput: OPTIMISTICORACLEINPUTStruct,
-    _optimisticOracleImpl: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -194,10 +215,9 @@ export interface PcrHost extends BaseContract {
     _pcrTokensIssued(overrides?: CallOverrides): Promise<BigNumber>;
 
     createPcrReward(
+      pcrHostConfig: PCRHOSTCONFIGINPUTStruct,
       _ida: IDAINPUTStruct,
-      _tokenContractImpl: string,
       _optimisticOracleInput: OPTIMISTICORACLEINPUTStruct,
-      _optimisticOracleImpl: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -221,10 +241,9 @@ export interface PcrHost extends BaseContract {
     _pcrTokensIssued(overrides?: CallOverrides): Promise<BigNumber>;
 
     createPcrReward(
+      pcrHostConfig: PCRHOSTCONFIGINPUTStruct,
       _ida: IDAINPUTStruct,
-      _tokenContractImpl: string,
       _optimisticOracleInput: OPTIMISTICORACLEINPUTStruct,
-      _optimisticOracleImpl: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -246,10 +265,9 @@ export interface PcrHost extends BaseContract {
     _pcrTokensIssued(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     createPcrReward(
+      pcrHostConfig: PCRHOSTCONFIGINPUTStruct,
       _ida: IDAINPUTStruct,
-      _tokenContractImpl: string,
       _optimisticOracleInput: OPTIMISTICORACLEINPUTStruct,
-      _optimisticOracleImpl: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

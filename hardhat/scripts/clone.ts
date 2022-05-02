@@ -56,7 +56,7 @@ const clone = async () => {
     hre.ethers.utils.formatBytes32String('YES_OR_NO_QUERY');
   const customAncillaryData = hre.ethers.utils.hexlify(
     hre.ethers.utils.toUtf8Bytes(
-      'q: title: NBA: Who will win Heat vs. Hawks, scheduled for April 19, 7:30 PM ET?, p1: 0, p2: 1, p3: 0.5. Where p2 corresponds to Heat, p1 to a Hawks, p3 to unknown'
+      'q: title: NBA: Who will win Heat vs. Hawks, scheduled for April 19, 7:30 PM ET?, p1: 0, p2: 1, p3: 0.5. Where p2 corresponds to Yes, p1 to a NO, p3 to unknown'
     )
   );
 

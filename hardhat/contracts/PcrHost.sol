@@ -33,10 +33,9 @@ contract PcrHost {
   constructor() {}
 
   function createPcrReward(
+    DataTypes.PCRHOST_CONFIG_INPUT memory pcrHostConfig,
     DataTypes.IDA_INPUT memory _ida,
-    address _tokenContractImpl,
-    DataTypes.OPTIMISTIC_ORACLE_INPUT memory _optimisticOracleInput,
-    address _optimisticOracleImpl
+    DataTypes.OPTIMISTIC_ORACLE_INPUT memory _optimisticOracleInput
   ) external {
     _pcrTokensIssued.increment();
 
@@ -44,11 +43,11 @@ contract PcrHost {
 
     _pcrTokensByUser[msg.sender]++;
     uint256 _tokenId = _pcrTokensByUser[msg.sender];
-    address _tokenContract = Clones.clone(_tokenContractImpl);
+    address _tokenContract = Clones.clone(pcrHostConfig.pcrTokenImpl);
 
     //// TODO CLONE OPTIMISTIC CONTRACT
 
-    address _optimisticOracleContract = Clones.clone(_optimisticOracleImpl);
+    address _optimisticOracleContract = Clones.clone(pcrHostConfig.pcrOptimisticOracleImpl);
 
     _pcrTokensContractsByUser[msg.sender][_tokenId] = Pcr_addresses({
       tokenContract: _tokenContract,
@@ -94,7 +93,7 @@ contract PcrHost {
       pcrOptimisticOracleContractInitializer
     );
 
-    emit Events.PerpetualConditionalRewardCreated(
+    DataTypes.REWARD_EVENT memory rewardEvent = DataTypes.REWARD_EVENT(
       msg.sender,
       _ida.rewardToken,
       string(abi.encodePacked(tokenSymbol,' ',tokenName)),
@@ -102,8 +101,12 @@ contract PcrHost {
       block.timestamp + _optimisticOracleInput.interval,
       _optimisticOracleInput,
     _tokenContract,
-    _optimisticOracleContract
+    _optimisticOracleContract,
+    pcrHostConfig.title,
+    pcrHostConfig.url
     );
+
+    emit Events.PerpetualConditionalRewardCreated(rewardEvent );
   }
 
   // ============= View Functions ============= ============= =============  //

@@ -19,6 +19,8 @@ import config from "../hardhat.config";
 import { join } from "path";
 import { createHardhatAndFundPrivKeysFiles } from "../helpers/localAccounts";
 import * as hre from 'hardhat';
+import { getTimestamp } from "../test/helpers/utils";
+import { mineBlocks, setNextBlockTimestamp } from "../helpers/utils";
 
 
 interface ICONTRACT_DEPLOY {
@@ -39,6 +41,16 @@ let network = hardhatArguments.network;
 if (network == undefined) {
   network = config.defaultNetwork;
 }
+
+
+let todayTimeSamp = +((new Date().getTime()/1000).toFixed(0));
+console.log('oldTimeStamp', todayTimeSamp)
+await setNextBlockTimestamp(hre, todayTimeSamp )
+
+await mineBlocks(hre,1)
+
+console.log('newTimeStamp', new Date(+await getTimestamp()*1000).toLocaleString())
+
 
   const contract_config = JSON.parse(readFileSync( join(processDir,'contract.config.json'),'utf-8')) as {[key:string]: ICONTRACT_DEPLOY}
   

@@ -44,6 +44,40 @@ export class Reward extends Entity {
     this.set("id", Value.fromString(value));
   }
 
+  get title(): string | null {
+    let value = this.get("title");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set title(value: string | null) {
+    if (!value) {
+      this.unset("title");
+    } else {
+      this.set("title", Value.fromString(<string>value));
+    }
+  }
+
+  get url(): string | null {
+    let value = this.get("url");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set url(value: string | null) {
+    if (!value) {
+      this.unset("url");
+    } else {
+      this.set("url", Value.fromString(<string>value));
+    }
+  }
+
   get admin(): string | null {
     let value = this.get("admin");
     if (!value || value.kind == ValueKind.NULL) {

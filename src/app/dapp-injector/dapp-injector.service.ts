@@ -47,7 +47,13 @@ export class DappInjector implements OnDestroy {
   private webModal!: Web3ModalComponent;
 
  ///// ---------  importing local priv_keys
-  harhdat_local_privKeys:Array<{key:string, address:string}> = [];;
+  harhdat_local_privKeys:Array<{key:string, address:string}> = [];
+
+
+  //// Store Implementation addressess
+  tokenImpl!: string;
+  optimisticOracleImpl!: string;
+;
 
 
   constructor(
@@ -264,6 +270,10 @@ async localWallet(index:number) {
   //////// Custom implementation
   public async launchClones(pcrTokenAddress?:string, pcrOptimisticOracleAddress?:string){
  
+    this.tokenImpl = PcrTokenMetadata.address;
+    this.optimisticOracleImpl = PcrOptimisticOracleMetadata.address;
+
+
     const pcrTokenMetadata = PcrTokenMetadata;
     const pcrOptimisticOracleMetadata = PcrOptimisticOracleMetadata;
     if (pcrTokenAddress!== undefined){

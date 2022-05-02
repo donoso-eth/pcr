@@ -8,9 +8,14 @@ const rewards = gql`
     id
     admin
     rewardAmount
+    rewardToken
     currentdeposit
     customAncillaryData
-    token
+    token,
+    title,
+    url,
+    earliestProposalTimestamp,
+    interval
   }
 }
 `;
@@ -31,13 +36,18 @@ export class GraphQlService {
     //   query: GET_POSTS,
     //   pollInterval: 500,
     // });
-
-  const posts = await  this.apollo.query<any>({
+  try {
+    const posts = await  this.apollo.query<any>({
       query: rewards
     }).toPromise()
 
     console.log(posts)
   return posts?.data
+  } catch (error) {
+    console.log(error)
+      return {}
+  }
+
     // this.querySubscription = this.postsQuery.valueChanges.subscribe(({ data, loading }) => {
     //   this.loading = loading;
     //   this.posts = data.posts;

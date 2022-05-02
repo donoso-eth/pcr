@@ -23,42 +23,58 @@ export class PerpetualConditionalRewardCreated__Params {
     this._event = event;
   }
 
-  get admin(): Address {
-    return this._event.parameters[0].value.toAddress();
-  }
-
-  get rewardToken(): Address {
-    return this._event.parameters[1].value.toAddress();
-  }
-
-  get token(): string {
-    return this._event.parameters[2].value.toString();
-  }
-
-  get pcrId(): BigInt {
-    return this._event.parameters[3].value.toBigInt();
-  }
-
-  get earliestProposalTimestamp(): BigInt {
-    return this._event.parameters[4].value.toBigInt();
-  }
-
-  get optimisticOracleInput(): PerpetualConditionalRewardCreatedOptimisticOracleInputStruct {
-    return changetype<
-      PerpetualConditionalRewardCreatedOptimisticOracleInputStruct
-    >(this._event.parameters[5].value.toTuple());
-  }
-
-  get tokenContract(): Address {
-    return this._event.parameters[6].value.toAddress();
-  }
-
-  get optimisticOracleContract(): Address {
-    return this._event.parameters[7].value.toAddress();
+  get reward(): PerpetualConditionalRewardCreatedRewardStruct {
+    return changetype<PerpetualConditionalRewardCreatedRewardStruct>(
+      this._event.parameters[0].value.toTuple()
+    );
   }
 }
 
-export class PerpetualConditionalRewardCreatedOptimisticOracleInputStruct extends ethereum.Tuple {
+export class PerpetualConditionalRewardCreatedRewardStruct extends ethereum.Tuple {
+  get admin(): Address {
+    return this[0].toAddress();
+  }
+
+  get rewardToken(): Address {
+    return this[1].toAddress();
+  }
+
+  get token(): string {
+    return this[2].toString();
+  }
+
+  get pcrId(): BigInt {
+    return this[3].toBigInt();
+  }
+
+  get earliestProposalTimestamp(): BigInt {
+    return this[4].toBigInt();
+  }
+
+  get optimisticOracleInput(): PerpetualConditionalRewardCreatedRewardOptimisticOracleInputStruct {
+    return changetype<
+      PerpetualConditionalRewardCreatedRewardOptimisticOracleInputStruct
+    >(this[5].toTuple());
+  }
+
+  get tokenContract(): Address {
+    return this[6].toAddress();
+  }
+
+  get optimisticOracleContract(): Address {
+    return this[7].toAddress();
+  }
+
+  get title(): string {
+    return this[8].toString();
+  }
+
+  get url(): string {
+    return this[9].toString();
+  }
+}
+
+export class PerpetualConditionalRewardCreatedRewardOptimisticOracleInputStruct extends ethereum.Tuple {
   get finder(): Address {
     return this[0].toAddress();
   }

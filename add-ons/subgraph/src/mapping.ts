@@ -8,31 +8,33 @@ export function handleRewardCreated(
   event: PerpetualConditionalRewardCreated
 ): void {
 
-   let id = event.params.pcrId.toString();
+   let id = event.params.reward.pcrId.toString();
 
   let reward = Reward.load(id);
 
   if (reward === null) {
     reward = new Reward(id);
-    reward.admin = event.params.admin.toHexString();
-    reward.rewardToken = event.params.rewardToken.toHexString();
-    reward.token = event.params.token;
-    reward.earliestProposalTimestamp = event.params.earliestProposalTimestamp;
-    reward.rewardAmount = event.params.optimisticOracleInput.rewardAmount;
+    reward.title = event.params.reward.title;
+    reward.url = event.params.reward.url;
+    reward.admin = event.params.reward.admin.toHexString();
+    reward.rewardToken = event.params.reward.rewardToken.toHexString();
+    reward.token = event.params.reward.token;
+    reward.earliestProposalTimestamp = event.params.reward.earliestProposalTimestamp;
+    reward.rewardAmount = event.params.reward.optimisticOracleInput.rewardAmount;
     reward.currentdeposit = new BigInt(0);
     reward.optimisticOracleLivenessTime =
-      event.params.optimisticOracleInput.optimisticOracleLivenessTime;
-    reward.priceIdentifier = event.params.optimisticOracleInput.priceIdentifier;
+      event.params.reward.optimisticOracleInput.optimisticOracleLivenessTime;
+    reward.priceIdentifier = event.params.reward.optimisticOracleInput.priceIdentifier;
     reward.customAncillaryData =
-      event.params.optimisticOracleInput.customAncillaryData;
-    reward.earliestProposalTimestamp = event.params.earliestProposalTimestamp;
-    reward.interval = event.params.optimisticOracleInput.interval;
+      event.params.reward.optimisticOracleInput.customAncillaryData;
+    reward.earliestProposalTimestamp = event.params.reward.earliestProposalTimestamp;
+    reward.interval = event.params.reward.optimisticOracleInput.interval;
   }
 
   reward.save();
 
-  PcrOptimisticOracle.create(event.params.optimisticOracleContract)
-  PcrToken.create(event.params.tokenContract)
+  PcrOptimisticOracle.create(event.params.reward.optimisticOracleContract)
+  PcrToken.create(event.params.reward.tokenContract)
 
 }
 

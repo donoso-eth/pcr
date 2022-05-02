@@ -7,6 +7,8 @@ import { HomeComponent } from './home.component';
 import { TabViewModule } from 'primeng/tabview';
 
 import { ButtonModule } from 'primeng/button';
+import { InputTextModule } from 'primeng/inputtext';
+import { InputTextareaModule } from 'primeng/inputtextarea';
 @NgModule({
   declarations: [
     HomeComponent
@@ -16,6 +18,8 @@ import { ButtonModule } from 'primeng/button';
     HomeRoutingModule,
     TabViewModule,
     ButtonModule,
+    InputTextModule,
+    InputTextareaModule,
   ]
 })
 export class HomeModule { }

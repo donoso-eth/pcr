@@ -19,12 +19,12 @@ import {
   initEnv,
   waitForTx,
 } from '../helpers/utils';
-import { IDAINPUTStruct ,OPTIMISTICORACLEINPUTStruct} from '../typechain-types/PcrHost';
-
+import {
+  IDAINPUTStruct,
+  OPTIMISTICORACLEINPUTStruct,
+} from '../typechain-types/PcrHost';
 
 const defaultNetwork = 'kovan';
-
-
 
 const clone = async () => {
   // ADDRESS TO MINT TO:
@@ -42,7 +42,7 @@ const clone = async () => {
 
   const provider = hre.ethers.provider;
 
-  const { PcrHost, PcrToken, PcrOptimisticOracle} = await getContractAddress();
+  const { PcrHost, PcrToken, PcrOptimisticOracle } = await getContractAddress();
 
   const pcrHost = await PcrHost__factory.connect(PcrHost, deployer);
 
@@ -69,34 +69,39 @@ const clone = async () => {
     priceIdentifier,
   };
 
-  await waitForTx(
-    pcrHost.createPcrReward(
-     Ida, PcrToken,  OptimisticOracle, PcrOptimisticOracle,
-      { nonce: deployerNonce++ }
-    )
-  );
+  // await waitForTx(
+  //   pcrHost.createPcrReward(
+  //    Ida, PcrToken,  OptimisticOracle, PcrOptimisticOracle,
+  //     { nonce: deployerNonce++ }
+  //   )
+  // );
   let pcrAddress = await pcrHost.getTokensAddressByUserAndId(
     deployer.address,
     1
   );
 
-  console.log(pcrAddress)
-  const pcrDistributor = await PcrOptimisticOracle__factory.connect(
+  console.log(pcrAddress);
+  let pcrDistributor = await PcrOptimisticOracle__factory.connect(
     pcrAddress.optimisticOracleContract,
     deployer
   );
 
-  const daixContract2 = await ERC777__factory.connect(Ida.rewardToken, deployer);
+
+
+  const daixContract2 = await ERC777__factory.connect(
+    Ida.rewardToken,
+    deployer
+  );
+  await waitForTx(
+    daixContract2.approve(pcrAddress.optimisticOracleContract, 50)
+  );
+    await waitForTx(pcrDistributor.depositReward(50));
 
 
 
-    await waitForTx(daixContract2.approve( pcrAddress.optimisticOracleContract,50))
-    await waitForTx(pcrDistributor.depositReward(50))
-
-return
+  return;
 
   ////// create a
-
 
   const pcrToken = await PcrToken__factory.connect(
     pcrAddress.tokenContract,
@@ -111,82 +116,73 @@ return
     resolverAddress: chain_addresses.resolver,
   });
   const daixContract = await sf.loadSuperToken(Ida.rewardToken);
-  let realt = await daixContract.realtimeBalanceOf({providerOrSigner: provider,account:user2.address})
-  console.log(realt)
-
+  let realt = await daixContract.realtimeBalanceOf({
+    providerOrSigner: provider,
+    account: user2.address,
+  });
+  console.log(realt);
 
   const pcrTokenUser2 = await PcrToken__factory.connect(
     pcrAddress.tokenContract,
     user2
   );
 
- const oper =  await sf.idaV1.approveSubscription( {
-    publisher:pcrAddress.tokenContract,
-    superToken:Ida.rewardToken,
-    indexId: '0'}
-)
+  const oper = await sf.idaV1.approveSubscription({
+    publisher: pcrAddress.tokenContract,
+    superToken: Ida.rewardToken,
+    indexId: '0',
+  });
 
-  await oper.exec(user2)
+  await oper.exec(user2);
 
   let subsc = await sf.idaV1.getSubscription({
-    superToken:Ida.rewardToken,
+    superToken: Ida.rewardToken,
     indexId: '0',
-    subscriber:user2.address,
+    subscriber: user2.address,
     providerOrSigner: provider,
     publisher: pcrAddress.tokenContract,
   });
 
-  console.log(subsc)
+  console.log(subsc);
 
   await waitForTx(pcrTokenUser2.claim());
 
   let index0 = await sf.idaV1.getIndex({
-    superToken:Ida.rewardToken,
+    superToken: Ida.rewardToken,
     indexId: '0',
     providerOrSigner: provider,
     publisher: pcrAddress.tokenContract,
   });
   console.log(index0);
-   realt = await daixContract.realtimeBalanceOf({providerOrSigner: provider,account:user2.address})
-  console.log(realt)
-  return
+  realt = await daixContract.realtimeBalanceOf({
+    providerOrSigner: provider,
+    account: user2.address,
+  });
+  console.log(realt);
+  return;
 
-
-   console.log(
+  console.log(
     (
       await daixContract2.balanceOf(pcrAddress.optimisticOracleContract)
-    ).toString()  
-    );
+    ).toString()
+  );
 
+  // await waitForTx(pcrDistributor.proposeDistribution())
 
-      // await waitForTx(pcrDistributor.proposeDistribution())
+  await waitForTx(pcrToken.issue(user2.address, 1));
 
-        await waitForTx(pcrToken.issue(user2.address, 1));
-
-        await waitForTx(pcrDistributor.executeDistribution());
-
-      
-
-
+  await waitForTx(pcrDistributor.executeDistribution());
 
   //
 
-
-
-
-
   return;
-
-
 
   let admin = await pcrToken.ADMIN();
   console.log(admin, deployer.address);
   await waitForTx(pcrToken.issue(user2.address, 1, { nonce: deployerNonce++ }));
 
-
-
-   index0 = await sf.idaV1.getIndex({
-    superToken:Ida.rewardToken,
+  index0 = await sf.idaV1.getIndex({
+    superToken: Ida.rewardToken,
     indexId: '0',
     providerOrSigner: provider,
     publisher: pcrAddress.tokenContract,
@@ -194,8 +190,6 @@ return
   console.log(index0);
 
   console.log(await pcrToken.receiver());
-
-
 
   console.log((await daixContract2.balanceOf(deployer.address)).toString());
 
@@ -206,15 +200,10 @@ return
   });
   await tx2.exec(deployer);
 
-  let user3Txt = await daixContract2.send(
-    pcrAddress.tokenContract,
-    50,
-    '0x',
-    {
-      from: deployer.address,
-      nonce: deployerNonce++,
-    }
-  );
+  let user3Txt = await daixContract2.send(pcrAddress.tokenContract, 50, '0x', {
+    from: deployer.address,
+    nonce: deployerNonce++,
+  });
 
   await user3Txt.wait();
 

@@ -5,6 +5,8 @@ import { AngularContract, DappBaseComponent, DappInjector } from 'angular-web3';
 import { doSignerTransaction } from 'src/app/dapp-injector/classes/transactor';
 import { GraphQlService } from 'src/app/dapp-injector/services/graph-ql/graph-ql.service';
 import { PcrHost } from 'src/assets/contracts/interfaces/PcrHost';
+import { PcrOptimisticOracle } from 'src/assets/contracts/interfaces/PcrOptimisticOracle';
+import { PcrToken } from 'src/assets/contracts/interfaces/PcrToken';
 
 @Component({
   selector: 'app-landing',
@@ -12,17 +14,16 @@ import { PcrHost } from 'src/assets/contracts/interfaces/PcrHost';
   styleUrls: ['./landing.component.scss'],
 })
 export class LandingComponent extends DappBaseComponent {
-  contract!: AngularContract<PcrHost>;
+  pcrOptimisticOracleContract!: AngularContract<PcrOptimisticOracle>
   constructor(private router: Router, store: Store, dapp: DappInjector, private graphqlService:GraphQlService) {
     super(dapp, store);
   }
 
  async  connect() {
 
-  
-   // await  doSignerTransaction(this.contract.instance.testEvent(80))
-    //this.router.navigate(['home'])
-    console.log('que paso');
+
+    this.router.navigate(['home'])
+    
   }
 
   async query(){
@@ -32,11 +33,14 @@ export class LandingComponent extends DappBaseComponent {
   }
 
   override async hookContractConnected(): Promise<void> {
-    this.contract = this.dapp.defaultContract!;
+    this.pcrOptimisticOracleContract = this.dapp.DAPP_STATE.pcrOptimisticOracleContract!;
   
-    // this.contract.instance.on('RewardDeposit',(args1,args2)=> {
-    //     console.log(args1, args2)
-    // })
+    console.log(this.pcrOptimisticOracleContract)
+
+    this.pcrOptimisticOracleContract.instance.on('RewardDeposit',(args1,args2)=> {
+        console.log(args1, args2)
+    })
+    this.router.navigate(['home'])
 
   }
 }

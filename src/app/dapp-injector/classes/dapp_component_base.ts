@@ -16,7 +16,7 @@ export class DappBaseComponent implements OnDestroy, AfterViewInit {
   blockchain_is_busy: boolean = true;
   blockchain_status: NETWORK_STATUS = 'loading';
 
-  defaultContract!: AngularContract< PcrHost>;
+  pcrHostContract!: AngularContract< PcrHost>;
 
   defaultProvider!: JsonRpcProvider;
 
@@ -69,7 +69,7 @@ export class DappBaseComponent implements OnDestroy, AfterViewInit {
       .pipe(web3Selectors.hookContractConnected)
       .pipe(takeUntil(this.destroyHooks))
       .subscribe(() => {
-        this.defaultContract = this.dapp.defaultContract!;
+        this.pcrHostContract = this.dapp.DAPP_STATE.pcrHostContract!;
         this.signer = this.dapp.signer as Signer;
         this.defaultProvider = this.dapp.provider as JsonRpcProvider;
         this.signerAdress = this.dapp.signerAddress as string;

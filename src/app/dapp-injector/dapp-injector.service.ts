@@ -15,7 +15,10 @@ import { Web3ModalComponent } from './web3-modal/web3-modal.component';
 import { Subject, takeUntil } from 'rxjs';
 import { PcrHost} from 'src/assets/contracts/interfaces/PcrHost';
 import { AngularContract } from './classes';
-
+import { PcrToken } from 'src/assets/contracts/interfaces/PcrToken';
+import PcrTokenMetadata from '../../assets/contracts/pcr_token_metadata.json';
+import { PcrOptimisticOracle } from 'src/assets/contracts/interfaces/PcrOptimisticOracle';
+import PcrOptimisticOracleMetadata from '../../assets/contracts/pcr_optimistic_oracle_metadata.json';
 
 @Injectable({
   providedIn: 'root',
@@ -25,7 +28,7 @@ export class DappInjector implements OnDestroy {
   private destroyHooks: Subject<void> = new Subject();
 
   ///// ---------  DAPP STATE INITIALIZATION
-  DAPP_STATE:IDAPP_STATE<PcrHost> = {
+  DAPP_STATE:IDAPP_STATE<PcrHost,PcrToken,PcrOptimisticOracle> = {
    
     defaultProvider: null,
     connectedNetwork: null,
@@ -33,7 +36,9 @@ export class DappInjector implements OnDestroy {
     signer:null,
     signerAddress:null,
 
-    defaultContract:  null,
+    pcrHostContract:  null,
+    pcrTokenContract: null,
+    pcrOptimisticOracleContract:null,
     viewContract:null,
 
   }
@@ -198,10 +203,8 @@ async localWallet(index:number) {
     });
 
     await contract.init()
+    this.DAPP_STATE.pcrHostContract = contract;
 
-    this.DAPP_STATE.defaultContract = contract;
-
-    const b = this.DAPP_STATE.defaultContract;
     const providerNetwork = await this.DAPP_STATE.defaultProvider!.getNetwork();
 
     const networkString = netWorkById(providerNetwork.chainId)?.name as string;
@@ -251,9 +254,35 @@ async localWallet(index:number) {
        this.store.dispatch(Web3Actions.chainBusy({ status: false }));
        this.DAPP_STATE.signer = null;
        this.DAPP_STATE.signerAddress = null;
-       this.DAPP_STATE.defaultContract = null;
+       this.DAPP_STATE.pcrHostContract = null;
        this.DAPP_STATE.defaultProvider = null;
      });
+
+  }
+
+
+  //////// Custom implementation
+  public async launchClones(pcrTokenAddress?:string, pcrOptimisticOracleAddress?:string){
+ 
+    const pcrTokenMetadata = PcrTokenMetadata;
+    const pcrOptimisticOracleMetadata = PcrOptimisticOracleMetadata;
+    if (pcrTokenAddress!== undefined){
+      pcrTokenMetadata.address = pcrTokenAddress;
+      pcrOptimisticOracleMetadata.address = pcrOptimisticOracleAddress;
+
+    }
+
+    const pcrToken = new AngularContract<PcrToken>({metadata:pcrTokenMetadata, provider: this.DAPP_STATE.defaultProvider!,
+    signer: this.DAPP_STATE.signer!, })
+     await pcrToken.init()
+    this.DAPP_STATE.pcrTokenContract = pcrToken;
+
+    const pcrOptimisticOracle = new AngularContract<PcrOptimisticOracle>({metadata:pcrOptimisticOracleMetadata, provider: this.DAPP_STATE.defaultProvider!,
+      signer: this.DAPP_STATE.signer!, })
+       await pcrOptimisticOracle.init()
+      this.DAPP_STATE.pcrOptimisticOracleContract = pcrOptimisticOracle;
+
+
 
   }
 
@@ -276,12 +305,12 @@ async localWallet(index:number) {
     return this.DAPP_STATE.connectedNetwork
   }
 
-  get defaultContract() {
-    return this.DAPP_STATE.defaultContract
+  get pcrHostContract() {
+    return this.DAPP_STATE.pcrHostContract
   }
 
-  get defaultContractInstance() {
-    return this.DAPP_STATE.defaultContract?.instance
+  get pcrHostContractInstance() {
+    return this.DAPP_STATE.pcrHostContract?.instance
   }
  
   async createProvider(url_array: string[]) {

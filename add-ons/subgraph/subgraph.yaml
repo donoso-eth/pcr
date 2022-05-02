@@ -6,7 +6,7 @@ dataSources:
     name: PcrHost
     network: localhost
     source:
-      address: '0xEc22b69767B5edD55b7DC6A4B6FD9ba4D0B3d320'
+      address: '0xd31d3e1F60552ba8B35aA3Bd17c949404fdd12c4'
       abi: PcrHost
       startBlock: 31301672
     mapping:
@@ -21,26 +21,6 @@ dataSources:
       eventHandlers:
         - event: PerpetualConditionalRewardCreated(address,address,string,indexed uint256,uint256,(address,uint256,uint256,uint256,bytes32,bytes),address,address)
           handler: handleRewardCreated
-      file: ./src/mapping.ts
-  - kind: ethereum/contract
-    name: PcrOptimisticOracle
-    network: localhost
-    source:
-      address: '0xD7e08a940daC04aaADE543e02537A48296CA4035'
-      abi: PcrOptimisticOracle
-      startBlock: 31301672
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.5
-      language: wasm/assemblyscript
-      entities:
-        - Reward
-      abis:
-        - name: PcrOptimisticOracle
-          file: ./abis/pcr_optimistic_oracle.json
-      eventHandlers:
-        - event: RewardDeposit(uint256,uint256)
-          handler: handleRewardDeposit
       file: ./src/mapping.ts
 templates:
   - name: PcrOptimisticOracle

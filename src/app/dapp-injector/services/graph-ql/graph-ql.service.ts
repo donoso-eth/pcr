@@ -2,13 +2,15 @@ import { Injectable } from '@angular/core';
 import { Apollo, QueryRef, gql } from 'apollo-angular';
 import { Subscription } from 'rxjs';
 
-const GET_POSTS = gql`
+const rewards = gql`
 {
   rewards(first: 5) {
     id
     admin
     rewardAmount
     currentdeposit
+    customAncillaryData
+    token
   }
 }
 `;
@@ -31,11 +33,11 @@ export class GraphQlService {
     // });
 
   const posts = await  this.apollo.query<any>({
-      query: GET_POSTS
+      query: rewards
     }).toPromise()
 
     console.log(posts)
-
+  return posts?.data
     // this.querySubscription = this.postsQuery.valueChanges.subscribe(({ data, loading }) => {
     //   this.loading = loading;
     //   this.posts = data.posts;

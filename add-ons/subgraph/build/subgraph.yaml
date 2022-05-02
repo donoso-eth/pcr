@@ -3,11 +3,11 @@ schema:
   file: schema.graphql
 dataSources:
   - kind: ethereum/contract
-    name: PcrOptimisticOracle
+    name: PcrHost
     network: localhost
     source:
-      address: "0xD7e08a940daC04aaADE543e02537A48296CA4035"
-      abi: PcrOptimisticOracle
+      address: "0xd31d3e1F60552ba8B35aA3Bd17c949404fdd12c4"
+      abi: PcrHost
       startBlock: 31301672
     mapping:
       kind: ethereum/events
@@ -16,12 +16,13 @@ dataSources:
       entities:
         - Reward
       abis:
-        - name: PcrOptimisticOracle
-          file: PcrOptimisticOracle\abis\pcr_optimistic_oracle.json
+        - name: PcrHost
+          file: PcrHost\abis\host.json
       eventHandlers:
-        - event: RewardDeposit(uint256,uint256)
-          handler: handleRewardDeposit
-      file: PcrOptimisticOracle\PcrOptimisticOracle.wasm
+        - event: PerpetualConditionalRewardCreated(address,address,string,indexed
+            uint256,uint256,(address,uint256,uint256,uint256,bytes32,bytes),address,address)
+          handler: handleRewardCreated
+      file: PcrHost\PcrHost.wasm
 templates:
   - name: PcrOptimisticOracle
     kind: ethereum/contract
@@ -32,7 +33,7 @@ templates:
       kind: ethereum/events
       apiVersion: 0.0.5
       language: wasm/assemblyscript
-      file: PcrOptimisticOracle\PcrOptimisticOracle.wasm
+      file: PcrHost\PcrHost.wasm
       entities:
         - Reward
       abis:
@@ -50,7 +51,7 @@ templates:
       kind: ethereum/events
       apiVersion: 0.0.5
       language: wasm/assemblyscript
-      file: PcrOptimisticOracle\PcrOptimisticOracle.wasm
+      file: PcrHost\PcrHost.wasm
       entities:
         - Reward
       abis:

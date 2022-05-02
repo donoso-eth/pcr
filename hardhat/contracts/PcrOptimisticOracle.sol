@@ -381,18 +381,18 @@ contract PcrOptimisticOracle is
         bytes memory ancillaryData,
         uint256 refund
     ) external {
-        require(msg.sender == address(optimisticOracle), "Not authorized");
+        // require(msg.sender == address(optimisticOracle), "Not authorized");
 
-        // Identify the proposed distribution from callback parameters.
-        bytes32 proposalId = _getProposalId(
-            identifier,
-            timestamp,
-            ancillaryData
-        );
+        // // Identify the proposed distribution from callback parameters.
+        // bytes32 proposalId = _getProposalId(
+        //     identifier,
+        //     timestamp,
+        //     ancillaryData
+        // );
 
-        // Flag the associated reward unblocked for new distribution proposals unless rewards already distributed.
-        if (reward.distributionProposed != DistributionProposed.Accepted)
-            reward.distributionProposed = DistributionProposed.None;
+        // // Flag the associated reward unblocked for new distribution proposals unless rewards already distributed.
+        // if (reward.distributionProposed != DistributionProposed.Accepted)
+        //     reward.distributionProposed = DistributionProposed.None;
     }
 
     /********************************************

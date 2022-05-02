@@ -21,23 +21,23 @@ library Events {
         address optimisticOracleContract
     );
 
-    event RewardDeposit(uint256 indexed pcrId, uint256 depositAmount);
+    event RewardDeposit(uint256 pcrId, uint256 depositAmount);
 
     event ProposalCreated(
         address proposer,
-        uint256 indexed proposalId,
+        uint256  proposalId,
         uint256 pcrId,
         uint256 timeStamp );
 
 
-    event ProposalRejected(uint256 indexed pcrId, uint256 indexed proposalId);
+    event ProposalRejected(uint256 pcrId, uint256 proposalId);
 
 
     event RewardDistributed(
-        address indexed admin,
+        address  admin,
         address rewardToken,
-        uint256 indexed pcrId,
+        uint256  pcrId,
         uint256 rewardAmount,
-        uint256 indexed proposalId
+        uint256 proposalId
     );
 }

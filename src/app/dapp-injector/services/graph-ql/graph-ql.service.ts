@@ -14,7 +14,7 @@ const rewards = gql`
     token,
     title,
     url,
-    earliestProposalTimestamp,
+    earliestNextAction,
     interval
   }
 }

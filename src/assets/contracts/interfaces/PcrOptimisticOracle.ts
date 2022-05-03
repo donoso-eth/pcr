@@ -20,6 +20,8 @@ import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 
 export type OPTIMISTICORACLEINPUTStruct = {
   finder: string;
+  target: BigNumberish;
+  targetCondition: BigNumberish;
   rewardAmount: BigNumberish;
   interval: BigNumberish;
   optimisticOracleLivenessTime: BigNumberish;
@@ -30,12 +32,16 @@ export type OPTIMISTICORACLEINPUTStruct = {
 export type OPTIMISTICORACLEINPUTStructOutput = [
   string,
   BigNumber,
+  number,
+  BigNumber,
   BigNumber,
   BigNumber,
   string,
   string
 ] & {
   finder: string;
+  target: BigNumber;
+  targetCondition: number;
   rewardAmount: BigNumber;
   interval: BigNumber;
   optimisticOracleLivenessTime: BigNumber;
@@ -44,7 +50,7 @@ export type OPTIMISTICORACLEINPUTStructOutput = [
 };
 
 export type PCROPTIMISTICORACLEINITIALIZERStruct = {
-  owner: string;
+  admin: string;
   rewardId: BigNumberish;
   tokenContract: string;
   rewardToken: string;
@@ -58,7 +64,7 @@ export type PCROPTIMISTICORACLEINITIALIZERStructOutput = [
   string,
   OPTIMISTICORACLEINPUTStructOutput
 ] & {
-  owner: string;
+  admin: string;
   rewardId: BigNumber;
   tokenContract: string;
   rewardToken: string;
@@ -73,16 +79,18 @@ export interface PcrOptimisticOracleInterface extends utils.Interface {
     "TOKEN_INDEX_PUBLISHER_ADDRESS()": FunctionFragment;
     "_proposalId()": FunctionFragment;
     "ancillaryBytesLimit()": FunctionFragment;
+    "changeTarget(int256)": FunctionFragment;
+    "changeTargetCondition(uint8)": FunctionFragment;
     "depositReward(uint256)": FunctionFragment;
     "executeDistribution()": FunctionFragment;
     "finder()": FunctionFragment;
-    "initialize((address,uint256,address,address,(address,uint256,uint256,uint256,bytes32,bytes)))": FunctionFragment;
+    "initialize((address,uint256,address,address,(address,int256,uint8,uint256,uint256,uint256,bytes32,bytes)))": FunctionFragment;
     "multicall(bytes[])": FunctionFragment;
     "optimisticOracle()": FunctionFragment;
     "pcrId()": FunctionFragment;
     "priceDisputed(bytes32,uint256,bytes,uint256)": FunctionFragment;
     "proposal()": FunctionFragment;
-    "proposeDistribution()": FunctionFragment;
+    "proposeDistribution(int256)": FunctionFragment;
     "reward()": FunctionFragment;
     "rewardToken()": FunctionFragment;
     "store()": FunctionFragment;
@@ -114,6 +122,14 @@ export interface PcrOptimisticOracleInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "changeTarget",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "changeTargetCondition",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "depositReward",
     values: [BigNumberish]
   ): string;
@@ -142,7 +158,7 @@ export interface PcrOptimisticOracleInterface extends utils.Interface {
   encodeFunctionData(functionFragment: "proposal", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "proposeDistribution",
-    values?: undefined
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "reward", values?: undefined): string;
   encodeFunctionData(
@@ -177,6 +193,14 @@ export interface PcrOptimisticOracleInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "ancillaryBytesLimit",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "changeTarget",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "changeTargetCondition",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -259,6 +283,16 @@ export interface PcrOptimisticOracle extends BaseContract {
 
     ancillaryBytesLimit(overrides?: CallOverrides): Promise<[BigNumber]>;
 
+    changeTarget(
+      _newTarget: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    changeTargetCondition(
+      _newTargetCondition: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     depositReward(
       depositAmount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -303,6 +337,7 @@ export interface PcrOptimisticOracle extends BaseContract {
     >;
 
     proposeDistribution(
+      _proposedPrice: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -311,7 +346,10 @@ export interface PcrOptimisticOracle extends BaseContract {
     ): Promise<
       [
         number,
+        number,
         string,
+        BigNumber,
+        number,
         string,
         BigNumber,
         BigNumber,
@@ -320,12 +358,15 @@ export interface PcrOptimisticOracle extends BaseContract {
         string,
         string
       ] & {
-        distributionProposed: number;
+        rewardStep: number;
+        rewardStatus: number;
         admin: string;
+        target: BigNumber;
+        targetCondition: number;
         rewardToken: string;
         rewardAmount: BigNumber;
         interval: BigNumber;
-        earliestProposalTimestamp: BigNumber;
+        earliestNextAction: BigNumber;
         optimisticOracleLivenessTime: BigNumber;
         priceIdentifier: string;
         customAncillaryData: string;
@@ -352,6 +393,16 @@ export interface PcrOptimisticOracle extends BaseContract {
   _proposalId(overrides?: CallOverrides): Promise<BigNumber>;
 
   ancillaryBytesLimit(overrides?: CallOverrides): Promise<BigNumber>;
+
+  changeTarget(
+    _newTarget: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  changeTargetCondition(
+    _newTargetCondition: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   depositReward(
     depositAmount: BigNumberish,
@@ -397,6 +448,7 @@ export interface PcrOptimisticOracle extends BaseContract {
   >;
 
   proposeDistribution(
+    _proposedPrice: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -405,7 +457,10 @@ export interface PcrOptimisticOracle extends BaseContract {
   ): Promise<
     [
       number,
+      number,
       string,
+      BigNumber,
+      number,
       string,
       BigNumber,
       BigNumber,
@@ -414,12 +469,15 @@ export interface PcrOptimisticOracle extends BaseContract {
       string,
       string
     ] & {
-      distributionProposed: number;
+      rewardStep: number;
+      rewardStatus: number;
       admin: string;
+      target: BigNumber;
+      targetCondition: number;
       rewardToken: string;
       rewardAmount: BigNumber;
       interval: BigNumber;
-      earliestProposalTimestamp: BigNumber;
+      earliestNextAction: BigNumber;
       optimisticOracleLivenessTime: BigNumber;
       priceIdentifier: string;
       customAncillaryData: string;
@@ -446,6 +504,16 @@ export interface PcrOptimisticOracle extends BaseContract {
     _proposalId(overrides?: CallOverrides): Promise<BigNumber>;
 
     ancillaryBytesLimit(overrides?: CallOverrides): Promise<BigNumber>;
+
+    changeTarget(
+      _newTarget: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    changeTargetCondition(
+      _newTargetCondition: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     depositReward(
       depositAmount: BigNumberish,
@@ -485,14 +553,20 @@ export interface PcrOptimisticOracle extends BaseContract {
       }
     >;
 
-    proposeDistribution(overrides?: CallOverrides): Promise<void>;
+    proposeDistribution(
+      _proposedPrice: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     reward(
       overrides?: CallOverrides
     ): Promise<
       [
         number,
+        number,
         string,
+        BigNumber,
+        number,
         string,
         BigNumber,
         BigNumber,
@@ -501,12 +575,15 @@ export interface PcrOptimisticOracle extends BaseContract {
         string,
         string
       ] & {
-        distributionProposed: number;
+        rewardStep: number;
+        rewardStatus: number;
         admin: string;
+        target: BigNumber;
+        targetCondition: number;
         rewardToken: string;
         rewardAmount: BigNumber;
         interval: BigNumber;
-        earliestProposalTimestamp: BigNumber;
+        earliestNextAction: BigNumber;
         optimisticOracleLivenessTime: BigNumber;
         priceIdentifier: string;
         customAncillaryData: string;
@@ -536,6 +613,16 @@ export interface PcrOptimisticOracle extends BaseContract {
     _proposalId(overrides?: CallOverrides): Promise<BigNumber>;
 
     ancillaryBytesLimit(overrides?: CallOverrides): Promise<BigNumber>;
+
+    changeTarget(
+      _newTarget: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    changeTargetCondition(
+      _newTargetCondition: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
 
     depositReward(
       depositAmount: BigNumberish,
@@ -573,6 +660,7 @@ export interface PcrOptimisticOracle extends BaseContract {
     proposal(overrides?: CallOverrides): Promise<BigNumber>;
 
     proposeDistribution(
+      _proposedPrice: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -604,6 +692,16 @@ export interface PcrOptimisticOracle extends BaseContract {
 
     ancillaryBytesLimit(
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    changeTarget(
+      _newTarget: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    changeTargetCondition(
+      _newTargetCondition: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     depositReward(
@@ -642,6 +740,7 @@ export interface PcrOptimisticOracle extends BaseContract {
     proposal(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     proposeDistribution(
+      _proposedPrice: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

@@ -67,8 +67,8 @@ contract PcrToken is
 
   constructor() {}
 
-  // ============= Modifiers ============= ============= =============  //
-  // #region DAO MOdidiers
+  // ============= =============  Modifiers ============= ============= //
+  // #region MOdidiers
   modifier onlyAdmin() {
         require( msg.sender == ADMIN,"NOT_ADMIN"
     );
@@ -89,7 +89,7 @@ contract PcrToken is
 
 
     TOKEN_INDEX_PUBLISHER_ADDRESS = address(this);
-    ADMIN = pcrTokenInitializer.owner;
+    ADMIN = pcrTokenInitializer.admin;
 
     OPTIMISTIC_DISTRUBUTOR_ADDRESS = pcrTokenInitializer.optimisticOracleContract;
 

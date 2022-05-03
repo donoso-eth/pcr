@@ -17,3 +17,11 @@ export interface Product {
     image?: string;
     rating?: number;
 }
+
+export enum TargetCondition{
+    GT = 'GT', // 
+    GTE = 'GTE', // 
+    E = "E", // .
+    LTE = "LTE", //
+    LT ="LT"
+}

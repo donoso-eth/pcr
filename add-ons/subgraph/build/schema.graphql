@@ -5,7 +5,7 @@ type Reward @entity {
   admin: String
   rewardToken: String
   token: String
-  earliestProposalTimestamp: BigInt
+  earliestNextAction: BigInt
   interval: BigInt
   rewardAmount: BigInt
   currentdeposit: BigInt

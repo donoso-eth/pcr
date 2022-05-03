@@ -3,11 +3,21 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { utils } from 'ethers';
 
-import {DappBaseComponent, DappInjector, global_address, Web3Actions} from 'angular-web3'
-import { IDAINPUTStruct, OPTIMISTICORACLEINPUTStruct, PCRHOSTCONFIGINPUTStruct } from 'src/assets/contracts/interfaces/PcrHost';
+import {
+  DappBaseComponent,
+  DappInjector,
+  global_address,
+  Web3Actions,
+} from 'angular-web3';
+import {
+  IDAINPUTStruct,
+  OPTIMISTICORACLEINPUTStruct,
+  PCRHOSTCONFIGINPUTStruct,
+} from 'src/assets/contracts/interfaces/PcrHost';
 import { timeStamp } from 'console';
 import { doSignerTransaction } from 'src/app/dapp-injector/classes/transactor';
 import { Store } from '@ngrx/store';
+import { TargetCondition } from 'src/app/shared/models/appconfig';
 
 @Component({
   selector: 'app-create-pcr',
@@ -17,9 +27,28 @@ import { Store } from '@ngrx/store';
 export class CreatePcrComponent extends DappBaseComponent implements OnInit {
   rewardForm: FormGroup;
 
+  conditions = [
+    { name: 'Greater Than', code: 'GT', id:0  },
+    { name: 'Greater Than Equal', code: 'GTE',id:1 },
+    { name: 'Equal', code: 'E',id:2  },
+    { name: 'Less Than Equal', code: 'LTE',id:3  },
+    { name: 'Less Than', code: 'LT',id:4  },
+  ];
+
+  rewardTypes = [
+    { Condition: 'Is the question True?', code: 'YES_OR_NO_QUERY', id:0 },
+    { Condition: 'KPI with Target', code: 'YES_OR_NO_QUERY', id:1 },
+  ];
+
   tokens = [
-    { name: 'DAI', id: 0, image: 'dai', rewardToken:global_address.kovan.fDai, superToken:global_address.kovan.fDaix },
-   // { name: 'DAIx', id: 1, image: 'dai', rewardToken:global_address.kovan.fDaix,superToken:global_address.kovan.fDaix  },
+    {
+      name: 'DAI',
+      id: 0,
+      image: 'dai',
+      rewardToken: global_address.kovan.fDai,
+      superToken: global_address.kovan.fDaix,
+    },
+    // { name: 'DAIx', id: 1, image: 'dai', rewardToken:global_address.kovan.fDaix,superToken:global_address.kovan.fDaix  },
     // { name: 'USDCx', id: 2, image: 'usdc' },
     // { name: 'USDC', id: 3, image: 'usdc' },
   ];
@@ -31,16 +60,17 @@ export class CreatePcrComponent extends DappBaseComponent implements OnInit {
     { name: 'months', id: 3, factor: 2592000 },
   ];
 
-
-  /// PriceIdentifier for ortimistic oracle
-  priceIdentifier = utils.formatBytes32String('YES_OR_NO_QUERY');
-
   selectedToken!: { name: string; id: number; image: string };
 
   display = false;
 
-  constructor(public formBuilder: FormBuilder, private router: Router, dapp:DappInjector, store:Store) {
-    super(dapp,store)
+  constructor(
+    public formBuilder: FormBuilder,
+    private router: Router,
+    dapp: DappInjector,
+    store: Store
+  ) {
+    super(dapp, store);
     this.selectedToken = this.tokens[0];
 
     this.rewardForm = this.formBuilder.group({
@@ -48,22 +78,49 @@ export class CreatePcrComponent extends DappBaseComponent implements OnInit {
         'Follow Increase',
         [Validators.required, Validators.maxLength(100)],
       ],
-      conditionCtrl: [
+      questionCtrl: [
         'Does Our Twitter followers increase 5%',
         [Validators.required, Validators.maxLength(500)],
       ],
       urlCtrl: [''],
-      tokenCtrl: [{ name: 'DAI', id: 0, image: 'dai', rewardToken:global_address.kovan.fDai, superToken:global_address.kovan.fDaix }, Validators.required],
+
+      rewardTypeCtrl: [
+        { Condition: 'Is the question True?', code: 'YES_OR_NO_QUERY', id:0 },
+        [Validators.required],
+      ],
+
+      conditionTypeCtrl: [
+        { name: 'Equal', code: 'E' , id:2},
+        [Validators.required],
+      ],
+      targetAmountCtrl: [1, [Validators.required, Validators.min(1)]],
+
+
+      tokenCtrl: [
+        {
+          name: 'DAI',
+          id: 0,
+          image: 'dai',
+          rewardToken: global_address.kovan.fDai,
+          superToken: global_address.kovan.fDaix,
+        },
+        Validators.required,
+      ],
       tokenAmountCtrl: [10, [Validators.required, Validators.min(1)]],
-      intervalCtrl: [{ name: 'hours', id: 1, factor: 3600  }, [Validators.required]],
+      intervalCtrl: [
+        { name: 'hours', id: 1, factor: 3600 },
+        [Validators.required],
+      ],
       intervalAmountCtrl: [1, [Validators.required, Validators.min(1)]],
-      livelinessCtrl: [{ name: 'hours', id: 1, factor: 3600  }, [Validators.required]],
+      livelinessCtrl: [
+        { name: 'hours', id: 1, factor: 3600 },
+        [Validators.required],
+      ],
       livelinessAmountCtrl: [1, [Validators.required, Validators.min(1)]],
     });
   }
 
-
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   goTOwned() {
     this.display = false;
@@ -71,44 +128,70 @@ export class CreatePcrComponent extends DappBaseComponent implements OnInit {
   }
 
   async createPcr() {
-  // 
+    //
 
-    const question = this.rewardForm.controls.conditionCtrl.value
+    const question = this.rewardForm.controls.questionCtrl.value;
 
-    const customAncillaryData= utils.hexlify(utils.toUtf8Bytes(
-      `q: title: ${question}?, p1: 0, p2: 1, p3: 0.5. Where p2 corresponds to YES, p1 to a NO, p3 to unknown`
-    ))
+    const customAncillaryData = utils.hexlify(
+      utils.toUtf8Bytes(
+        `q: title: ${question}?, p1: 0, p2: 1, p3: 0.5. Where p2 corresponds to YES, p1 to a NO, p3 to unknown`
+      )
+    );
 
+    const rewardConfig: PCRHOSTCONFIGINPUTStruct = {
+      title: this.rewardForm.controls.titleCtrl.value,
+      url: this.rewardForm.controls.urlCtrl.value,
+      pcrTokenImpl: this.dapp.tokenImpl,
+      pcrOptimisticOracleImpl: this.dapp.optimisticOracleImpl,
+    };
 
-      const rewardConfig:PCRHOSTCONFIGINPUTStruct = {
-        title: this.rewardForm.controls.titleCtrl.value,
-        url: this.rewardForm.controls.urlCtrl.value,
-        pcrTokenImpl: this.dapp.tokenImpl,
-        pcrOptimisticOracleImpl: this.dapp.optimisticOracleImpl
-      }
+    /// PriceIdentifier for ortimistic oracle
+    const priceIdentifier = utils.formatBytes32String('YES_OR_NO_QUERY');
+
+    let condition = this.rewardForm.controls.conditionTypeCtrl.value.id
+
+    let target;
+    if (this.rewardForm.controls.rewardTypeCtrl.value.id == 0) {
+        target = utils.parseEther("1");
+        condition = 2;
+    } else {
+      target = utils.parseEther(this.rewardForm.controls.targetAmountCtrl.value.toString())
+    }
+
+   
 
     const OptimisticOracle: OPTIMISTICORACLEINPUTStruct = {
       finder: global_address.kovan.finder,
       rewardAmount: this.rewardForm.controls.tokenAmountCtrl.value,
-      interval: this.rewardForm.controls.intervalAmountCtrl.value * this.rewardForm.controls.intervalCtrl.value.factor,
+      target: target,
+      targetCondition: condition,
+      interval:
+        this.rewardForm.controls.intervalAmountCtrl.value *
+        this.rewardForm.controls.intervalCtrl.value.factor,
       optimisticOracleLivenessTime: 36000,
       customAncillaryData,
-      priceIdentifier:this.priceIdentifier,
+      priceIdentifier,
     };
-  
+
     const Ida: IDAINPUTStruct = {
       host: global_address.kovan.host,
       ida: global_address.kovan.ida,
-      rewardToken:this.rewardForm.controls.tokenCtrl.value.superToken ,
+      rewardToken: this.rewardForm.controls.tokenCtrl.value.superToken,
     };
 
+    console.log(OptimisticOracle)
 
     this.store.dispatch(Web3Actions.chainBusy({ status: true }));
 
-    await doSignerTransaction(this.dapp.pcrHostContract?.instance.createPcrReward(rewardConfig,Ida,OptimisticOracle)!)
+    await doSignerTransaction(
+      this.dapp.pcrHostContract?.instance.createPcrReward(
+        rewardConfig,
+        Ida,
+        OptimisticOracle
+      )!
+    );
 
     this.display = true;
-
   }
 
   back() {

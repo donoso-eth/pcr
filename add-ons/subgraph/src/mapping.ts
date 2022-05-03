@@ -19,7 +19,7 @@ export function handleRewardCreated(
     reward.admin = event.params.reward.admin.toHexString();
     reward.rewardToken = event.params.reward.rewardToken.toHexString();
     reward.token = event.params.reward.token;
-    reward.earliestProposalTimestamp = event.params.reward.earliestProposalTimestamp;
+    reward.earliestNextAction = event.params.reward.earliestNextAction;
     reward.rewardAmount = event.params.reward.optimisticOracleInput.rewardAmount;
     reward.currentdeposit = new BigInt(0);
     reward.optimisticOracleLivenessTime =
@@ -27,7 +27,7 @@ export function handleRewardCreated(
     reward.priceIdentifier = event.params.reward.optimisticOracleInput.priceIdentifier;
     reward.customAncillaryData =
       event.params.reward.optimisticOracleInput.customAncillaryData;
-    reward.earliestProposalTimestamp = event.params.reward.earliestProposalTimestamp;
+    reward.earliestNextAction = event.params.reward.earliestNextAction;
     reward.interval = event.params.reward.optimisticOracleInput.interval;
   }
 

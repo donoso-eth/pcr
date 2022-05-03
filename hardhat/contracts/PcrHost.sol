@@ -68,7 +68,7 @@ contract PcrHost {
     //// INITIALIZE TOJEN cONTRACT WITH
     DataTypes.PCRTOKEN_INITIALIZER memory pcrTokenInitializer;
     pcrTokenInitializer = DataTypes.PCRTOKEN_INITIALIZER({
-      owner: msg.sender,
+      admin: msg.sender,
       rewardId: id,
       optimisticOracleContract: _optimisticOracleContract,
       name: tokenName,
@@ -82,7 +82,7 @@ contract PcrHost {
       memory pcrOptimisticOracleContractInitializer;
     pcrOptimisticOracleContractInitializer = DataTypes
       .PCR_OPTIMISTIC_ORACLE_INITIALIZER({
-        owner: msg.sender,
+        admin: msg.sender,
         rewardId: id,
         tokenContract: _tokenContract,
         rewardToken: _ida.rewardToken,
@@ -95,6 +95,7 @@ contract PcrHost {
 
     DataTypes.REWARD_EVENT memory rewardEvent = DataTypes.REWARD_EVENT(
       msg.sender,
+     _optimisticOracleInput.target,
       _ida.rewardToken,
       string(abi.encodePacked(tokenSymbol,' ',tokenName)),
       id,

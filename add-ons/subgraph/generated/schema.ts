@@ -129,8 +129,8 @@ export class Reward extends Entity {
     }
   }
 
-  get earliestProposalTimestamp(): BigInt | null {
-    let value = this.get("earliestProposalTimestamp");
+  get earliestNextAction(): BigInt | null {
+    let value = this.get("earliestNextAction");
     if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
@@ -138,11 +138,11 @@ export class Reward extends Entity {
     }
   }
 
-  set earliestProposalTimestamp(value: BigInt | null) {
+  set earliestNextAction(value: BigInt | null) {
     if (!value) {
-      this.unset("earliestProposalTimestamp");
+      this.unset("earliestNextAction");
     } else {
-      this.set("earliestProposalTimestamp", Value.fromBigInt(<BigInt>value));
+      this.set("earliestNextAction", Value.fromBigInt(<BigInt>value));
     }
   }
 
@@ -245,6 +245,158 @@ export class Reward extends Entity {
       this.unset("customAncillaryData");
     } else {
       this.set("customAncillaryData", Value.fromBytes(<Bytes>value));
+    }
+  }
+}
+
+export class Proposal extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+
+    this.set("proposalData", Value.fromString(""));
+    this.set("reward", Value.fromString(""));
+    this.set("countYesVotes", Value.fromBigInt(BigInt.zero()));
+    this.set("countNoVotes", Value.fromBigInt(BigInt.zero()));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save Proposal entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        "Cannot save Proposal entity with non-string ID. " +
+          'Considering using .toHex() to convert the "id" to a string.'
+      );
+      store.set("Proposal", id.toString(), this);
+    }
+  }
+
+  static load(id: string): Proposal | null {
+    return changetype<Proposal | null>(store.get("Proposal", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get proposalData(): string {
+    let value = this.get("proposalData");
+    return value!.toString();
+  }
+
+  set proposalData(value: string) {
+    this.set("proposalData", Value.fromString(value));
+  }
+
+  get reward(): string {
+    let value = this.get("reward");
+    return value!.toString();
+  }
+
+  set reward(value: string) {
+    this.set("reward", Value.fromString(value));
+  }
+
+  get countYesVotes(): BigInt {
+    let value = this.get("countYesVotes");
+    return value!.toBigInt();
+  }
+
+  set countYesVotes(value: BigInt) {
+    this.set("countYesVotes", Value.fromBigInt(value));
+  }
+
+  get countNoVotes(): BigInt {
+    let value = this.get("countNoVotes");
+    return value!.toBigInt();
+  }
+
+  set countNoVotes(value: BigInt) {
+    this.set("countNoVotes", Value.fromBigInt(value));
+  }
+}
+
+export class ProposalSummary extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+
+    this.set("reward", Value.fromString(""));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save ProposalSummary entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        "Cannot save ProposalSummary entity with non-string ID. " +
+          'Considering using .toHex() to convert the "id" to a string.'
+      );
+      store.set("ProposalSummary", id.toString(), this);
+    }
+  }
+
+  static load(id: string): ProposalSummary | null {
+    return changetype<ProposalSummary | null>(store.get("ProposalSummary", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get reward(): string {
+    let value = this.get("reward");
+    return value!.toString();
+  }
+
+  set reward(value: string) {
+    this.set("reward", Value.fromString(value));
+  }
+
+  get timeStamp(): BigInt | null {
+    let value = this.get("timeStamp");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set timeStamp(value: BigInt | null) {
+    if (!value) {
+      this.unset("timeStamp");
+    } else {
+      this.set("timeStamp", Value.fromBigInt(<BigInt>value));
+    }
+  }
+
+  get result(): BigInt | null {
+    let value = this.get("result");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set result(value: BigInt | null) {
+    if (!value) {
+      this.unset("result");
+    } else {
+      this.set("result", Value.fromBigInt(<BigInt>value));
     }
   }
 }

@@ -20,7 +20,7 @@ interface IPcrOptimisticOracle {
 
 
     /**
-     * @notice Allows anyone to deposit additional rewards for distribution before `earliestProposalTimestamp`.
+     * @notice Allows anyone to deposit additional rewards for distribution before `earliestNextAction`.
      * @dev The caller must approve this contract to transfer `additionalRewardAmount` amount of `rewardToken`.
      * @param depositAmount Additional reward amount that the admin is posting for distribution.
      */
@@ -31,13 +31,12 @@ interface IPcrOptimisticOracle {
      ********************************************/
 
     /**
-     * @notice Allows any caller to propose distribution for funded reward starting from `earliestProposalTimestamp`.
+     * @notice Allows any caller to propose distribution for funded reward starting from `earliestNextAction`.
      * Only one undisputed proposal at a time is allowed.
      * @dev The caller must approve this contract to transfer `optimisticOracleProposerBond` + final fee amount
      * of `bondToken`.
     */
-    function proposeDistribution(int256 _proposedPrice
-    ) external;
+    function proposeDistribution(int256 _proposedPrice ) external;
 
     /**
      * @notice Allows any caller to execute distribution that has been validated by the Optimistic Oracle.

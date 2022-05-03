@@ -47,7 +47,7 @@ export class PerpetualConditionalRewardCreatedRewardStruct extends ethereum.Tupl
     return this[3].toBigInt();
   }
 
-  get earliestProposalTimestamp(): BigInt {
+  get earliestNextAction(): BigInt {
     return this[4].toBigInt();
   }
 

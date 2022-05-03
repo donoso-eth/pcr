@@ -47,7 +47,6 @@ contract PcrOptimisticOracle is
 
     // Enum controlling acceptance of distribution payout proposals and their execution.
 
-
     /********************************************
      *      STATE VARIABLES AND CONSTANTS       *
      ********************************************/
@@ -89,6 +88,15 @@ contract PcrOptimisticOracle is
      */
     constructor() {}
 
+    // ============= =============  Modifiers ============= ============= //
+    // #region MOdidiers
+    modifier onlyAdmin() {
+        require(msg.sender == reward.admin, "NOT_ADMIN");
+        _;
+    }
+
+    // endregion
+
     /**
      * @notice INITILIZER.
      */
@@ -105,10 +113,15 @@ contract PcrOptimisticOracle is
         _createReward(
             optimisticOracleinitializer.optimisticOracleInput.rewardAmount,
             optimisticOracleinitializer.optimisticOracleInput.target,
+            optimisticOracleinitializer.optimisticOracleInput.targetCondition,
             optimisticOracleinitializer.optimisticOracleInput.interval,
-            optimisticOracleinitializer.optimisticOracleInput.optimisticOracleLivenessTime,
+            optimisticOracleinitializer
+                .optimisticOracleInput
+                .optimisticOracleLivenessTime,
             optimisticOracleinitializer.optimisticOracleInput.priceIdentifier,
-            optimisticOracleinitializer.optimisticOracleInput.customAncillaryData
+            optimisticOracleinitializer
+                .optimisticOracleInput
+                .customAncillaryData
         );
     }
 
@@ -129,10 +142,11 @@ contract PcrOptimisticOracle is
      */
     function _createReward(
         uint256 rewardAmount,
+        int256 target,
+        DataTypes.TargetCondition targetCondition,
         uint256 interval,
         uint256 optimisticOracleLivenessTime,
         bytes32 priceIdentifier,
-        int256 target,
         bytes memory customAncillaryData
     ) internal {
         require(
@@ -155,17 +169,19 @@ contract PcrOptimisticOracle is
         // Pull maximum rewards from the admin.
         // rewardToken.safeTransferFrom(msg.sender, address(this), rewardAmount);
 
-        uint256 earliestProposalTimestamp = block.timestamp + interval;
+        uint256 earliestNextAction = block.timestamp + interval;
 
         // Store funded reward and log created reward.
         reward = DataTypes.Reward({
             rewardStep: DataTypes.RewardStep.Funding,
+            rewardStatus: DataTypes.RewardStatus.Active,
             admin: msg.sender,
             target: target,
+            targetCondition: targetCondition,
             rewardToken: rewardToken,
             rewardAmount: rewardAmount,
             interval: interval,
-            earliestProposalTimestamp: earliestProposalTimestamp,
+            earliestNextAction: earliestNextAction,
             optimisticOracleLivenessTime: optimisticOracleLivenessTime,
             priceIdentifier: priceIdentifier,
             customAncillaryData: customAncillaryData
@@ -173,7 +189,7 @@ contract PcrOptimisticOracle is
     }
 
     /**
-     * @notice Allows anyone to deposit additional rewards for distribution before `earliestProposalTimestamp`.
+     * @notice Allows anyone to deposit additional rewards for distribution before `earliestNextAction`.
      * @dev The caller must approve this contract to transfer `additionalRewardAmount` amount of `rewardToken`.
      * @param depositAmount Additional reward amount that the admin is posting for distribution.
      */
@@ -188,7 +204,7 @@ contract PcrOptimisticOracle is
         // Update rewardAmount and log new amount.
         emit Events.RewardDeposit(pcrId, depositAmount);
 
-        console.log('event reward');
+        console.log("event reward");
     }
 
     /********************************************
@@ -196,16 +212,16 @@ contract PcrOptimisticOracle is
      ********************************************/
 
     /**
-     * @notice Allows any caller to propose distribution for funded reward starting from `earliestProposalTimestamp`.
+     * @notice Allows any caller to propose distribution for funded reward starting from `earliestNextAction`.
      * Only one undisputed proposal at a time is allowed.
      * @dev The caller must approve this contract to transfer `optimisticOracleProposerBond` + final fee amount
      * of `bondToken`.
      */
-    function proposeDistribution(uint256 _proposedPrice) external {
+    function proposeDistribution(int256 _proposedPrice) external {
         uint256 timestamp = block.timestamp;
         console.log(timestamp);
         require(
-            timestamp >= reward.earliestProposalTimestamp,
+            timestamp >= reward.earliestNextAction,
             "Cannot propose in funding period"
         );
         require(
@@ -256,12 +272,7 @@ contract PcrOptimisticOracle is
             proposalId: id,
             timestamp: timestamp
         });
-        emit Events.ProposalCreated(
-            msg.sender,
-            id,
-            pcrId,
-            timestamp
-        );
+        emit Events.ProposalCreated(msg.sender, id, pcrId, timestamp);
     }
 
     /**
@@ -292,7 +303,14 @@ contract PcrOptimisticOracle is
         // Transfer rewards to MerkleDistributor for accepted proposal and flag distributionProposed Accepted.
         // This does not revert on rejected proposals so that disputer could receive back its bond and winning
         // in the same transaction when settleAndGetPrice is called above.
-        if (resolvedPrice == reward.target) {
+
+        bool isConditionMet = _checkTargetCondition(
+            resolvedPrice,
+            reward.target,
+            reward.targetCondition
+        );
+
+        if (isConditionMet == true) {
             reward.rewardStep = DataTypes.RewardStep.Accepted;
             SuperToken(rewardToken).approve(
                 TOKEN_INDEX_PUBLISHER_ADDRESS,
@@ -320,6 +338,16 @@ contract PcrOptimisticOracle is
             console.log("rejected");
             emit Events.ProposalRejected(proposal.pcrId, proposal.proposalId);
         }
+    }
+
+    function changeTarget(int256 _newTarget) external  onlyAdmin() {
+        reward.target = _newTarget;
+    }
+
+    function changeTargetCondition(
+        DataTypes.TargetCondition _newTargetCondition
+    ) external onlyAdmin() {
+        reward.targetCondition = _newTargetCondition;
     }
 
     /********************************************
@@ -373,6 +401,43 @@ contract PcrOptimisticOracle is
     /********************************************
      *            INTERNAL FUNCTIONS            *
      ********************************************/
+
+    function _checkTargetCondition(
+        int256 _proposedPrice,
+        int256 _target,
+        DataTypes.TargetCondition _targetCondition
+    ) internal returns (bool) {
+        bool resultCheck = false;
+
+        if (
+            _targetCondition == DataTypes.TargetCondition.GT &&
+            _proposedPrice > _target
+        ) {
+            resultCheck = true;
+        } else if (
+            _targetCondition == DataTypes.TargetCondition.GTE &&
+            _proposedPrice >= _target
+        ) {
+            resultCheck = true;
+        } else if (
+            _targetCondition == DataTypes.TargetCondition.E &&
+            _proposedPrice == _target
+        ) {
+            resultCheck = true;
+        } else if (
+            _targetCondition == DataTypes.TargetCondition.LTE &&
+            _proposedPrice <= _target
+        ) {
+            resultCheck = true;
+        } else if (
+            _targetCondition == DataTypes.TargetCondition.LT &&
+            _proposedPrice < _target
+        ) {
+            resultCheck = true;
+        }
+
+        return resultCheck;
+    }
 
     function _getStore() internal view returns (StoreInterface) {
         return

@@ -26,7 +26,7 @@ export type IDAINPUTStructOutput = [string, string, string] & {
 };
 
 export type PCRTOKENINITIALIZERStruct = {
-  owner: string;
+  admin: string;
   rewardId: BigNumberish;
   optimisticOracleContract: string;
   name: string;
@@ -42,7 +42,7 @@ export type PCRTOKENINITIALIZERStructOutput = [
   string,
   IDAINPUTStructOutput
 ] & {
-  owner: string;
+  admin: string;
   rewardId: BigNumber;
   optimisticOracleContract: string;
   name: string;

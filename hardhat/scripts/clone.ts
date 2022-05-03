@@ -22,6 +22,7 @@ import {
 import {
   IDAINPUTStruct,
   OPTIMISTICORACLEINPUTStruct,
+  PCRHOSTCONFIGINPUTStruct
 } from '../typechain-types/PcrHost';
 
 const defaultNetwork = 'kovan';
@@ -46,6 +47,15 @@ const clone = async () => {
 
   const pcrHost = await PcrHost__factory.connect(PcrHost, deployer);
 
+  const pcrHostConfig:PCRHOSTCONFIGINPUTStruct = {
+    pcrTokenImpl:PcrToken,
+    pcrOptimisticOracleImpl:PcrOptimisticOracle,
+    title:'Mu reard',
+    url:'http://aloha.com'
+
+  }
+
+
   const Ida: IDAINPUTStruct = {
     host: chain_addresses.host,
     ida: chain_addresses.ida,
@@ -60,8 +70,11 @@ const clone = async () => {
     )
   );
 
+
   const OptimisticOracle: OPTIMISTICORACLEINPUTStruct = {
     finder: chain_addresses.finder,
+    target: utils.parseEther("1"),
+    targetCondition:0,
     rewardAmount: 50,
     interval: 600,
     optimisticOracleLivenessTime: 36000,
@@ -69,12 +82,12 @@ const clone = async () => {
     priceIdentifier,
   };
 
-  // await waitForTx(
-  //   pcrHost.createPcrReward(
-  //    Ida, PcrToken,  OptimisticOracle, PcrOptimisticOracle,
-  //     { nonce: deployerNonce++ }
-  //   )
-  // );
+  await waitForTx(
+    pcrHost.createPcrReward(
+     pcrHostConfig, Ida, OptimisticOracle, 
+      { nonce: deployerNonce++ }
+    )
+  );
   let pcrAddress = await pcrHost.getTokensAddressByUserAndId(
     deployer.address,
     1
@@ -167,7 +180,8 @@ const clone = async () => {
     ).toString()
   );
 
-  // await waitForTx(pcrDistributor.proposeDistribution())
+  const proposedPriced = utils.parseEther("1.0")
+  await waitForTx(pcrDistributor.proposeDistribution(proposedPriced))
 
   await waitForTx(pcrToken.issue(user2.address, 1));
 

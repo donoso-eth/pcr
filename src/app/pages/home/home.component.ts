@@ -41,7 +41,7 @@ export class HomeComponent extends DappBaseComponent {
 
   async transformTokenObject(token:any){
     token.customAncillaryData = utils.toUtf8String(token.customAncillaryData);
-    console.log( new Date(+token.earliestProposalTimestamp*1000).toLocaleString())
+    console.log( new Date(+token.earliestNextAction*1000).toLocaleString())
     token.status = true,
     token.step = 0
 

@@ -1,3 +1,24 @@
+enum RewardStep {
+        Funding 
+        Pending 
+        Accepted
+    }
+
+    enum RewardStatus {
+        Active 
+        Paused 
+        Removed
+    }
+
+
+     enum TargetCondition{
+        GT 
+        GTE 
+        E
+        LTE
+        LT 
+    }
+
 type Reward @entity {
   id: ID!
   title:String
@@ -5,8 +26,12 @@ type Reward @entity {
   admin: String
   rewardToken: String
   token: String
-  earliestProposalTimestamp: BigInt
+  rewardStatus: RewardStatus
+  rewardStep:RewardStep
+  earliestNextAction: BigInt
   interval: BigInt
+  target:BigInt
+  targetCondition: TargetCondition
   rewardAmount: BigInt
   currentdeposit: BigInt
   optimisticOracleLivenessTime: BigInt
@@ -18,7 +43,6 @@ type Proposal @entity {
  id: ID!
  proposalData: String!
  reward: Reward!
- result: ProposalResult!
  countYesVotes: BigInt!
  countNoVotes: BigInt!
 }
@@ -28,5 +52,5 @@ type ProposalSummary @entity {
   id:ID!
   reward:Reward!
   timeStamp:BigInt
-  result:Bigint
+  result:BigInt
 }

@@ -26,7 +26,7 @@
           },
           {
             "internalType": "uint256",
-            "name": "earliestProposalTimestamp",
+            "name": "earliestNextAction",
             "type": "uint256"
           },
           {

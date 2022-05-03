@@ -6,7 +6,7 @@ dataSources:
     name: PcrHost
     network: localhost
     source:
-      address: '0xD9d684546ED4c727B136503016E137822DD9b4D7'
+      address: '0x0c8Cd13ff68D41263E6937224B9e5c7fF54d72f9'
       abi: PcrHost
       startBlock: 31301672
     mapping:

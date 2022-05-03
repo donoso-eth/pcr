@@ -46,31 +46,7 @@ contract PcrOptimisticOracle is
      ********************************************/
 
     // Enum controlling acceptance of distribution payout proposals and their execution.
-    enum DistributionProposed {
-        None, // New proposal can be submitted (either there have been no proposals or the prior one was disputed).
-        Pending, // Proposal is not yet resolved.
-        Accepted // Proposal has been confirmed through Optimistic Oracle and rewards transferred to MerkleoptimisticOracleinitializer.optimisticOracleInput.
-    }
 
-    // Represents reward posted by a admin.
-    struct Reward {
-        DistributionProposed distributionProposed;
-        address admin;
-        address rewardToken;
-        uint256 rewardAmount;
-        uint256 interval;
-        uint256 earliestProposalTimestamp;
-        uint256 optimisticOracleLivenessTime;
-        bytes32 priceIdentifier;
-        bytes customAncillaryData;
-    }
-
-    // Represents proposed rewards distribution.
-    struct Proposal {
-        uint256 pcrId;
-        uint256 proposalId;
-        uint256 timestamp;
-    }
 
     /********************************************
      *      STATE VARIABLES AND CONSTANTS       *
@@ -88,7 +64,7 @@ contract PcrOptimisticOracle is
     uint256 public ancillaryBytesLimit;
 
     // Rewards are stored in dynamic array.
-    Reward public reward;
+    DataTypes.Reward public reward;
 
     //
     uint256 public pcrId;
@@ -97,7 +73,7 @@ contract PcrOptimisticOracle is
 
     Counters.Counter public _proposalId;
 
-    Proposal public proposal;
+    DataTypes.Proposal public proposal;
 
     // Immutable variables provided at deployment.
     FinderInterface public finder;
@@ -128,14 +104,11 @@ contract PcrOptimisticOracle is
         syncUmaEcosystemParams();
         _createReward(
             optimisticOracleinitializer.optimisticOracleInput.rewardAmount,
+            optimisticOracleinitializer.optimisticOracleInput.target,
             optimisticOracleinitializer.optimisticOracleInput.interval,
-            optimisticOracleinitializer
-                .optimisticOracleInput
-                .optimisticOracleLivenessTime,
+            optimisticOracleinitializer.optimisticOracleInput.optimisticOracleLivenessTime,
             optimisticOracleinitializer.optimisticOracleInput.priceIdentifier,
-            optimisticOracleinitializer
-                .optimisticOracleInput
-                .customAncillaryData
+            optimisticOracleinitializer.optimisticOracleInput.customAncillaryData
         );
     }
 
@@ -159,6 +132,7 @@ contract PcrOptimisticOracle is
         uint256 interval,
         uint256 optimisticOracleLivenessTime,
         bytes32 priceIdentifier,
+        int256 target,
         bytes memory customAncillaryData
     ) internal {
         require(
@@ -184,9 +158,10 @@ contract PcrOptimisticOracle is
         uint256 earliestProposalTimestamp = block.timestamp + interval;
 
         // Store funded reward and log created reward.
-        reward = Reward({
-            distributionProposed: DistributionProposed.None,
+        reward = DataTypes.Reward({
+            rewardStep: DataTypes.RewardStep.Funding,
             admin: msg.sender,
+            target: target,
             rewardToken: rewardToken,
             rewardAmount: rewardAmount,
             interval: interval,
@@ -226,7 +201,7 @@ contract PcrOptimisticOracle is
      * @dev The caller must approve this contract to transfer `optimisticOracleProposerBond` + final fee amount
      * of `bondToken`.
      */
-    function proposeDistribution() external {
+    function proposeDistribution(uint256 _proposedPrice) external {
         uint256 timestamp = block.timestamp;
         console.log(timestamp);
         require(
@@ -234,12 +209,12 @@ contract PcrOptimisticOracle is
             "Cannot propose in funding period"
         );
         require(
-            reward.distributionProposed == DistributionProposed.None,
+            reward.rewardStep == DataTypes.RewardStep.Funding,
             "New proposals blocked"
         );
 
         // Flag reward as proposed so that any subsequent proposals are blocked till dispute.
-        reward.distributionProposed = DistributionProposed.Pending;
+        reward.rewardStep = DataTypes.RewardStep.Pending;
 
         // Append pcrId to ancillary data.
         bytes memory ancillaryData = _appendpcrId(reward.customAncillaryData);
@@ -272,11 +247,11 @@ contract PcrOptimisticOracle is
             reward.priceIdentifier,
             timestamp,
             ancillaryData,
-            int256(1e18)
+            int256(_proposedPrice)
         );
 
         // Store and log proposed distribution.
-        proposal = Proposal({
+        proposal = DataTypes.Proposal({
             pcrId: pcrId,
             proposalId: id,
             timestamp: timestamp
@@ -300,7 +275,7 @@ contract PcrOptimisticOracle is
 
         // Only one validated proposal per reward can be executed for distribution.
         require(
-            reward.distributionProposed != DistributionProposed.Accepted,
+            reward.rewardStep != DataTypes.RewardStep.Accepted,
             "Reward already distributed"
         );
 
@@ -317,8 +292,8 @@ contract PcrOptimisticOracle is
         // Transfer rewards to MerkleDistributor for accepted proposal and flag distributionProposed Accepted.
         // This does not revert on rejected proposals so that disputer could receive back its bond and winning
         // in the same transaction when settleAndGetPrice is called above.
-        if (resolvedPrice == 1e18) {
-            reward.distributionProposed = DistributionProposed.Accepted;
+        if (resolvedPrice == reward.target) {
+            reward.rewardStep = DataTypes.RewardStep.Accepted;
             SuperToken(rewardToken).approve(
                 TOKEN_INDEX_PUBLISHER_ADDRESS,
                 reward.rewardAmount
@@ -381,18 +356,18 @@ contract PcrOptimisticOracle is
         bytes memory ancillaryData,
         uint256 refund
     ) external {
-        // require(msg.sender == address(optimisticOracle), "Not authorized");
+        require(msg.sender == address(optimisticOracle), "Not authorized");
 
-        // // Identify the proposed distribution from callback parameters.
-        // bytes32 proposalId = _getProposalId(
-        //     identifier,
-        //     timestamp,
-        //     ancillaryData
-        // );
+        // Identify the proposed distribution from callback parameters.
+        bytes32 proposalId = _getProposalId(
+            identifier,
+            timestamp,
+            ancillaryData
+        );
 
-        // // Flag the associated reward unblocked for new distribution proposals unless rewards already distributed.
-        // if (reward.distributionProposed != DistributionProposed.Accepted)
-        //     reward.distributionProposed = DistributionProposed.None;
+        // Flag the associated reward unblocked for new distribution proposals unless rewards already distributed.
+        if (reward.rewardStep != DataTypes.RewardStep.Accepted)
+            reward.rewardStep = DataTypes.RewardStep.Funding;
     }
 
     /********************************************

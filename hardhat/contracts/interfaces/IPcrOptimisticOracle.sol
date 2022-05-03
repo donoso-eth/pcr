@@ -36,7 +36,7 @@ interface IPcrOptimisticOracle {
      * @dev The caller must approve this contract to transfer `optimisticOracleProposerBond` + final fee amount
      * of `bondToken`.
     */
-    function proposeDistribution(
+    function proposeDistribution(int256 _proposedPrice
     ) external;
 
     /**

@@ -24,19 +24,27 @@ type Reward @entity {
   title:String
   url:String
   admin: String
+
   rewardToken: String
+  rewardAmount: BigInt
   token: String
-  rewardStatus: RewardStatus
-  rewardStep:RewardStep
+
+  currentdeposit: BigInt
+  rewardStatus: BigInt
+  rewardStep:BigInt
   earliestNextAction: BigInt
+
   interval: BigInt
   target:BigInt
   targetCondition: TargetCondition
-  rewardAmount: BigInt
-  currentdeposit: BigInt
+
   optimisticOracleLivenessTime: BigInt
   priceIdentifier: Bytes
   customAncillaryData: Bytes
+
+  unitsIssued:BigInt
+  totalDistributed:BigInt
+
 }
 
 type Proposal @entity {

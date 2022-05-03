@@ -96,6 +96,7 @@ contract PcrHost {
     DataTypes.REWARD_EVENT memory rewardEvent = DataTypes.REWARD_EVENT(
       msg.sender,
      _optimisticOracleInput.target,
+     _optimisticOracleInput.targetCondition,
       _ida.rewardToken,
       string(abi.encodePacked(tokenSymbol,' ',tokenName)),
       id,
@@ -107,7 +108,7 @@ contract PcrHost {
     pcrHostConfig.url
     );
 
-    emit Events.PerpetualConditionalRewardCreated(rewardEvent );
+    emit Events.RewardCreated(rewardEvent );
   }
 
   // ============= View Functions ============= ============= =============  //

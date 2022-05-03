@@ -112,6 +112,23 @@ export class Reward extends Entity {
     }
   }
 
+  get rewardAmount(): BigInt | null {
+    let value = this.get("rewardAmount");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set rewardAmount(value: BigInt | null) {
+    if (!value) {
+      this.unset("rewardAmount");
+    } else {
+      this.set("rewardAmount", Value.fromBigInt(<BigInt>value));
+    }
+  }
+
   get token(): string | null {
     let value = this.get("token");
     if (!value || value.kind == ValueKind.NULL) {
@@ -126,6 +143,57 @@ export class Reward extends Entity {
       this.unset("token");
     } else {
       this.set("token", Value.fromString(<string>value));
+    }
+  }
+
+  get currentdeposit(): BigInt | null {
+    let value = this.get("currentdeposit");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set currentdeposit(value: BigInt | null) {
+    if (!value) {
+      this.unset("currentdeposit");
+    } else {
+      this.set("currentdeposit", Value.fromBigInt(<BigInt>value));
+    }
+  }
+
+  get rewardStatus(): string | null {
+    let value = this.get("rewardStatus");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set rewardStatus(value: string | null) {
+    if (!value) {
+      this.unset("rewardStatus");
+    } else {
+      this.set("rewardStatus", Value.fromString(<string>value));
+    }
+  }
+
+  get rewardStep(): string | null {
+    let value = this.get("rewardStep");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set rewardStep(value: string | null) {
+    if (!value) {
+      this.unset("rewardStep");
+    } else {
+      this.set("rewardStep", Value.fromString(<string>value));
     }
   }
 
@@ -163,8 +231,8 @@ export class Reward extends Entity {
     }
   }
 
-  get rewardAmount(): BigInt | null {
-    let value = this.get("rewardAmount");
+  get target(): BigInt | null {
+    let value = this.get("target");
     if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
@@ -172,28 +240,28 @@ export class Reward extends Entity {
     }
   }
 
-  set rewardAmount(value: BigInt | null) {
+  set target(value: BigInt | null) {
     if (!value) {
-      this.unset("rewardAmount");
+      this.unset("target");
     } else {
-      this.set("rewardAmount", Value.fromBigInt(<BigInt>value));
+      this.set("target", Value.fromBigInt(<BigInt>value));
     }
   }
 
-  get currentdeposit(): BigInt | null {
-    let value = this.get("currentdeposit");
+  get targetCondition(): string | null {
+    let value = this.get("targetCondition");
     if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
-      return value.toBigInt();
+      return value.toString();
     }
   }
 
-  set currentdeposit(value: BigInt | null) {
+  set targetCondition(value: string | null) {
     if (!value) {
-      this.unset("currentdeposit");
+      this.unset("targetCondition");
     } else {
-      this.set("currentdeposit", Value.fromBigInt(<BigInt>value));
+      this.set("targetCondition", Value.fromString(<string>value));
     }
   }
 

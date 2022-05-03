@@ -75,8 +75,8 @@
       ]
     },
     "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/hardhat/contracts/libraries/DataTypes.sol": {
-      "lastModificationDate": 1651571562574,
-      "contentHash": "8dbb52c629d25b9fa7c0bff33c5df663",
+      "lastModificationDate": 1651592173128,
+      "contentHash": "cba40edb517faa31cad4e8f2a5bb97f3",
       "sourceName": "contracts/libraries/DataTypes.sol",
       "solcConfig": {
         "version": "0.8.12",
@@ -112,8 +112,8 @@
       ]
     },
     "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/hardhat/contracts/PcrOptimisticOracle.sol": {
-      "lastModificationDate": 1651574438324,
-      "contentHash": "f2149524d55c5b0715216c4f04b46f1b",
+      "lastModificationDate": 1651604091364,
+      "contentHash": "f568920b1f2a5673ee39c2ea89c4607f",
       "sourceName": "contracts/PcrOptimisticOracle.sol",
       "solcConfig": {
         "version": "0.8.12",
@@ -760,8 +760,8 @@
       ]
     },
     "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/hardhat/contracts/libraries/Events.sol": {
-      "lastModificationDate": 1651566396752,
-      "contentHash": "d9bc23834a98b683e82a193b28fca257",
+      "lastModificationDate": 1651599264765,
+      "contentHash": "0689c41c99d82dcf66adb19efd073e00",
       "sourceName": "contracts/libraries/Events.sol",
       "solcConfig": {
         "version": "0.8.12",
@@ -1831,8 +1831,8 @@
       ]
     },
     "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/hardhat/contracts/PcrHost.sol": {
-      "lastModificationDate": 1651570743528,
-      "contentHash": "2eaf84ff4a8abc0dfde9a34e8c37eb40",
+      "lastModificationDate": 1651591210880,
+      "contentHash": "a92dea83bbccd563f29acb5fbb263e29",
       "sourceName": "contracts/PcrHost.sol",
       "solcConfig": {
         "version": "0.8.12",
@@ -2062,8 +2062,8 @@
       ]
     },
     "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/hardhat/contracts/PcrToken.sol": {
-      "lastModificationDate": 1651570996800,
-      "contentHash": "675551d8c7654ca2b88af2a8697bdc8a",
+      "lastModificationDate": 1651595063969,
+      "contentHash": "1ce79c37817343e2161f5b16a1184c07",
       "sourceName": "contracts/PcrToken.sol",
       "solcConfig": {
         "version": "0.8.12",
@@ -2100,7 +2100,8 @@
         "@openzeppelin/contracts/utils/Strings.sol",
         "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol",
         "@superfluid-finance/ethereum-contracts/contracts/apps/IDAv1Library.sol",
-        "./libraries/DataTypes.sol"
+        "./libraries/DataTypes.sol",
+        "./libraries/Events.sol"
       ],
       "versionPragmas": [
         "^0.8.0"

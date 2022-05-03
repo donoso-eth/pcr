@@ -10,93 +10,105 @@ import {
   BigInt
 } from "@graphprotocol/graph-ts";
 
-export class PerpetualConditionalRewardCreated extends ethereum.Event {
-  get params(): PerpetualConditionalRewardCreated__Params {
-    return new PerpetualConditionalRewardCreated__Params(this);
+export class RewardCreated extends ethereum.Event {
+  get params(): RewardCreated__Params {
+    return new RewardCreated__Params(this);
   }
 }
 
-export class PerpetualConditionalRewardCreated__Params {
-  _event: PerpetualConditionalRewardCreated;
+export class RewardCreated__Params {
+  _event: RewardCreated;
 
-  constructor(event: PerpetualConditionalRewardCreated) {
+  constructor(event: RewardCreated) {
     this._event = event;
   }
 
-  get reward(): PerpetualConditionalRewardCreatedRewardStruct {
-    return changetype<PerpetualConditionalRewardCreatedRewardStruct>(
+  get reward(): RewardCreatedRewardStruct {
+    return changetype<RewardCreatedRewardStruct>(
       this._event.parameters[0].value.toTuple()
     );
   }
 }
 
-export class PerpetualConditionalRewardCreatedRewardStruct extends ethereum.Tuple {
+export class RewardCreatedRewardStruct extends ethereum.Tuple {
   get admin(): Address {
     return this[0].toAddress();
   }
 
+  get target(): BigInt {
+    return this[1].toBigInt();
+  }
+
   get rewardToken(): Address {
-    return this[1].toAddress();
+    return this[2].toAddress();
   }
 
   get token(): string {
-    return this[2].toString();
+    return this[3].toString();
   }
 
   get pcrId(): BigInt {
-    return this[3].toBigInt();
-  }
-
-  get earliestNextAction(): BigInt {
     return this[4].toBigInt();
   }
 
-  get optimisticOracleInput(): PerpetualConditionalRewardCreatedRewardOptimisticOracleInputStruct {
+  get earliestNextAction(): BigInt {
+    return this[5].toBigInt();
+  }
+
+  get optimisticOracleInput(): RewardCreatedRewardOptimisticOracleInputStruct {
     return changetype<
-      PerpetualConditionalRewardCreatedRewardOptimisticOracleInputStruct
-    >(this[5].toTuple());
+      RewardCreatedRewardOptimisticOracleInputStruct
+    >(this[6].toTuple());
   }
 
   get tokenContract(): Address {
-    return this[6].toAddress();
-  }
-
-  get optimisticOracleContract(): Address {
     return this[7].toAddress();
   }
 
+  get optimisticOracleContract(): Address {
+    return this[8].toAddress();
+  }
+
   get title(): string {
-    return this[8].toString();
+    return this[9].toString();
   }
 
   get url(): string {
-    return this[9].toString();
+    return this[10].toString();
   }
 }
 
-export class PerpetualConditionalRewardCreatedRewardOptimisticOracleInputStruct extends ethereum.Tuple {
+export class RewardCreatedRewardOptimisticOracleInputStruct extends ethereum.Tuple {
   get finder(): Address {
     return this[0].toAddress();
   }
 
-  get rewardAmount(): BigInt {
+  get target(): BigInt {
     return this[1].toBigInt();
   }
 
-  get interval(): BigInt {
-    return this[2].toBigInt();
+  get targetCondition(): i32 {
+    return this[2].toI32();
   }
 
-  get optimisticOracleLivenessTime(): BigInt {
+  get rewardAmount(): BigInt {
     return this[3].toBigInt();
   }
 
+  get interval(): BigInt {
+    return this[4].toBigInt();
+  }
+
+  get optimisticOracleLivenessTime(): BigInt {
+    return this[5].toBigInt();
+  }
+
   get priceIdentifier(): Bytes {
-    return this[4].toBytes();
+    return this[6].toBytes();
   }
 
   get customAncillaryData(): Bytes {
-    return this[5].toBytes();
+    return this[7].toBytes();
   }
 }
 

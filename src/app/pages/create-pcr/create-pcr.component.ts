@@ -14,10 +14,8 @@ import {
   OPTIMISTICORACLEINPUTStruct,
   PCRHOSTCONFIGINPUTStruct,
 } from 'src/assets/contracts/interfaces/PcrHost';
-import { timeStamp } from 'console';
 import { doSignerTransaction } from 'src/app/dapp-injector/classes/transactor';
 import { Store } from '@ngrx/store';
-import { TargetCondition } from 'src/app/shared/models/appconfig';
 
 @Component({
   selector: 'app-create-pcr',
@@ -62,7 +60,7 @@ export class CreatePcrComponent extends DappBaseComponent implements OnInit {
 
   selectedToken!: { name: string; id: number; image: string };
 
-  display = false;
+  display = false; 
 
   constructor(
     public formBuilder: FormBuilder,

@@ -158,8 +158,7 @@ library DataTypes {
 
     enum RewardStep {
         Funding, // 
-        Pending, // 
-        Accepted // .
+        Pending // 
     }
 
     enum RewardStatus {
@@ -188,13 +187,19 @@ library DataTypes {
     struct REWARD_EVENT {
         address admin;
         int256 target;
+
+        DataTypes.TargetCondition targetCondition;
+
         address rewardToken;
         string token;
         uint256 pcrId;
+        
         uint256 earliestNextAction;
         DataTypes.OPTIMISTIC_ORACLE_INPUT optimisticOracleInput;
-        address tokenContract;
-        address optimisticOracleContract;
+
+        address tokenContract;  // Required for the subgraph template cereation
+        address optimisticOracleContract; // Required for the subgraph template cereation
+        
         string title;
         string url;
     }

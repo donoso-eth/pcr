@@ -18,6 +18,7 @@ import {ERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/
 import {IDAv1Library} from "@superfluid-finance/ethereum-contracts/contracts/apps/IDAv1Library.sol";
 
 import {DataTypes} from "./libraries/DataTypes.sol";
+import {Events} from "./libraries/Events.sol";
 
 
 /**
@@ -40,8 +41,8 @@ contract PcrToken is
   // declare `_idaLib` of type InitData
   IDAv1Library.InitData internal _idaLib;
 
-  bool public receiver = false;
 
+  uint256 public pcrId;
   address public ADMIN;
   address public TOKEN_INDEX_PUBLISHER_ADDRESS;
 
@@ -54,16 +55,8 @@ contract PcrToken is
   // use callbacks to track approved subscriptions
   mapping(address => bool) public isSubscribing;
 
-  event DoneStuff(
-    address operator,
-    address from,
-    address to,
-    uint256 amount,
-    bytes userData,
-    bytes operatorData
-  );
 
-  IERC777 private _token;
+
 
   constructor() {}
 
@@ -86,7 +79,7 @@ contract PcrToken is
       _host = ISuperfluid(pcrTokenInitializer.ida.host);
       _ida = IInstantDistributionAgreementV1(pcrTokenInitializer.ida.ida);
       _rewardToken = ISuperToken(pcrTokenInitializer.ida.rewardToken);
-
+       pcrId = pcrTokenInitializer.rewardId;
 
     TOKEN_INDEX_PUBLISHER_ADDRESS = address(this);
     ADMIN = pcrTokenInitializer.admin;
@@ -134,13 +127,14 @@ contract PcrToken is
       beneficiary,
       uint128(currentAmount) + uint128(amount)
     );
+
+    emit Events.RewardUnitsIssued(pcrId, beneficiary,  amount);
   }
 
 
   /// @dev Issue new `amount` of giths to `beneficiary`
   function claim() external {
     // then adjust beneficiary subscription units
-
     _idaLib.claim(_rewardToken, TOKEN_INDEX_PUBLISHER_ADDRESS, INDEX_ID, msg.sender);
   }
 
@@ -172,9 +166,8 @@ contract PcrToken is
     bytes calldata userData,
     bytes calldata operatorData
   ) external override {
-  //  require(msg.sender == OPTIMISTIC_DISTRUBUTOR_ADDRESS);
-    receiver = true;
-    emit DoneStuff(operator, from, to, amount, userData, operatorData);
+
+
     // do stuff
     _distribute(amount);
   }

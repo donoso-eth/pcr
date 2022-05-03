@@ -33,11 +33,7 @@ import {Events} from "./libraries/Events.sol";
  * @title  OptimisticOracle contract.
  * @notice Allows admins to distribute rewards through  contract secured by UMA Optimistic Oracle.
  */
-contract PcrOptimisticOracle is
-    IPcrOptimisticOracle,
-    Initializable,
-    MultiCaller
-{
+contract PcrOptimisticOracle is IPcrOptimisticOracle, Initializable, MultiCaller {
     using SafeERC20 for IERC20;
     using Counters for Counters.Counter;
 
@@ -89,9 +85,14 @@ contract PcrOptimisticOracle is
     constructor() {}
 
     // ============= =============  Modifiers ============= ============= //
-    // #region MOdidiers
+    // #region Modidiers
     modifier onlyAdmin() {
         require(msg.sender == reward.admin, "NOT_ADMIN");
+        _;
+    }
+
+    modifier onlyActiveRewards() {
+        require(reward.rewardStatus == DataTypes.RewardStatus.Active, "REWARD_PAUSED_OR_REMOVED");
         _;
     }
 
@@ -100,106 +101,35 @@ contract PcrOptimisticOracle is
     /**
      * @notice INITILIZER.
      */
-    function initialize(
-        DataTypes.PCR_OPTIMISTIC_ORACLE_INITIALIZER
-            calldata optimisticOracleinitializer
-    ) external initializer {
+    function initialize(DataTypes.PCR_OPTIMISTIC_ORACLE_INITIALIZER calldata optimisticOracleinitializer) external initializer {
         finder = optimisticOracleinitializer.optimisticOracleInput.finder;
         rewardToken = optimisticOracleinitializer.rewardToken;
         pcrId = optimisticOracleinitializer.rewardId;
-        TOKEN_INDEX_PUBLISHER_ADDRESS = optimisticOracleinitializer
-            .tokenContract;
+        TOKEN_INDEX_PUBLISHER_ADDRESS = optimisticOracleinitializer.tokenContract;
         syncUmaEcosystemParams();
         _createReward(
             optimisticOracleinitializer.optimisticOracleInput.rewardAmount,
             optimisticOracleinitializer.optimisticOracleInput.target,
             optimisticOracleinitializer.optimisticOracleInput.targetCondition,
             optimisticOracleinitializer.optimisticOracleInput.interval,
-            optimisticOracleinitializer
-                .optimisticOracleInput
-                .optimisticOracleLivenessTime,
+            optimisticOracleinitializer.optimisticOracleInput.optimisticOracleLivenessTime,
             optimisticOracleinitializer.optimisticOracleInput.priceIdentifier,
-            optimisticOracleinitializer
-                .optimisticOracleInput
-                .customAncillaryData
+            optimisticOracleinitializer.optimisticOracleInput.customAncillaryData
         );
     }
 
     /********************************************
-     *            FUNDING FUNCTIONS             *
+     *            PUBLIC FUNCTIONS             *
      ********************************************/
-
-    /**
-     * @notice Allows any caller to create a Reward struct and deposit tokens that are linked to these rewards.
-     * @dev The caller must approve this contract to transfer `rewardAmount` amount of `rewardToken`.
-     * @param rewardAmount Maximum reward amount that the admin is posting for distribution.
-     * @param interval Starting timestamp when proposals for distribution can be made.
-     * @param priceIdentifier Identifier that should be passed to the Optimistic Oracle on proposed distribution.
-     * @param customAncillaryData Custom ancillary data that should be sent to the Optimistic Oracle on proposed
-     * distribution.
-     * @param optimisticOracleLivenessTime Liveness period in seconds during which proposed distribution can be
-     * disputed through Optimistic Oracle.
-     */
-    function _createReward(
-        uint256 rewardAmount,
-        int256 target,
-        DataTypes.TargetCondition targetCondition,
-        uint256 interval,
-        uint256 optimisticOracleLivenessTime,
-        bytes32 priceIdentifier,
-        bytes memory customAncillaryData
-    ) internal {
-        require(
-            _getIdentifierWhitelist().isIdentifierSupported(priceIdentifier),
-            "Identifier not registered"
-        );
-        require(
-            _ancillaryDataWithinLimits(customAncillaryData),
-            "Ancillary data too long"
-        );
-        require(
-            optimisticOracleLivenessTime >= MINIMUM_LIVENESS,
-            "OO liveness too small"
-        );
-        require(
-            optimisticOracleLivenessTime < MAXIMUM_LIVENESS,
-            "OO liveness too large"
-        );
-
-        // Pull maximum rewards from the admin.
-        // rewardToken.safeTransferFrom(msg.sender, address(this), rewardAmount);
-
-        uint256 earliestNextAction = block.timestamp + interval;
-
-        // Store funded reward and log created reward.
-        reward = DataTypes.Reward({
-            rewardStep: DataTypes.RewardStep.Funding,
-            rewardStatus: DataTypes.RewardStatus.Active,
-            admin: msg.sender,
-            target: target,
-            targetCondition: targetCondition,
-            rewardToken: rewardToken,
-            rewardAmount: rewardAmount,
-            interval: interval,
-            earliestNextAction: earliestNextAction,
-            optimisticOracleLivenessTime: optimisticOracleLivenessTime,
-            priceIdentifier: priceIdentifier,
-            customAncillaryData: customAncillaryData
-        });
-    }
 
     /**
      * @notice Allows anyone to deposit additional rewards for distribution before `earliestNextAction`.
      * @dev The caller must approve this contract to transfer `additionalRewardAmount` amount of `rewardToken`.
      * @param depositAmount Additional reward amount that the admin is posting for distribution.
      */
-    function depositReward(uint256 depositAmount) external {
+    function depositReward(uint256 depositAmount) onlyActiveRewards() external {
         // Pull additional rewards from the admin.
-        IERC20(reward.rewardToken).safeTransferFrom(
-            msg.sender,
-            address(this),
-            depositAmount
-        );
+        IERC20(reward.rewardToken).safeTransferFrom(msg.sender, address(this), depositAmount);
 
         // Update rewardAmount and log new amount.
         emit Events.RewardDeposit(pcrId, depositAmount);
@@ -217,17 +147,11 @@ contract PcrOptimisticOracle is
      * @dev The caller must approve this contract to transfer `optimisticOracleProposerBond` + final fee amount
      * of `bondToken`.
      */
-    function proposeDistribution(int256 _proposedPrice) external {
+    function proposeDistribution(int256 _proposedPrice) onlyActiveRewards() external {
         uint256 timestamp = block.timestamp;
         console.log(timestamp);
-        require(
-            timestamp >= reward.earliestNextAction,
-            "Cannot propose in funding period"
-        );
-        require(
-            reward.rewardStep == DataTypes.RewardStep.Funding,
-            "New proposals blocked"
-        );
+        require(timestamp >= reward.earliestNextAction, "Cannot propose in funding period");
+        require(reward.rewardStep == DataTypes.RewardStep.Funding, "New proposals blocked");
 
         // Flag reward as proposed so that any subsequent proposals are blocked till dispute.
         reward.rewardStep = DataTypes.RewardStep.Pending;
@@ -240,38 +164,16 @@ contract PcrOptimisticOracle is
         uint256 id = _proposalId.current();
 
         // Request price from Optimistic Oracle.
-        optimisticOracle.requestPrice(
-            reward.priceIdentifier,
-            timestamp,
-            ancillaryData,
-            IERC20(0x489Bf230d4Ab5c2083556E394a28276C22c3B580),
-            0
-        );
+        optimisticOracle.requestPrice(reward.priceIdentifier, timestamp, ancillaryData, IERC20(0x489Bf230d4Ab5c2083556E394a28276C22c3B580), 0);
 
         // Set proposal liveness and bond and calculate total bond amount.
-        optimisticOracle.setCustomLiveness(
-            reward.priceIdentifier,
-            timestamp,
-            ancillaryData,
-            reward.optimisticOracleLivenessTime
-        );
+        optimisticOracle.setCustomLiveness(reward.priceIdentifier, timestamp, ancillaryData, reward.optimisticOracleLivenessTime);
 
         // Propose canonical value representing "True"; i.e. the proposed distribution is valid.
-        optimisticOracle.proposePriceFor(
-            msg.sender,
-            address(this),
-            reward.priceIdentifier,
-            timestamp,
-            ancillaryData,
-            int256(_proposedPrice)
-        );
+        optimisticOracle.proposePriceFor(msg.sender, address(this), reward.priceIdentifier, timestamp, ancillaryData, int256(_proposedPrice));
 
         // Store and log proposed distribution.
-        proposal = DataTypes.Proposal({
-            pcrId: pcrId,
-            proposalId: id,
-            timestamp: timestamp
-        });
+        proposal = DataTypes.Proposal({pcrId: pcrId, proposalId: id, timestamp: timestamp});
         emit Events.ProposalCreated(msg.sender, id, pcrId, timestamp);
     }
 
@@ -279,75 +181,60 @@ contract PcrOptimisticOracle is
      * @notice Allows any caller to execute distribution that has been validated by the Optimistic Oracle.
      * @dev Calling this for unresolved proposals will revert.
      */
-    function executeDistribution() external {
+    function executeDistribution() onlyActiveRewards() external {
         // All valid proposals should have non-zero proposal timestamp.
 
         require(proposal.timestamp != 0, "Invalid proposalId");
 
         // Only one validated proposal per reward can be executed for distribution.
-        require(
-            reward.rewardStep != DataTypes.RewardStep.Accepted,
-            "Reward already distributed"
-        );
+        require(reward.rewardStep == DataTypes.RewardStep.Pending, "Reward not in Propose Period");
 
         // Append reward index to ancillary data.
         bytes memory ancillaryData = _appendpcrId(reward.customAncillaryData);
 
         // Get resolved price. Reverts if the request is not settled or settleable.
-        int256 resolvedPrice = optimisticOracle.settleAndGetPrice(
-            reward.priceIdentifier,
-            proposal.timestamp,
-            ancillaryData
-        );
+        int256 resolvedPrice = optimisticOracle.settleAndGetPrice(reward.priceIdentifier, proposal.timestamp, ancillaryData);
 
         // Transfer rewards to MerkleDistributor for accepted proposal and flag distributionProposed Accepted.
         // This does not revert on rejected proposals so that disputer could receive back its bond and winning
         // in the same transaction when settleAndGetPrice is called above.
 
-        bool isConditionMet = _checkTargetCondition(
-            resolvedPrice,
-            reward.target,
-            reward.targetCondition
-        );
+        bool isConditionMet = _checkTargetCondition(resolvedPrice, reward.target, reward.targetCondition);
 
         if (isConditionMet == true) {
-            reward.rewardStep = DataTypes.RewardStep.Accepted;
-            SuperToken(rewardToken).approve(
-                TOKEN_INDEX_PUBLISHER_ADDRESS,
-                reward.rewardAmount
-            );
-            SuperToken(rewardToken).send(
-                TOKEN_INDEX_PUBLISHER_ADDRESS,
-                reward.rewardAmount,
-                "0x"
-            );
+            SuperToken(rewardToken).approve(TOKEN_INDEX_PUBLISHER_ADDRESS, reward.rewardAmount);
+            SuperToken(rewardToken).send(TOKEN_INDEX_PUBLISHER_ADDRESS, reward.rewardAmount, "0x");
 
-            //// reward.rewardToken.safeApprove(address(merkleDistributor), reward.rewardAmount);
             ////
-            emit Events.RewardDistributed(
-                reward.admin,
-                reward.rewardToken,
-                proposal.pcrId,
-                reward.rewardAmount,
-                proposal.proposalId
-            );
-            console.log("approved");
+            ////
+            emit Events.RewardDistributed( proposal.pcrId, reward.rewardAmount);
+
+            reward.earliestNextAction = block.timestamp + reward.interval;
+            console.log(reward.earliestNextAction);
+            reward.rewardStep = DataTypes.RewardStep.Funding;
         }
         // ProposalRejected can be emitted multiple times whenever someone tries to execute the same rejected proposal.
         else {
-            console.log("rejected");
             emit Events.ProposalRejected(proposal.pcrId, proposal.proposalId);
         }
     }
 
-    function changeTarget(int256 _newTarget) external  onlyAdmin() {
+    function changeTarget(int256 _newTarget, DataTypes.TargetCondition _newTargetCondition) external onlyAdmin {
         reward.target = _newTarget;
+        reward.targetCondition = _newTargetCondition;
+
+        emit Events.RewardTargetAndConditionChanged(pcrId, reward.target, reward.targetCondition);
     }
 
-    function changeTargetCondition(
-        DataTypes.TargetCondition _newTargetCondition
-    ) external onlyAdmin() {
-        reward.targetCondition = _newTargetCondition;
+    function switchRewardStatus() external onlyAdmin {
+        if (reward.rewardStatus == DataTypes.RewardStatus.Active) {
+            reward.rewardStatus = DataTypes.RewardStatus.Paused;
+        } else if (reward.rewardStatus == DataTypes.RewardStatus.Paused) {
+            reward.rewardStatus = DataTypes.RewardStatus.Active;
+            reward.rewardStep = DataTypes.RewardStep.Funding;
+            reward.earliestNextAction = block.timestamp + reward.interval;
+        }
+        emit Events.RewardSwitchStatus(reward.rewardStatus);
     }
 
     /********************************************
@@ -386,21 +273,61 @@ contract PcrOptimisticOracle is
     ) external {
         require(msg.sender == address(optimisticOracle), "Not authorized");
 
-        // Identify the proposed distribution from callback parameters.
-        bytes32 proposalId = _getProposalId(
-            identifier,
-            timestamp,
-            ancillaryData
-        );
-
         // Flag the associated reward unblocked for new distribution proposals unless rewards already distributed.
-        if (reward.rewardStep != DataTypes.RewardStep.Accepted)
-            reward.rewardStep = DataTypes.RewardStep.Funding;
+        reward.rewardStep = DataTypes.RewardStep.Funding;
     }
 
     /********************************************
      *            INTERNAL FUNCTIONS            *
      ********************************************/
+
+        /**
+     * @notice Allows any caller to create a Reward struct and deposit tokens that are linked to these rewards.
+     * @dev The caller must approve this contract to transfer `rewardAmount` amount of `rewardToken`.
+     * @param rewardAmount Maximum reward amount that the admin is posting for distribution.
+     * @param interval Starting timestamp when proposals for distribution can be made.
+     * @param priceIdentifier Identifier that should be passed to the Optimistic Oracle on proposed distribution.
+     * @param customAncillaryData Custom ancillary data that should be sent to the Optimistic Oracle on proposed
+     * distribution.
+     * @param optimisticOracleLivenessTime Liveness period in seconds during which proposed distribution can be
+     * disputed through Optimistic Oracle.
+     */
+    function _createReward(
+        uint256 rewardAmount,
+        int256 target,
+        DataTypes.TargetCondition targetCondition,
+        uint256 interval,
+        uint256 optimisticOracleLivenessTime,
+        bytes32 priceIdentifier,
+        bytes memory customAncillaryData
+    ) internal {
+        require(_getIdentifierWhitelist().isIdentifierSupported(priceIdentifier), "Identifier not registered");
+        require(_ancillaryDataWithinLimits(customAncillaryData), "Ancillary data too long");
+        require(optimisticOracleLivenessTime >= MINIMUM_LIVENESS, "OO liveness too small");
+        require(optimisticOracleLivenessTime < MAXIMUM_LIVENESS, "OO liveness too large");
+
+        // Pull maximum rewards from the admin.
+        // rewardToken.safeTransferFrom(msg.sender, address(this), rewardAmount);
+
+        uint256 earliestNextAction = block.timestamp + interval;
+
+        // Store funded reward and log created reward.
+        reward = DataTypes.Reward({
+            rewardStep: DataTypes.RewardStep.Funding,
+            rewardStatus: DataTypes.RewardStatus.Active,
+            admin: msg.sender,
+            target: target,
+            targetCondition: targetCondition,
+            rewardToken: rewardToken,
+            rewardAmount: rewardAmount,
+            interval: interval,
+            earliestNextAction: earliestNextAction,
+            optimisticOracleLivenessTime: optimisticOracleLivenessTime,
+            priceIdentifier: priceIdentifier,
+            customAncillaryData: customAncillaryData
+        });
+    }
+
 
     function _checkTargetCondition(
         int256 _proposedPrice,
@@ -409,30 +336,15 @@ contract PcrOptimisticOracle is
     ) internal returns (bool) {
         bool resultCheck = false;
 
-        if (
-            _targetCondition == DataTypes.TargetCondition.GT &&
-            _proposedPrice > _target
-        ) {
+        if (_targetCondition == DataTypes.TargetCondition.GT && _proposedPrice > _target) {
             resultCheck = true;
-        } else if (
-            _targetCondition == DataTypes.TargetCondition.GTE &&
-            _proposedPrice >= _target
-        ) {
+        } else if (_targetCondition == DataTypes.TargetCondition.GTE && _proposedPrice >= _target) {
             resultCheck = true;
-        } else if (
-            _targetCondition == DataTypes.TargetCondition.E &&
-            _proposedPrice == _target
-        ) {
+        } else if (_targetCondition == DataTypes.TargetCondition.E && _proposedPrice == _target) {
             resultCheck = true;
-        } else if (
-            _targetCondition == DataTypes.TargetCondition.LTE &&
-            _proposedPrice <= _target
-        ) {
+        } else if (_targetCondition == DataTypes.TargetCondition.LTE && _proposedPrice <= _target) {
             resultCheck = true;
-        } else if (
-            _targetCondition == DataTypes.TargetCondition.LT &&
-            _proposedPrice < _target
-        ) {
+        } else if (_targetCondition == DataTypes.TargetCondition.LT && _proposedPrice < _target) {
             resultCheck = true;
         }
 
@@ -440,84 +352,28 @@ contract PcrOptimisticOracle is
     }
 
     function _getStore() internal view returns (StoreInterface) {
-        return
-            StoreInterface(
-                finder.getImplementationAddress(OracleInterfaces.Store)
-            );
+        return StoreInterface(finder.getImplementationAddress(OracleInterfaces.Store));
     }
 
-    function _getOptimisticOracle()
-        internal
-        view
-        returns (OptimisticOracleInterface)
-    {
-        return
-            OptimisticOracleInterface(
-                finder.getImplementationAddress(
-                    OracleInterfaces.OptimisticOracle
-                )
-            );
+    function _getOptimisticOracle() internal view returns (OptimisticOracleInterface) {
+        return OptimisticOracleInterface(finder.getImplementationAddress(OracleInterfaces.OptimisticOracle));
     }
 
-    function _getIdentifierWhitelist()
-        internal
-        view
-        returns (IdentifierWhitelistInterface)
-    {
-        return
-            IdentifierWhitelistInterface(
-                finder.getImplementationAddress(
-                    OracleInterfaces.IdentifierWhitelist
-                )
-            );
+    function _getIdentifierWhitelist() internal view returns (IdentifierWhitelistInterface) {
+        return IdentifierWhitelistInterface(finder.getImplementationAddress(OracleInterfaces.IdentifierWhitelist));
     }
 
-    function _getCollateralWhitelist()
-        internal
-        view
-        returns (AddressWhitelistInterface)
-    {
-        return
-            AddressWhitelistInterface(
-                finder.getImplementationAddress(
-                    OracleInterfaces.CollateralWhitelist
-                )
-            );
+    function _getCollateralWhitelist() internal view returns (AddressWhitelistInterface) {
+        return AddressWhitelistInterface(finder.getImplementationAddress(OracleInterfaces.CollateralWhitelist));
     }
 
-    function _appendpcrId(bytes memory customAncillaryData)
-        internal
-        view
-        returns (bytes memory)
-    {
-        return
-            AncillaryData.appendKeyValueUint(
-                customAncillaryData,
-                "PcrId",
-                pcrId
-            );
+    function _appendpcrId(bytes memory customAncillaryData) internal view returns (bytes memory) {
+        return AncillaryData.appendKeyValueUint(customAncillaryData, "PcrId", pcrId);
     }
 
-    function _ancillaryDataWithinLimits(bytes memory customAncillaryData)
-        internal
-        view
-        returns (bool)
-    {
+    function _ancillaryDataWithinLimits(bytes memory customAncillaryData) internal view returns (bool) {
         // Since pcrId has variable length as string, it is not appended here and is assumed
         // to be included in ANCILLARY_BYTES_RESERVE.
-        return
-            optimisticOracle
-                .stampAncillaryData(customAncillaryData, address(this))
-                .length +
-                ANCILLARY_BYTES_RESERVE <=
-            ancillaryBytesLimit;
-    }
-
-    function _getProposalId(
-        bytes32 identifier,
-        uint256 timestamp,
-        bytes memory ancillaryData
-    ) internal pure returns (bytes32) {
-        return keccak256(abi.encode(identifier, timestamp, ancillaryData));
+        return optimisticOracle.stampAncillaryData(customAncillaryData, address(this)).length + ANCILLARY_BYTES_RESERVE <= ancillaryBytesLimit;
     }
 }

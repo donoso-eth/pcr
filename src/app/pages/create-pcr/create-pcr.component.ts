@@ -179,7 +179,7 @@ export class CreatePcrComponent extends DappBaseComponent implements OnInit {
       rewardToken: this.rewardForm.controls.tokenCtrl.value.superToken,
     };
 
-    console.log(OptimisticOracle)
+ 
 
     this.store.dispatch(Web3Actions.chainBusy({ status: true }));
 
@@ -190,7 +190,7 @@ export class CreatePcrComponent extends DappBaseComponent implements OnInit {
         OptimisticOracle
       )!
     );
-
+    this.store.dispatch(Web3Actions.chainBusy({ status: false }));
     this.display = true;
   }
 

@@ -64,6 +64,7 @@ const clone = async () => {
 
   const priceIdentifier =
     hre.ethers.utils.formatBytes32String('YES_OR_NO_QUERY');
+
   const customAncillaryData = hre.ethers.utils.hexlify(
     hre.ethers.utils.toUtf8Bytes(
       'q: title: NBA: Who will win Heat vs. Hawks, scheduled for April 19, 7:30 PM ET?, p1: 0, p2: 1, p3: 0.5. Where p2 corresponds to Yes, p1 to a NO, p3 to unknown'
@@ -71,6 +72,11 @@ const clone = async () => {
   );
 
 
+  const b = "0x713a207469746c653a204e42413a2057686f2077696c6c2077696e20486561742076732e204861776b732c207363686564756c656420666f7220417072696c2031392c20373a333020504d2045543f2c2070313a20302c2070323a20312c2070333a20302e352e20576865726520703220636f72726573706f6e647320746f20486561742c20703120746f2061204861776b732c20703320746f20756e6b6e6f776e"
+
+    console.log( utils.toUtf8String(b));
+
+return
   const OptimisticOracle: OPTIMISTICORACLEINPUTStruct = {
     finder: chain_addresses.finder,
     target: utils.parseEther("1"),
@@ -120,7 +126,7 @@ const clone = async () => {
     pcrAddress.tokenContract,
     deployer
   );
-  console.log(167, await pcrToken.receiver());
+
   const sf = await Framework.create({
     networkName: 'local',
     provider: provider,
@@ -203,8 +209,6 @@ const clone = async () => {
   });
   console.log(index0);
 
-  console.log(await pcrToken.receiver());
-
   console.log((await daixContract2.balanceOf(deployer.address)).toString());
 
   tx2 = await daixContract.approve({
@@ -221,7 +225,7 @@ const clone = async () => {
 
   await user3Txt.wait();
 
-  console.log(167, await pcrToken.receiver());
+
 };
 
 clone()

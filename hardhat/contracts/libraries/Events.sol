@@ -9,21 +9,28 @@ library Events {
      *
     
      */
+
+    //// HOST CONTRACT
     event RewardCreated(DataTypes.REWARD_EVENT reward);
 
+
+     //// OPTIMISTIC ORACLE CONTRACT
     event RewardDeposit(uint256 pcrId, uint256 depositAmount);
 
     event RewardTargetAndConditionChanged(uint256 pcrId, int256 target, DataTypes.TargetCondition targetCondition);
 
     event RewardSwitchStatus(DataTypes.RewardStatus rewardStatus);
     
-    event ProposalCreated(address proposer, uint256 proposalId, uint256 pcrId, uint256 timeStamp);
+    event ProposalCreated(address proposer, uint256 proposalId, uint256 pcrId);
 
     event ProposalRejected(uint256 pcrId, uint256 proposalId);
 
-    event RewardUnitsIssued(uint256 pcrId, address beneficiary,  uint256 amount);
+    event ProposalAccepted(uint256 pcrId, uint256 proposalId);
 
-    event RewardUnitsRevoked(uint256 pcrId, address revoker);
+    //// TOKEN CONTRACT
+    event RewardUnitsIssued(uint256 pcrId, address beneficiary, uint256 amount);
+
+    event RewardUnitsDeleted(uint256 pcrId, address beneficiary,  uint256 amount);
     
     event RewardDistributed(uint256 pcrId, uint256 rewardAmount);
 }

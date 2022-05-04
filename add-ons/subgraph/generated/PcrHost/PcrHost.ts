@@ -39,42 +39,46 @@ export class RewardCreatedRewardStruct extends ethereum.Tuple {
     return this[1].toBigInt();
   }
 
+  get targetCondition(): i32 {
+    return this[2].toI32();
+  }
+
   get rewardToken(): Address {
-    return this[2].toAddress();
+    return this[3].toAddress();
   }
 
   get token(): string {
-    return this[3].toString();
+    return this[4].toString();
   }
 
   get pcrId(): BigInt {
-    return this[4].toBigInt();
-  }
-
-  get earliestNextAction(): BigInt {
     return this[5].toBigInt();
   }
 
+  get earliestNextAction(): BigInt {
+    return this[6].toBigInt();
+  }
+
   get optimisticOracleInput(): RewardCreatedRewardOptimisticOracleInputStruct {
-    return changetype<
-      RewardCreatedRewardOptimisticOracleInputStruct
-    >(this[6].toTuple());
+    return changetype<RewardCreatedRewardOptimisticOracleInputStruct>(
+      this[7].toTuple()
+    );
   }
 
   get tokenContract(): Address {
-    return this[7].toAddress();
-  }
-
-  get optimisticOracleContract(): Address {
     return this[8].toAddress();
   }
 
+  get optimisticOracleContract(): Address {
+    return this[9].toAddress();
+  }
+
   get title(): string {
-    return this[9].toString();
+    return this[10].toString();
   }
 
   get url(): string {
-    return this[10].toString();
+    return this[11].toString();
   }
 }
 

@@ -26,6 +26,11 @@ interface IPcrToken {
      */
     function issue(address beneficiary, uint256 amount) external;
     
-
+        /**
+     * @notice Imint a PcrToken and add token owner to Index subscription
+     *
+     * @param beneficiary The address to mint the NFT to ans subscriber to the Ida
+     */
+    function deleteSubscription(address beneficiary) external;
    
 }

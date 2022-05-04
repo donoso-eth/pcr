@@ -115,8 +115,12 @@ contract PcrToken is
     override
     onlyAdmin
   {
-    // then adjust beneficiary subscription units
-    uint256 currentAmount = balanceOf(beneficiary);
+
+    (, , uint128 units, uint256 pendingDistribution) = _idaLib.getSubscription(_rewardToken,TOKEN_INDEX_PUBLISHER_ADDRESS,  INDEX_ID, beneficiary);
+   
+    uint256 totalUnits = units + pendingDistribution;
+
+
 
     // first try to do ERC20Upgradeable mint
     ERC20Upgradeable._mint(beneficiary, amount);
@@ -125,12 +129,31 @@ contract PcrToken is
       _rewardToken,
       INDEX_ID,
       beneficiary,
-      uint128(currentAmount) + uint128(amount)
+      uint128(totalUnits) + uint128(amount)
     );
 
-    emit Events.RewardUnitsIssued(pcrId, beneficiary,  amount);
+    emit Events.RewardUnitsIssued(pcrId, beneficiary,  amount, block.timestamp);
   }
 
+
+    /// @dev Issue new `amount` of giths to `beneficiary`
+  function deleteSubscription(address beneficiary)
+    external
+    override
+    onlyAdmin
+  {
+
+
+    (, , uint128 units, uint256 pendingDistribution) = _idaLib.getSubscription(_rewardToken,TOKEN_INDEX_PUBLISHER_ADDRESS,  INDEX_ID, beneficiary);
+
+    uint256 totalUnits = units + pendingDistribution;
+
+
+    _idaLib.deleteSubscription(_rewardToken,TOKEN_INDEX_PUBLISHER_ADDRESS,  INDEX_ID, beneficiary);
+
+
+    emit Events.RewardUnitsDeleted(pcrId, beneficiary,  totalUnits );
+  }
 
   /// @dev Issue new `amount` of giths to `beneficiary`
   function claim() external {
@@ -170,6 +193,9 @@ contract PcrToken is
 
     // do stuff
     _distribute(amount);
+
+  emit Events.RewardDistributed( pcrId, amount);
+
   }
 
   /// @dev ERC20Upgradeable._transfer override

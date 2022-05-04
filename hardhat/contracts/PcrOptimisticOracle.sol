@@ -206,12 +206,14 @@ contract PcrOptimisticOracle is IPcrOptimisticOracle, Initializable, MultiCaller
             SuperToken(rewardToken).send(TOKEN_INDEX_PUBLISHER_ADDRESS, reward.rewardAmount, "0x");
 
             ////
-            ////
-            emit Events.RewardDistributed( proposal.pcrId, reward.rewardAmount);
 
             reward.earliestNextAction = block.timestamp + reward.interval;
-            console.log(reward.earliestNextAction);
+
             reward.rewardStep = DataTypes.RewardStep.Funding;
+
+
+             emit Events.ProposalAccepted(proposal.pcrId, proposal.proposalId);
+
         }
         // ProposalRejected can be emitted multiple times whenever someone tries to execute the same rejected proposal.
         else {
@@ -223,7 +225,7 @@ contract PcrOptimisticOracle is IPcrOptimisticOracle, Initializable, MultiCaller
         reward.target = _newTarget;
         reward.targetCondition = _newTargetCondition;
 
-        emit Events.RewardTargetAndConditionChanged(pcrId, reward.target, reward.targetCondition);
+        emit Events.RewardTargetAndConditionChanged(pcrId, reward.target, reward.targetCondition, block.timestamp);
     }
 
     function switchRewardStatus() external onlyAdmin {

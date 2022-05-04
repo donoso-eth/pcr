@@ -43,7 +43,7 @@ describe('End to End YES/NO QUESTION', function () {
   let user3: SignerWithAddress;
   let livenessPeriod = 600;
   let interval = 3600;
-
+  let eventsLib:any;
   let sf: Framework;
 
   resetFork();
@@ -61,7 +61,7 @@ describe('End to End YES/NO QUESTION', function () {
 
     const pcrHost = await PcrHost__factory.connect(pcrHostContract.address, deployer);
 
-    const eventsLib = await new Events__factory(deployer).deploy();
+    eventsLib = await new Events__factory(deployer).deploy();
 
     const pcrHostConfig: PCRHOSTCONFIGINPUTStruct = {
       pcrTokenImpl: pcrTokenContractImpl.address,
@@ -124,7 +124,7 @@ describe('End to End YES/NO QUESTION', function () {
         'PCR1 Perpetual Conditional Reward Token Nr: 1',
         1,
         timeStamp + interval,
-        [chain_addresses.finder, utils.parseEther('1.0'), 2, 50, interval, livenessPeriod, appendcustomAncillaryData, priceIdentifier],
+        [chain_addresses.finder, utils.parseEther('1.0'), 2, 50, interval, livenessPeriod,  priceIdentifier,appendcustomAncillaryData,],
         pcrAddresses.tokenContract,
         pcrAddresses.optimisticOracleContract,
         pcrHostConfig.title,
@@ -133,7 +133,7 @@ describe('End to End YES/NO QUESTION', function () {
     ]);
   });
 
-  it.only('Contracts not initialize', async function () {
+  it('Contracts not initialize', async function () {
     expect(await pcrTokenContractImpl.ADMIN()).to.equal(zeroAddress);
     expect(await pcrTokenContractImpl.TOKEN_INDEX_PUBLISHER_ADDRESS()).to.equal(zeroAddress);
   });
@@ -176,7 +176,9 @@ describe('End to End YES/NO QUESTION', function () {
       params: [],
     });
     const proposedPriced = utils.parseEther('1.0');
-    await expect(waitForTx(pcrOptimisticOracle.proposeDistribution(proposedPriced))).not.to.be.reverted;
+    let receipt = await waitForTx(pcrOptimisticOracle.proposeDistribution(proposedPriced))
+
+    matchEvent(receipt, 'ProposalCreated', eventsLib, [deployer.address,1,1,parseInt(await getTimestamp())]);
 
     await increaseBlockTime(network, livenessPeriod + 1);
     await network.provider.request({
@@ -189,7 +191,12 @@ describe('End to End YES/NO QUESTION', function () {
     ////FUNDING THE OPTIMISTIC ORACLE
     const daixContract = await SuperToken__factory.connect(chain_addresses.fDaix, deployer);
     await waitForTx(daixContract.approve(pcrAddresses.optimisticOracleContract, 50));
-    await waitForTx(pcrOptimisticOracle.depositReward(50));
+    receipt =  await waitForTx(pcrOptimisticOracle.depositReward(50));
+    
+    matchEvent(receipt, 'RewardDeposit', eventsLib, [1,50]);
+
+
+
 
     //// ERROR WHILE TRYING TO DISTRIBUTE AN INDEX WITHOUT SUBSCRIBERS
     await expect(waitForTx(pcrOptimisticOracle.executeDistribution())).to.be.revertedWith('CallUtils: target panicked: 0x12');
@@ -216,9 +223,14 @@ describe('End to End YES/NO QUESTION', function () {
     await waitForTx(pcrOptimisticOracle.depositReward(50));
 
     //// ISSUING ONE UNIT
-    await waitForTx(pcrTokenContract.issue(user1.address, 1));
-    await expect(waitForTx(pcrOptimisticOracle.executeDistribution())).not.to.be.reverted;
+    let receipt = await waitForTx(pcrTokenContract.issue(user1.address, 1));
+    matchEvent(receipt, 'RewardUnitsIssued', eventsLib, [1,user1.address,1]);
+
+    receipt =  await waitForTx(pcrOptimisticOracle.executeDistribution())
     let timeStamp = parseInt(await getTimestamp());
+
+    matchEvent(receipt, 'RewardDistributed', eventsLib, [1,50]);
+
     let balance = await daixContract.realtimeBalanceOf(user1.address, timeStamp);
     let iniatialbalance = balance[0].toBigInt();
 

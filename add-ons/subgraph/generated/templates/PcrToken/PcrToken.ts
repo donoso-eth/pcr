@@ -10,6 +10,58 @@ import {
   BigInt
 } from "@graphprotocol/graph-ts";
 
+export class RewardUnitsDeleted extends ethereum.Event {
+  get params(): RewardUnitsDeleted__Params {
+    return new RewardUnitsDeleted__Params(this);
+  }
+}
+
+export class RewardUnitsDeleted__Params {
+  _event: RewardUnitsDeleted;
+
+  constructor(event: RewardUnitsDeleted) {
+    this._event = event;
+  }
+
+  get pcrId(): BigInt {
+    return this._event.parameters[0].value.toBigInt();
+  }
+
+  get beneficiary(): Address {
+    return this._event.parameters[1].value.toAddress();
+  }
+
+  get amount(): BigInt {
+    return this._event.parameters[2].value.toBigInt();
+  }
+}
+
+export class RewardUnitsIssued extends ethereum.Event {
+  get params(): RewardUnitsIssued__Params {
+    return new RewardUnitsIssued__Params(this);
+  }
+}
+
+export class RewardUnitsIssued__Params {
+  _event: RewardUnitsIssued;
+
+  constructor(event: RewardUnitsIssued) {
+    this._event = event;
+  }
+
+  get pcrId(): BigInt {
+    return this._event.parameters[0].value.toBigInt();
+  }
+
+  get beneficiary(): Address {
+    return this._event.parameters[1].value.toAddress();
+  }
+
+  get amount(): BigInt {
+    return this._event.parameters[2].value.toBigInt();
+  }
+}
+
 export class RewardDistributed extends ethereum.Event {
   get params(): RewardDistributed__Params {
     return new RewardDistributed__Params(this);
@@ -23,24 +75,12 @@ export class RewardDistributed__Params {
     this._event = event;
   }
 
-  get admin(): Address {
-    return this._event.parameters[0].value.toAddress();
-  }
-
-  get rewardToken(): Address {
-    return this._event.parameters[1].value.toAddress();
-  }
-
   get pcrId(): BigInt {
-    return this._event.parameters[2].value.toBigInt();
+    return this._event.parameters[0].value.toBigInt();
   }
 
   get rewardAmount(): BigInt {
-    return this._event.parameters[3].value.toBigInt();
-  }
-
-  get proposalId(): BigInt {
-    return this._event.parameters[4].value.toBigInt();
+    return this._event.parameters[1].value.toBigInt();
   }
 }
 

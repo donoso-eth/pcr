@@ -37,12 +37,6 @@
         "internalType": "uint256",
         "name": "pcrId",
         "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "timeStamp",
-        "type": "uint256"
       }
     ],
     "name": "ProposalCreated",

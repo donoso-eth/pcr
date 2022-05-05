@@ -56,10 +56,6 @@ export class ProposalCreated__Params {
   get pcrId(): BigInt {
     return this._event.parameters[2].value.toBigInt();
   }
-
-  get timeStamp(): BigInt {
-    return this._event.parameters[3].value.toBigInt();
-  }
 }
 
 export class ProposalRejected extends ethereum.Event {

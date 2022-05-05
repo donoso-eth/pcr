@@ -3,126 +3,121 @@
     <div style="position: relative; border-color: transparent" class="card">
       <h5>Pcr's Created</h5>
 
-      <button
-        pButton
-        pRipple
-        style="position: absolute; top: 15px; right: 20px"
-        (click)="createPcr()"
-        type="button"
-        label="New"
-        class="p-button-rounded mr-2 mb-2"
-      ></button>
+      <button pButton pRipple style="position: absolute; top: 15px; right: 20px" (click)="createPcr()" type="button"
+        label="New" class="p-button-rounded mr-2 mb-2"></button>
 
       <div style="margin-top: 20px" class="grid p-fluid">
         <div class="col-12">
-          <div style="position:relative" class="card" *ngFor="let token of pcrTokens;index as i">
+          <div style="position:relative" class="card" *ngFor="let reward of pcrTokens;index as i">
             <div style="position: absolute;right: 25px;">
-            <p-inputSwitch (onChange)="changeStatus($event.checked,i)"  [(ngModel)]="token.status"></p-inputSwitch>
-          </div>
-            <h6>{{ token.title }}</h6>
+              <p-inputSwitch (onChange)="changeStatus($event.checked,i)" [(ngModel)]="reward.rewardStatus">
+              </p-inputSwitch>
+            </div>
+            <h6>{{ reward.title }}</h6>
             <br />
-            <textarea
-              pInputTextarea
-              placeholder="Your Message"
-              [autoResize]="true"
-              rows="6"
-              cols="30"
-              >{{ token.displayCustomAncillaryData }}</textarea
-            >
+            <textarea pInputTextarea placeholder="Your Message" [autoResize]="true" 
+              cols="30">{{ reward.displayCustomAncillaryData }}</textarea>
             <div style="margin-top:20px" class="grid">
-            <div class="col-12 lg:col-6 xl:col-6">
+              <div class="col-12 lg:col-6 xl:col-6">
                 <div style="background-color: var(--surface-ground);" class="card mb-0">
                   <div class="flex justify-content-between mb-3">
-                    <div>
-                      <span class="block text-500 font-medium mb-3">Orders</span>
-                      <div class="text-900 font-medium text-xl">152</div>
+               
+                    <div *ngIf="reward.displayStep == 0">
+                      <span class="block text-500 font-medium mb-3">Reward in Qualyfing Period</span>
+                      <div class="text-900 font-medium text-xl">{{reward.earliestNextAction}}</div>
                     </div>
-                
-                   
+                    <div *ngIf="reward.displayStep == 1">
+                      <span class="block text-500 font-medium mb-3">Waiting for Propositions</span>
+                      <div class="text-900 font-medium text-xl">
+                        <span>Please Provide your value </span>
+                        <button pButton pRipple style="position: relative; bottom: 8px; right: 20px; width:fit-content"
+                          (click)="doPropose(reward)" type="button" label="Propose"
+                          class="p-button-rounded mr-2 mb-2"></button>
+
+                      </div>
+                    </div>
+
                   </div>
                   <div class="mt-2 md:mt-0 ml-0 flex align-items-center">
                     <div class="surface-300 border-round overflow-hidden w-10rem lg:w-6rem" [ngStyle]="{height: '8px'}">
-                        <div class="bg-green-500 h-full" [ngStyle]="{width: '35%'}"></div>
+                      <div class="bg-green-500 h-full" [ngStyle]="{width: '35%'}"></div>
                     </div>
                     <span class="text-green-500 ml-3 font-medium">%35</span>
-                </div>
+                  </div>
                 </div>
               </div>
-              <div  class="col-12 lg:col-6 xl:col-6">
+              <div class="col-12 lg:col-6 xl:col-6">
                 <div style="background-color: var(--surface-ground);" style="position:relative" class="card mb-0">
                   <div class="flex justify-content-between mb-3">
                     <div>
-                      <span class="block text-500 font-medium mb-3"> <div style="width:40px;height:40px;border-radius: 20px;background: lightgreen;"></div>Deposit</span>
-                      <div [class]="+token.rewardAmount<= +token.currentdeposit ? 'text-green-500' : 'text-orange-500' " class="text-900 font-medium text-xl">${{token.currentdeposit}}</div>
+                      <div class="flex mb-3 align-items-center">
+                        <div
+                          [style.background]="+reward.rewardAmount<= +reward.currentdeposit ? 'var(--green-500)':'orange'"
+                          style="width:25px;height:25px;border-radius: 13px;background: lightgreen;"></div> <span
+                          class="block text-500 font-medium ml-2"> Deposit</span>
+                      </div>
+                      <div
+                        [class]="+reward.rewardAmount<= +reward.currentdeposit ? 'text-green-500' : 'text-orange-500' "
+                        class="text-900 font-medium text-xl">${{reward.currentdeposit}}</div>
                     </div>
-                    <div
-                      class="flex align-items-center justify-content-center"
-                      [ngStyle]="{ width: '2.5rem', height: '2.5rem' }"
-                    >
-                    <img src="assets/images/tokens/{{token?.fundToken?.image}}_icon.svg" style="margin-right: 5px;" />
+                    <div class="flex align-items-center justify-content-center"
+                      [ngStyle]="{ width: '2.5rem', height: '2.5rem' }">
+                      <img src="assets/images/tokens/{{reward?.fundToken?.image}}_icon.svg"
+                        style="margin-right: 5px;" />
 
                     </div>
                   </div>
-                  <span   class="font-medium">{{token.rewardAmount}} </span>
+                  <span class="font-medium">{{reward.rewardAmount}} </span>
                   <span class="text-500">Required Reward Amount, please fund the reward </span>
-                  <button
-                  pButton
-                  pRipple
-                  style="position: absolute; bottom: 8px; right: 20px; width:fit-content"
-                  (click)="doFunding(token)"
-                  type="button"
-                  label="Fund"
-                  class="p-button-rounded mr-2 mb-2"
-                ></button>
+                  <button pButton pRipple style="position: absolute; bottom: 8px; right: 20px; width:fit-content"
+                    (click)="doFunding(reward)" type="button" label="Fund" class="p-button-rounded mr-2 mb-2"></button>
                 </div>
-            
-              </div>
-          </div>
-          <div style="position:relative;background-color: var(--surface-ground);" class="card mt-3 flex align-items-center justify-content-center">
-            <h4>Current Status</h4>
 
-          </div>
+              </div>
+            </div>
+            <div style="position:relative;background-color: var(--surface-ground);"
+              class="card mt-3 flex align-items-center justify-content-center">
+              <h4>Current Status</h4>
+
+            </div>
           </div>
           <div *ngIf="pcrTokens?.length == 0" class="card">
             <div class="grid flex flex-column align-items-center">
-              <div
-                class="flex justify-content-center align-items-center bg-pink-500 border-circle"
-                style="height: 3.2rem; width: 3.2rem"
-              >
-                <i
-                  class="pi pi-fw pi-exclamation-circle text-2xl text-white"
-                ></i>
-          
+              <div class="flex justify-content-center align-items-center bg-pink-500 border-circle"
+                style="height: 3.2rem; width: 3.2rem">
+                <i class="pi pi-fw pi-exclamation-circle text-2xl text-white"></i>
+
               </div>
               <h1 class="text-900 font-bold text-5xl mb-2">Nothing Found</h1>
-              <span class="text-600"
-                >Please create a new Perpetual Conditional Reward</span
-              >
+              <span class="text-600">Please create a new Perpetual Conditional Reward</span>
             </div>
           </div>
-  
+
         </div>
       </div>
     </div>
-    <div style="position: relative; border-color: transparent"  class="card">
+    <div style="position: relative; border-color: transparent" class="card">
       <h5>Pcr's Rewards Received</h5>
     </div>
   </div>
 </div>
-<p-dialog header="Let's fund!" [(visible)]="showFunding" [modal]="true" showEffect="fade" [style]="{width: '40vw'}" [breakpoints]="{'960px': '75vw'}">
-	<p class="line-height-3 m-0">
-		You are about to fund the PCR Token <span style="color:green">"{{toUpdateToken?.title}}"</span> <br>
-		It requires the {{toUpdateToken?.fundToken.name}} superToken, your current balance is: {{toUpdateToken?.fundToken.superTokenBalance}}. You may wamt to:
-	</p>
+<p-dialog header="Let's fund!" [(visible)]="showFunding" [modal]="true" showEffect="fade" [style]="{width: '40vw'}"
+  [breakpoints]="{'960px': '75vw'}">
+  <p class="line-height-3 m-0">
+    You are about to fund the PCR Token <span style="color:green">"{{toUpdateReward?.title}}"</span> <br>
+    It requires the {{toUpdateReward?.fundToken?.name}} superToken, your current balance is:
+    {{toUpdateReward?.fundToken?.superTokenBalance!}}. You may wamt to:
+  </p>
   <h6>Fund The PCR Token</h6>
-  <p class="flex justify-content-between" *ngIf="+toUpdateToken?.fundToken.superTokenBalance > +toUpdateToken?.rewardAmount">
-   	
-    <p-inputNumber [formControl]="toFundAmountCtrl"  placeholder="Amount" mode="decimal" [showButtons]="true" [min]="0">
+  <p class="flex justify-content-between"
+    *ngIf="+toUpdateReward?.fundToken?.superTokenBalance! > +toUpdateReward?.rewardAmount!">
+
+    <p-inputNumber [formControl]="toFundAmountCtrl" placeholder="Amount" mode="decimal" [showButtons]="true" [min]="0">
     </p-inputNumber>
-    <button pButton icon="pi pi-check"  label="Fund"  (click)="fundDeposit()" class="p-button-outlined"></button>
+    <button pButton icon="pi pi-check" label="Fund" (click)="fundDeposit()" class="p-button-outlined"></button>
 
   </p>
-	<ng-template pTemplate="footer">
-			<button pButton icon="pi pi-check"  label="Fund" class="p-button-outlined"></button>
-	</ng-template>
+  <ng-template pTemplate="footer">
+    <button pButton icon="pi pi-check" label="Fund" class="p-button-outlined"></button>
+  </ng-template>
 </p-dialog>

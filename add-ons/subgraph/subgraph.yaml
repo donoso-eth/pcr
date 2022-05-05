@@ -49,7 +49,7 @@ templates:
       eventHandlers:
         - event: RewardDeposit(uint256,uint256)
           handler: handleRewardDeposit
-        - event: ProposalCreated(address,uint256,uint256,uint256)
+        - event: ProposalCreated(address,uint256,uint256)
           handler: handleProposalCreated
         - event: ProposalRejected(uint256,uint256)
           handler: handleProposalRejected

@@ -56,7 +56,7 @@ export function handleRewardDeposit(event: RewardDeposit): void {
 
   let reward = Reward.load(id);
   if (reward !== null) {
-    reward.currentdeposit = event.params.depositAmount;
+    reward.currentdeposit = event.params.depositAmount.plus(reward.currentdeposit);
     reward.save();
   }
 }

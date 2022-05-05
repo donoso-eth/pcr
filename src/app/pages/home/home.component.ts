@@ -11,12 +11,7 @@ import { GraphQlService } from 'src/app/dapp-injector/services/graph-ql/graph-ql
 import { abi_ERC20 } from './abis/erc20';
 import { abi_SuperToken } from './abis/superToken';
 
-enum REWARD_STEP {
-  FUNDING,
-  AWAITING_PROPOSAL,
-  LIVENESS_PERIOD,
-  AWAITING_EXECUTION,
-}
+
 
 @Component({
   selector: 'app-home',
@@ -69,16 +64,33 @@ export class HomeComponent extends DappBaseComponent {
     this.showFunding = false;
   }
   
+calculateStep(reward:any):REWARD_STEP{
+  let rewardStep = +(reward.rewardStep.toString());
+  let timeStamp = +(new Date().getTime()/1000).toFixed(0);
+  let earliestNextAction = +reward.earliestNextAction.toString()
+  let step:REWARD_STEP = REWARD_STEP.QUALIFYING;
+  if (rewardStep == 0 && timeStamp < earliestNextAction){
+    step = REWARD_STEP.QUALIFYING;
+  } else if (rewardStep == 0 && timeStamp >= earliestNextAction){
+    step = REWARD_STEP.AWAITING_PROPOSAL
+  } else if (rewardStep == 1 && timeStamp < earliestNextAction){
+    step = REWARD_STEP.LIVENESS_PERIOD
+  } else if (rewardStep == 1 && timeStamp >= earliestNextAction){
+    step = REWARD_STEP.AWAITING_EXECUTION
+  }
+  return step
+}
 
- transformTokenObject(token: any) {
-   token.displayCustomAncillaryData = utils.toUtf8String(token.customAncillaryData);
-    console.log(new Date(+token.earliestNextAction * 1000).toLocaleString());
-    // token.status = true;
-    // token.step = 0);
+ transformRewardObject(reward: any) {
+   reward.displayCustomAncillaryData = utils.toUtf8String(reward.customAncillaryData);
+    console.log(new Date(+reward.earliestNextAction * 1000).toLocaleString());
+    // reward.status = true;
+    // reward.step = 0);
 
-    const displayToken = global_tokens.filter((fil) => fil.superToken == token.rewardToken)[0];
-    token.fundToken = displayToken;
-    return token
+    const displayreward = global_tokens.filter((fil) => fil.superToken == reward.rewardToken)[0];
+    reward.fundreward = displayreward;
+    reward.step = this.calculateStep(reward)
+    return reward
   }
 
   private _createERC20Instance(ERC: string): Contract {
@@ -89,7 +101,7 @@ export class HomeComponent extends DappBaseComponent {
     return new Contract(SuperToken, abi_SuperToken, this.dapp.signer!);
   }
 
-  async getTokens() {
+ getTokens() {
     this.pcrTokens = [];
     this.graphqlService.tokens$.pipe(takeUntil(this.destroyHooks)).subscribe((data: any) => {
       console.log(data)
@@ -102,13 +114,11 @@ export class HomeComponent extends DappBaseComponent {
           
           const availableTokenIndex = this.pcrTokens.map(fil=> fil.id).indexOf(each.id)
           if (availableTokenIndex == -1) {
-            this.pcrTokens.push(this.transformTokenObject(each));
-       
+            this.pcrTokens.push(this.transformRewardObject(each));       
           } else {
-            this.pcrTokens[availableTokenIndex]  =  {...this.pcrTokens[availableTokenIndex],...each};
+            this.pcrTokens[availableTokenIndex]  =  {...this.pcrTokens[availableTokenIndex],...each,...{step:this.calculateStep(each)}};
           }
 
-         
         });
 
    

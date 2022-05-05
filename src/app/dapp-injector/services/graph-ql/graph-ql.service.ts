@@ -15,7 +15,9 @@ const rewards = gql`
     title,
     url,
     earliestNextAction,
-    interval
+    interval,
+    rewardStep,
+    rewardStatus
   }
 }
 `;

@@ -2,6 +2,18 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { Apollo, QueryRef, gql } from 'apollo-angular';
 import { BehaviorSubject, Subject, Subscription } from 'rxjs';
 
+const proposals = gql`
+ { proposals(first:5){
+  id
+ proposer
+ reward
+ timeStamp
+ status
+ }
+ }
+`
+
+
 const rewards = gql`
 {
   rewards(first: 5) {
@@ -50,17 +62,14 @@ watchTokens() {
 
   
  async  query() {
-    // this.postsQuery = this.apollo.watchQuery<any>({
-    //   query: GET_POSTS,
-    //   pollInterval: 500,
-    // });
+
   try {
     const posts = await  this.apollo.query<any>({
-      query: rewards
+      query: proposals
     }).toPromise()
 
     console.log(posts)
-  return posts?.data
+  return posts
   } catch (error) {
     console.log(error)
       return {}

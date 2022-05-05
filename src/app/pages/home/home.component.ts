@@ -114,7 +114,11 @@ export class HomeComponent extends DappBaseComponent {
     return new Contract(SuperToken, abi_SuperToken, this.dapp.signer!);
   }
 
-  getTokens() {
+  async getTokens() {
+
+    const proposals = await this.graphqlService.query()
+    console.log(proposals)
+
     this.graphqlService.tokens$.pipe(takeUntil(this.destroyHooks)).subscribe((data: any) => {
       console.log(data);
       if (data) {

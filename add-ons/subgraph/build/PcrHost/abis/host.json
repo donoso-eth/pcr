@@ -10,6 +10,16 @@
             "type": "address"
           },
           {
+            "internalType": "int256",
+            "name": "target",
+            "type": "int256"
+          },
+          {
+            "internalType": "enum DataTypes.TargetCondition",
+            "name": "targetCondition",
+            "type": "uint8"
+          },
+          {
             "internalType": "address",
             "name": "rewardToken",
             "type": "address"
@@ -26,7 +36,7 @@
           },
           {
             "internalType": "uint256",
-            "name": "earliestProposalTimestamp",
+            "name": "earliestNextAction",
             "type": "uint256"
           },
           {
@@ -35,6 +45,16 @@
                 "internalType": "contract FinderInterface",
                 "name": "finder",
                 "type": "address"
+              },
+              {
+                "internalType": "int256",
+                "name": "target",
+                "type": "int256"
+              },
+              {
+                "internalType": "enum DataTypes.TargetCondition",
+                "name": "targetCondition",
+                "type": "uint8"
               },
               {
                 "internalType": "uint256",
@@ -93,7 +113,7 @@
         "type": "tuple"
       }
     ],
-    "name": "PerpetualConditionalRewardCreated",
+    "name": "RewardCreated",
     "type": "event"
   }
 ]

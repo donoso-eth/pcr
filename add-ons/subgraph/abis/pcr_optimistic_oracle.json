@@ -1,18 +1,7 @@
-[{
+[
+  {
     "anonymous": false,
     "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "proposer",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "proposalId",
-        "type": "uint256"
-      },
       {
         "indexed": false,
         "internalType": "uint256",
@@ -22,7 +11,31 @@
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "timeStamp",
+        "name": "proposalId",
+        "type": "uint256"
+      }
+    ],
+    "name": "ProposalAccepted",
+    "type": "event"
+  },{
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "proposer",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "proposalId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "pcrId",
         "type": "uint256"
       }
     ],
@@ -33,13 +46,13 @@
     "anonymous": false,
     "inputs": [
       {
-        "indexed": true,
+        "indexed": false,
         "internalType": "uint256",
         "name": "pcrId",
         "type": "uint256"
       },
       {
-        "indexed": true,
+        "indexed": false,
         "internalType": "uint256",
         "name": "proposalId",
         "type": "uint256"
@@ -66,4 +79,43 @@
     ],
     "name": "RewardDeposit",
     "type": "event"
-  }]
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "enum DataTypes.RewardStatus",
+        "name": "rewardStatus",
+        "type": "uint8"
+      }
+    ],
+    "name": "RewardSwitchStatus",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "pcrId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "int256",
+        "name": "target",
+        "type": "int256"
+      },
+      {
+        "indexed": false,
+        "internalType": "enum DataTypes.TargetCondition",
+        "name": "targetCondition",
+        "type": "uint8"
+      }
+    ],
+    "name": "RewardTargetAndConditionChanged",
+    "type": "event"
+  }
+]

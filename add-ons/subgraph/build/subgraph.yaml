@@ -15,13 +15,17 @@ dataSources:
       language: wasm/assemblyscript
       entities:
         - Reward
+        - Proposal
+        - RewardTargetHitory
+        - RewardIndexHistory
+        - UserSubscription
       abis:
         - name: PcrHost
-          file: PcrHost\abis\host.json
+          file: PcrHost/abis/host.json
       eventHandlers:
-        - event: PerpetualConditionalRewardCreated((address,address,string,uint256,uint256,(address,uint256,uint256,uint256,bytes32,bytes),address,address,string,string))
+        - event: RewardCreated((address,int256,uint8,address,string,uint256,uint256,(address,int256,uint8,uint256,uint256,uint256,bytes32,bytes),address,address,string,string))
           handler: handleRewardCreated
-      file: PcrHost\PcrHost.wasm
+      file: PcrHost/PcrHost.wasm
 templates:
   - name: PcrOptimisticOracle
     kind: ethereum/contract
@@ -32,15 +36,29 @@ templates:
       kind: ethereum/events
       apiVersion: 0.0.5
       language: wasm/assemblyscript
-      file: PcrHost\PcrHost.wasm
+      file: PcrHost/PcrHost.wasm
       entities:
         - Reward
+        - Proposal
+        - RewardTargetHitory
+        - RewardIndexHistory
+        - UserSubscription
       abis:
         - name: PcrOptimisticOracle
-          file: PcrOptimisticOracle\abis\pcr_optimistic_oracle.json
+          file: PcrOptimisticOracle/abis/pcr_optimistic_oracle.json
       eventHandlers:
         - event: RewardDeposit(uint256,uint256)
           handler: handleRewardDeposit
+        - event: ProposalCreated(address,uint256,uint256)
+          handler: handleProposalCreated
+        - event: ProposalRejected(uint256,uint256)
+          handler: handleProposalRejected
+        - event: ProposalAccepted(uint256,uint256)
+          handler: handleProposalAccepted
+        - event: RewardTargetAndConditionChanged(uint256,int256,uint8)
+          handler: handleRewardTargetAndConditionChanged
+        - event: RewardSwitchStatus(uint8)
+          handler: handleRewardSwitchStatus
   - name: PcrToken
     kind: ethereum/contract
     network: localhost
@@ -50,12 +68,20 @@ templates:
       kind: ethereum/events
       apiVersion: 0.0.5
       language: wasm/assemblyscript
-      file: PcrHost\PcrHost.wasm
+      file: PcrHost/PcrHost.wasm
       entities:
         - Reward
+        - Proposal
+        - RewardTargetHitory
+        - RewardIndexHistory
+        - UserSubscription
       abis:
         - name: PcrToken
-          file: PcrToken\abis\pcr_token.json
+          file: PcrToken/abis/pcr_token.json
       eventHandlers:
-        - event: RewardDistributed(address,address,uint256,uint256,uint256)
+        - event: RewardUnitsIssued(uint256,address,uint256)
+          handler: handleRewardUnitsIssued
+        - event: RewardUnitsDeleted(uint256,address,uint256)
+          handler: handleRewardUnitsDeleted
+        - event: RewardDistributed(uint256,uint256)
           handler: handleRewardDistributed

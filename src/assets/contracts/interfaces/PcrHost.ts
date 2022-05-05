@@ -46,6 +46,8 @@ export type IDAINPUTStructOutput = [string, string, string] & {
 
 export type OPTIMISTICORACLEINPUTStruct = {
   finder: string;
+  target: BigNumberish;
+  targetCondition: BigNumberish;
   rewardAmount: BigNumberish;
   interval: BigNumberish;
   optimisticOracleLivenessTime: BigNumberish;
@@ -56,12 +58,16 @@ export type OPTIMISTICORACLEINPUTStruct = {
 export type OPTIMISTICORACLEINPUTStructOutput = [
   string,
   BigNumber,
+  number,
+  BigNumber,
   BigNumber,
   BigNumber,
   string,
   string
 ] & {
   finder: string;
+  target: BigNumber;
+  targetCondition: number;
   rewardAmount: BigNumber;
   interval: BigNumber;
   optimisticOracleLivenessTime: BigNumber;
@@ -82,7 +88,7 @@ export type PcrAddressesStructOutput = [string, string] & {
 export interface PcrHostInterface extends utils.Interface {
   functions: {
     "_pcrTokensIssued()": FunctionFragment;
-    "createPcrReward((address,address,string,string),(address,address,address),(address,uint256,uint256,uint256,bytes32,bytes))": FunctionFragment;
+    "createPcrReward((address,address,string,string),(address,address,address),(address,int256,uint8,uint256,uint256,uint256,bytes32,bytes))": FunctionFragment;
     "getNumbersOfPcrTokens()": FunctionFragment;
     "getTokensAddressByUserAndId(address,uint256)": FunctionFragment;
     "getTotalPcrTokensByUser(address)": FunctionFragment;

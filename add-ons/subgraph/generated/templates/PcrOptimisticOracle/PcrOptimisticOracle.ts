@@ -10,6 +10,28 @@ import {
   BigInt
 } from "@graphprotocol/graph-ts";
 
+export class ProposalAccepted extends ethereum.Event {
+  get params(): ProposalAccepted__Params {
+    return new ProposalAccepted__Params(this);
+  }
+}
+
+export class ProposalAccepted__Params {
+  _event: ProposalAccepted;
+
+  constructor(event: ProposalAccepted) {
+    this._event = event;
+  }
+
+  get pcrId(): BigInt {
+    return this._event.parameters[0].value.toBigInt();
+  }
+
+  get proposalId(): BigInt {
+    return this._event.parameters[1].value.toBigInt();
+  }
+}
+
 export class ProposalCreated extends ethereum.Event {
   get params(): ProposalCreated__Params {
     return new ProposalCreated__Params(this);
@@ -33,10 +55,6 @@ export class ProposalCreated__Params {
 
   get pcrId(): BigInt {
     return this._event.parameters[2].value.toBigInt();
-  }
-
-  get timeStamp(): BigInt {
-    return this._event.parameters[3].value.toBigInt();
   }
 }
 
@@ -81,6 +99,50 @@ export class RewardDeposit__Params {
 
   get depositAmount(): BigInt {
     return this._event.parameters[1].value.toBigInt();
+  }
+}
+
+export class RewardSwitchStatus extends ethereum.Event {
+  get params(): RewardSwitchStatus__Params {
+    return new RewardSwitchStatus__Params(this);
+  }
+}
+
+export class RewardSwitchStatus__Params {
+  _event: RewardSwitchStatus;
+
+  constructor(event: RewardSwitchStatus) {
+    this._event = event;
+  }
+
+  get rewardStatus(): i32 {
+    return this._event.parameters[0].value.toI32();
+  }
+}
+
+export class RewardTargetAndConditionChanged extends ethereum.Event {
+  get params(): RewardTargetAndConditionChanged__Params {
+    return new RewardTargetAndConditionChanged__Params(this);
+  }
+}
+
+export class RewardTargetAndConditionChanged__Params {
+  _event: RewardTargetAndConditionChanged;
+
+  constructor(event: RewardTargetAndConditionChanged) {
+    this._event = event;
+  }
+
+  get pcrId(): BigInt {
+    return this._event.parameters[0].value.toBigInt();
+  }
+
+  get target(): BigInt {
+    return this._event.parameters[1].value.toBigInt();
+  }
+
+  get targetCondition(): i32 {
+    return this._event.parameters[2].value.toI32();
   }
 }
 

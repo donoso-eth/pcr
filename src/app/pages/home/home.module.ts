@@ -11,6 +11,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { DialogModule } from 'primeng/dialog';
+import { InputNumberModule } from 'primeng/inputnumber';
 
 @NgModule({
   declarations: [
@@ -24,9 +26,11 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
     TabViewModule,
     ButtonModule,
-    InputTextModule,
+    InputTextModule, 
+    InputNumberModule,
     InputTextareaModule,
-    InputSwitchModule
+    InputSwitchModule,
+    DialogModule
   ]
 })
 export class HomeModule { }

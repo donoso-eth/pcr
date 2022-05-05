@@ -18,6 +18,7 @@ import {ERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/
 import {IDAv1Library} from "@superfluid-finance/ethereum-contracts/contracts/apps/IDAv1Library.sol";
 
 import {DataTypes} from "./libraries/DataTypes.sol";
+import {Events} from "./libraries/Events.sol";
 
 
 /**
@@ -40,8 +41,8 @@ contract PcrToken is
   // declare `_idaLib` of type InitData
   IDAv1Library.InitData internal _idaLib;
 
-  bool public receiver = false;
 
+  uint256 public pcrId;
   address public ADMIN;
   address public TOKEN_INDEX_PUBLISHER_ADDRESS;
 
@@ -54,21 +55,13 @@ contract PcrToken is
   // use callbacks to track approved subscriptions
   mapping(address => bool) public isSubscribing;
 
-  event DoneStuff(
-    address operator,
-    address from,
-    address to,
-    uint256 amount,
-    bytes userData,
-    bytes operatorData
-  );
 
-  IERC777 private _token;
+
 
   constructor() {}
 
-  // ============= Modifiers ============= ============= =============  //
-  // #region DAO MOdidiers
+  // ============= =============  Modifiers ============= ============= //
+  // #region MOdidiers
   modifier onlyAdmin() {
         require( msg.sender == ADMIN,"NOT_ADMIN"
     );
@@ -86,10 +79,10 @@ contract PcrToken is
       _host = ISuperfluid(pcrTokenInitializer.ida.host);
       _ida = IInstantDistributionAgreementV1(pcrTokenInitializer.ida.ida);
       _rewardToken = ISuperToken(pcrTokenInitializer.ida.rewardToken);
-
+       pcrId = pcrTokenInitializer.rewardId;
 
     TOKEN_INDEX_PUBLISHER_ADDRESS = address(this);
-    ADMIN = pcrTokenInitializer.owner;
+    ADMIN = pcrTokenInitializer.admin;
 
     OPTIMISTIC_DISTRUBUTOR_ADDRESS = pcrTokenInitializer.optimisticOracleContract;
 
@@ -122,8 +115,12 @@ contract PcrToken is
     override
     onlyAdmin
   {
-    // then adjust beneficiary subscription units
-    uint256 currentAmount = balanceOf(beneficiary);
+
+    (, , uint128 units, uint256 pendingDistribution) = _idaLib.getSubscription(_rewardToken,TOKEN_INDEX_PUBLISHER_ADDRESS,  INDEX_ID, beneficiary);
+   
+    uint256 totalUnits = units + pendingDistribution;
+
+
 
     // first try to do ERC20Upgradeable mint
     ERC20Upgradeable._mint(beneficiary, amount);
@@ -132,15 +129,35 @@ contract PcrToken is
       _rewardToken,
       INDEX_ID,
       beneficiary,
-      uint128(currentAmount) + uint128(amount)
+      uint128(totalUnits) + uint128(amount)
     );
+
+    emit Events.RewardUnitsIssued(pcrId, beneficiary,  amount);
   }
 
+
+    /// @dev Issue new `amount` of giths to `beneficiary`
+  function deleteSubscription(address beneficiary)
+    external
+    override
+    onlyAdmin
+  {
+
+
+    (, , uint128 units, uint256 pendingDistribution) = _idaLib.getSubscription(_rewardToken,TOKEN_INDEX_PUBLISHER_ADDRESS,  INDEX_ID, beneficiary);
+
+    uint256 totalUnits = units + pendingDistribution;
+
+
+    _idaLib.deleteSubscription(_rewardToken,TOKEN_INDEX_PUBLISHER_ADDRESS,  INDEX_ID, beneficiary);
+
+
+    emit Events.RewardUnitsDeleted(pcrId, beneficiary,  totalUnits );
+  }
 
   /// @dev Issue new `amount` of giths to `beneficiary`
   function claim() external {
     // then adjust beneficiary subscription units
-
     _idaLib.claim(_rewardToken, TOKEN_INDEX_PUBLISHER_ADDRESS, INDEX_ID, msg.sender);
   }
 
@@ -172,11 +189,13 @@ contract PcrToken is
     bytes calldata userData,
     bytes calldata operatorData
   ) external override {
-  //  require(msg.sender == OPTIMISTIC_DISTRUBUTOR_ADDRESS);
-    receiver = true;
-    emit DoneStuff(operator, from, to, amount, userData, operatorData);
+
+
     // do stuff
     _distribute(amount);
+
+  emit Events.RewardDistributed( pcrId, amount);
+
   }
 
   /// @dev ERC20Upgradeable._transfer override

@@ -1,15 +1,97 @@
+enum RewardStep {
+        Funding 
+        Pending 
+        Accepted
+    }
+
+    enum RewardStatus {
+        Active 
+        Paused 
+        Removed
+    }
+
+
+     enum TargetCondition{
+        GT 
+        GTE 
+        E
+        LTE
+        LT 
+    }
+
+
+enum ProposalStatus {
+  Pending,
+  Accepted,
+  Rejected
+}
+
 type Reward @entity {
   id: ID!
   title:String
   url:String
   admin: String
+
   rewardToken: String
+  rewardAmount: BigInt!
   token: String
-  earliestProposalTimestamp: BigInt
-  interval: BigInt
-  rewardAmount: BigInt
-  currentdeposit: BigInt
-  optimisticOracleLivenessTime: BigInt
+
+  currentdeposit: BigInt!
+  rewardStatus: BigInt!
+  rewardStep:BigInt!
+  earliestNextAction: BigInt!
+
+  interval: BigInt!
+  target:BigInt!
+  targetCondition: BigInt!
+  rewardTargetHitory: [RewardTargetHitory!]! @derivedFrom(field: "reward")
+
+  optimisticOracleLivenessTime: BigInt!
   priceIdentifier: Bytes
   customAncillaryData: Bytes
+
+
+  totalDistributed:BigInt!
+  currentIndex: BigInt!
+  unitsIssued:BigInt!
+  rewardIndexHistory:[RewardIndexHistory!]! @derivedFrom(field: "reward")
+
+
+}
+
+type UserSubscription @entity { 
+  id:ID!
+  units:BigInt!
+}
+
+type RewardTargetHitory @entity {
+ id: ID!
+ reward:Reward!
+ target: BigInt
+ targetCondition: BigInt
+ timeStamp:BigInt,
+}
+
+
+type RewardIndexHistory @entity {
+ id: ID!
+ reward:Reward!
+ index: BigInt!
+ timeStamp:BigInt!,
+}
+
+type Proposal @entity {
+ id: ID!
+ proposer: String!
+ reward:Reward
+ timeStamp:BigInt,
+ status:ProposalStatus
+}
+
+
+type ProposalSummary @entity {
+  id:ID!
+  reward:Reward!
+  timeStamp:BigInt
+  result:BigInt
 }

@@ -18,12 +18,13 @@ import { getChainAddresses, initEnv, waitForTx } from '../helpers/utils';
 import {
   IDAINPUTStruct,
   OPTIMISTICORACLEINPUTStruct,
+  PCRHOSTCONFIGINPUTStruct,
 } from '../typechain-types/PcrHost';
 import { getTimestamp, increaseBlockTime, matchEvent, resetFork } from './helpers/utils';
 import { Framework, SuperToken } from '@superfluid-finance/sdk-core';
-import { BigNumber } from 'ethers';
+import { BigNumber, utils } from 'ethers';
 
-describe('End to End', function () {
+describe('End to End TARGET CONDITION QUESTION', function () {
   let pcrHostContract: PcrHost;
   let pcrTokenContractImpl: PcrToken;
   let pcrOptimisticOracleImpl: PcrOptimisticOracle;
@@ -68,6 +69,14 @@ describe('End to End', function () {
       deployer
     );
 
+    const pcrHostConfig:PCRHOSTCONFIGINPUTStruct = {
+      pcrTokenImpl:pcrTokenContractImpl.address,
+      pcrOptimisticOracleImpl:pcrOptimisticOracleImpl.address,
+      title:'Mu reard',
+      url:'http://aloha.com'
+  
+    }
+
     const Ida: IDAINPUTStruct = {
       host: chain_addresses.host,
       ida: chain_addresses.ida,
@@ -84,6 +93,8 @@ describe('End to End', function () {
 
     const OptimisticOracle: OPTIMISTICORACLEINPUTStruct = {
       finder: chain_addresses.finder,
+      target:utils.parseEther("0.5"),
+      targetCondition:0,
       rewardAmount: 50,
       interval: interval,
       optimisticOracleLivenessTime: livenessPeriod,
@@ -93,10 +104,9 @@ describe('End to End', function () {
 
     const receipt = await waitForTx(
       pcrHost.createPcrReward(
+        pcrHostConfig,
         Ida,
-        pcrTokenContractImpl.address,
         OptimisticOracle,
-        pcrOptimisticOracleImpl.address
       )
     );
 
@@ -144,8 +154,9 @@ describe('End to End', function () {
   });
 
   it('Fails when propose distrubution in funding period', async function () {
+    const proposedPriced = utils.parseEther("1.0")
     await expect(
-      waitForTx(pcrOptimisticOracle.proposeDistribution())
+      waitForTx(pcrOptimisticOracle.proposeDistribution(proposedPriced))
     ).to.be.revertedWith('Cannot propose in funding period');
   });
 
@@ -157,7 +168,8 @@ describe('End to End', function () {
       params: [],
     });
     let afterTimestamp = parseInt(await getTimestamp());
-    await expect(waitForTx(pcrOptimisticOracle.proposeDistribution())).not.to.be
+    const proposedPriced = utils.parseEther("1.0")
+    await expect(waitForTx(pcrOptimisticOracle.proposeDistribution(proposedPriced))).not.to.be
       .reverted;
 
     await expect(
@@ -180,7 +192,8 @@ describe('End to End', function () {
       method: 'evm_mine',
       params: [],
     });
-    await expect(waitForTx(pcrOptimisticOracle.proposeDistribution())).not.to.be
+    const proposedPriced = utils.parseEther("1.0")
+    await expect(waitForTx(pcrOptimisticOracle.proposeDistribution(proposedPriced))).not.to.be
       .reverted;
 
     await increaseBlockTime(network, livenessPeriod + 1);
@@ -209,13 +222,14 @@ describe('End to End', function () {
     ).to.be.revertedWith('CallUtils: target panicked: 0x12');
   });
 
-  it('Should Not Fail When Already the index has issued a unit and user receiving reward must have proper balances', async function () {
+  it('Should Not Fail When Already the index has issued a unit and user receiving reward must increase with the proper balances', async function () {
     await increaseBlockTime(network, interval + 1);
     await network.provider.request({
       method: 'evm_mine',
       params: [],
     });
-    await waitForTx(pcrOptimisticOracle.proposeDistribution());
+    const proposedPriced = utils.parseEther("1.0")
+    await waitForTx(pcrOptimisticOracle.proposeDistribution(proposedPriced));
   
     await increaseBlockTime(network, livenessPeriod + 1);
     await network.provider.request({

@@ -112,8 +112,8 @@
       ]
     },
     "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/hardhat/contracts/PcrOptimisticOracle.sol": {
-      "lastModificationDate": 1651681809685,
-      "contentHash": "be84f98be8b3f2b70a4b583911927f66",
+      "lastModificationDate": 1651739503462,
+      "contentHash": "dabebe77d4cd508a9111c40de06f8d10",
       "sourceName": "contracts/PcrOptimisticOracle.sol",
       "solcConfig": {
         "version": "0.8.12",
@@ -760,8 +760,8 @@
       ]
     },
     "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/hardhat/contracts/libraries/Events.sol": {
-      "lastModificationDate": 1651683217970,
-      "contentHash": "15141feaf1f5faf0649a9c2aaa66c094",
+      "lastModificationDate": 1651684014210,
+      "contentHash": "60ade95b69d46cf965b0d67167f8ca91",
       "sourceName": "contracts/libraries/Events.sol",
       "solcConfig": {
         "version": "0.8.12",
@@ -2062,8 +2062,8 @@
       ]
     },
     "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/hardhat/contracts/PcrToken.sol": {
-      "lastModificationDate": 1651683243868,
-      "contentHash": "67c2d013ec5a15b161bb3ba275035939",
+      "lastModificationDate": 1651739497387,
+      "contentHash": "bb866b17cc4562b3fb7972081c533a17",
       "sourceName": "contracts/PcrToken.sol",
       "solcConfig": {
         "version": "0.8.12",

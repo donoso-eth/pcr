@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { Apollo, QueryRef, gql } from 'apollo-angular';
-import { Subscription } from 'rxjs';
+import { BehaviorSubject, Subject, Subscription } from 'rxjs';
 
 const rewards = gql`
 {
@@ -23,13 +23,29 @@ const rewards = gql`
 @Injectable({
   providedIn: 'root',
 })
-export class GraphQlService {
-  loading!: boolean;
-  posts: any;
-  postsQuery!: QueryRef<any>;
-  private querySubscription!: Subscription;
+export class GraphQlService implements OnDestroy {
+
+  tokens$ = new Subject()
+ 
+  private tokensSubscription!: Subscription;
+
   constructor(private apollo: Apollo) {}
+  ngOnDestroy(): void {
+   this.tokensSubscription.unsubscribe()
+  }
   
+watchTokens() {
+  this.tokensSubscription  = this.apollo.watchQuery<any>({
+    query: rewards,
+   pollInterval: 500,
+ })  .valueChanges
+ .subscribe(({ data, loading }) => {
+ 
+  this.tokens$.next(data);
+
+ });
+}
+
   
  async  query() {
     // this.postsQuery = this.apollo.watchQuery<any>({

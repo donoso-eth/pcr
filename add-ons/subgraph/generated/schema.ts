@@ -303,7 +303,7 @@ export class Reward extends Entity {
   }
 }
 
-export class Subscription extends Entity {
+export class UserSubscription extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
@@ -313,19 +313,21 @@ export class Subscription extends Entity {
 
   save(): void {
     let id = this.get("id");
-    assert(id != null, "Cannot save Subscription entity without an ID");
+    assert(id != null, "Cannot save UserSubscription entity without an ID");
     if (id) {
       assert(
         id.kind == ValueKind.STRING,
-        "Cannot save Subscription entity with non-string ID. " +
+        "Cannot save UserSubscription entity with non-string ID. " +
           'Considering using .toHex() to convert the "id" to a string.'
       );
-      store.set("Subscription", id.toString(), this);
+      store.set("UserSubscription", id.toString(), this);
     }
   }
 
-  static load(id: string): Subscription | null {
-    return changetype<Subscription | null>(store.get("Subscription", id));
+  static load(id: string): UserSubscription | null {
+    return changetype<UserSubscription | null>(
+      store.get("UserSubscription", id)
+    );
   }
 
   get id(): string {

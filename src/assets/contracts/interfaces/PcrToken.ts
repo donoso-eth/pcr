@@ -62,12 +62,13 @@ export interface PcrTokenInterface extends utils.Interface {
     "claim()": FunctionFragment;
     "decimals()": FunctionFragment;
     "decreaseAllowance(address,uint256)": FunctionFragment;
+    "deleteSubscription(address)": FunctionFragment;
     "increaseAllowance(address,uint256)": FunctionFragment;
     "initialize((address,uint256,address,string,string,(address,address,address)))": FunctionFragment;
     "isSubscribing(address)": FunctionFragment;
     "issue(address,uint256)": FunctionFragment;
     "name()": FunctionFragment;
-    "receiver()": FunctionFragment;
+    "pcrId()": FunctionFragment;
     "symbol()": FunctionFragment;
     "tokensReceived(address,address,address,uint256,bytes,bytes)": FunctionFragment;
     "totalSupply()": FunctionFragment;
@@ -101,6 +102,10 @@ export interface PcrTokenInterface extends utils.Interface {
     values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "deleteSubscription",
+    values: [string]
+  ): string;
+  encodeFunctionData(
     functionFragment: "increaseAllowance",
     values: [string, BigNumberish]
   ): string;
@@ -117,7 +122,7 @@ export interface PcrTokenInterface extends utils.Interface {
     values: [string, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
-  encodeFunctionData(functionFragment: "receiver", values?: undefined): string;
+  encodeFunctionData(functionFragment: "pcrId", values?: undefined): string;
   encodeFunctionData(functionFragment: "symbol", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "tokensReceived",
@@ -156,6 +161,10 @@ export interface PcrTokenInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "deleteSubscription",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "increaseAllowance",
     data: BytesLike
   ): Result;
@@ -166,7 +175,7 @@ export interface PcrTokenInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "issue", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "receiver", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "pcrId", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "tokensReceived",
@@ -184,12 +193,10 @@ export interface PcrTokenInterface extends utils.Interface {
 
   events: {
     "Approval(address,address,uint256)": EventFragment;
-    "DoneStuff(address,address,address,uint256,bytes,bytes)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "Approval"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "DoneStuff"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
 }
 
@@ -199,20 +206,6 @@ export type ApprovalEvent = TypedEvent<
 >;
 
 export type ApprovalEventFilter = TypedEventFilter<ApprovalEvent>;
-
-export type DoneStuffEvent = TypedEvent<
-  [string, string, string, BigNumber, string, string],
-  {
-    operator: string;
-    from: string;
-    to: string;
-    amount: BigNumber;
-    userData: string;
-    operatorData: string;
-  }
->;
-
-export type DoneStuffEventFilter = TypedEventFilter<DoneStuffEvent>;
 
 export type TransferEvent = TypedEvent<
   [string, string, BigNumber],
@@ -284,6 +277,11 @@ export interface PcrToken extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    deleteSubscription(
+      beneficiary: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     increaseAllowance(
       spender: string,
       addedValue: BigNumberish,
@@ -305,7 +303,7 @@ export interface PcrToken extends BaseContract {
 
     name(overrides?: CallOverrides): Promise<[string]>;
 
-    receiver(overrides?: CallOverrides): Promise<[boolean]>;
+    pcrId(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     symbol(overrides?: CallOverrides): Promise<[string]>;
 
@@ -369,6 +367,11 @@ export interface PcrToken extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  deleteSubscription(
+    beneficiary: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   increaseAllowance(
     spender: string,
     addedValue: BigNumberish,
@@ -390,7 +393,7 @@ export interface PcrToken extends BaseContract {
 
   name(overrides?: CallOverrides): Promise<string>;
 
-  receiver(overrides?: CallOverrides): Promise<boolean>;
+  pcrId(overrides?: CallOverrides): Promise<BigNumber>;
 
   symbol(overrides?: CallOverrides): Promise<string>;
 
@@ -452,6 +455,11 @@ export interface PcrToken extends BaseContract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
+    deleteSubscription(
+      beneficiary: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     increaseAllowance(
       spender: string,
       addedValue: BigNumberish,
@@ -473,7 +481,7 @@ export interface PcrToken extends BaseContract {
 
     name(overrides?: CallOverrides): Promise<string>;
 
-    receiver(overrides?: CallOverrides): Promise<boolean>;
+    pcrId(overrides?: CallOverrides): Promise<BigNumber>;
 
     symbol(overrides?: CallOverrides): Promise<string>;
 
@@ -514,23 +522,6 @@ export interface PcrToken extends BaseContract {
       spender?: string | null,
       value?: null
     ): ApprovalEventFilter;
-
-    "DoneStuff(address,address,address,uint256,bytes,bytes)"(
-      operator?: null,
-      from?: null,
-      to?: null,
-      amount?: null,
-      userData?: null,
-      operatorData?: null
-    ): DoneStuffEventFilter;
-    DoneStuff(
-      operator?: null,
-      from?: null,
-      to?: null,
-      amount?: null,
-      userData?: null,
-      operatorData?: null
-    ): DoneStuffEventFilter;
 
     "Transfer(address,address,uint256)"(
       from?: string | null,
@@ -583,6 +574,11 @@ export interface PcrToken extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    deleteSubscription(
+      beneficiary: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     increaseAllowance(
       spender: string,
       addedValue: BigNumberish,
@@ -604,7 +600,7 @@ export interface PcrToken extends BaseContract {
 
     name(overrides?: CallOverrides): Promise<BigNumber>;
 
-    receiver(overrides?: CallOverrides): Promise<BigNumber>;
+    pcrId(overrides?: CallOverrides): Promise<BigNumber>;
 
     symbol(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -676,6 +672,11 @@ export interface PcrToken extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    deleteSubscription(
+      beneficiary: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     increaseAllowance(
       spender: string,
       addedValue: BigNumberish,
@@ -700,7 +701,7 @@ export interface PcrToken extends BaseContract {
 
     name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    receiver(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    pcrId(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     symbol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

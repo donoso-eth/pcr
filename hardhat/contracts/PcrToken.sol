@@ -132,7 +132,7 @@ contract PcrToken is
       uint128(totalUnits) + uint128(amount)
     );
 
-    emit Events.RewardUnitsIssued(pcrId, beneficiary,  amount, block.timestamp);
+    emit Events.RewardUnitsIssued(pcrId, beneficiary,  amount);
   }
 
 

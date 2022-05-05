@@ -174,7 +174,7 @@ contract PcrOptimisticOracle is IPcrOptimisticOracle, Initializable, MultiCaller
 
         // Store and log proposed distribution.
         proposal = DataTypes.Proposal({pcrId: pcrId, proposalId: id, timestamp: timestamp});
-        emit Events.ProposalCreated(msg.sender, id, pcrId, timestamp);
+        emit Events.ProposalCreated(msg.sender, id, pcrId);
     }
 
     /**
@@ -225,7 +225,7 @@ contract PcrOptimisticOracle is IPcrOptimisticOracle, Initializable, MultiCaller
         reward.target = _newTarget;
         reward.targetCondition = _newTargetCondition;
 
-        emit Events.RewardTargetAndConditionChanged(pcrId, reward.target, reward.targetCondition, block.timestamp);
+        emit Events.RewardTargetAndConditionChanged(pcrId, reward.target, reward.targetCondition);
     }
 
     function switchRewardStatus() external onlyAdmin {

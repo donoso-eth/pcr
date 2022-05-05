@@ -27,7 +27,7 @@
               [autoResize]="true"
               rows="6"
               cols="30"
-              >{{ token.customAncillaryData }}</textarea
+              >{{ token.displayCustomAncillaryData }}</textarea
             >
             <div style="margin-top:20px" class="grid">
             <div class="col-12 lg:col-6 xl:col-6">
@@ -38,7 +38,7 @@
                       <div class="text-900 font-medium text-xl">152</div>
                     </div>
                 
-                    <div style="width:40px;height:40px;border-radius: 20px;background: lightgreen;"></div>
+                   
                   </div>
                   <div class="mt-2 md:mt-0 ml-0 flex align-items-center">
                     <div class="surface-300 border-round overflow-hidden w-10rem lg:w-6rem" [ngStyle]="{height: '8px'}">
@@ -49,23 +49,33 @@
                 </div>
               </div>
               <div  class="col-12 lg:col-6 xl:col-6">
-                <div style="background-color: var(--surface-ground);" class="card mb-0">
+                <div style="background-color: var(--surface-ground);" style="position:relative" class="card mb-0">
                   <div class="flex justify-content-between mb-3">
                     <div>
-                      <span class="block text-500 font-medium mb-3">Revenue</span>
+                      <span class="block text-500 font-medium mb-3"> <div style="width:40px;height:40px;border-radius: 20px;background: lightgreen;"></div>Deposit</span>
                       <div [class]="+token.rewardAmount<= +token.currentdeposit ? 'text-green-500' : 'text-orange-500' " class="text-900 font-medium text-xl">${{token.currentdeposit}}</div>
                     </div>
                     <div
                       class="flex align-items-center justify-content-center"
                       [ngStyle]="{ width: '2.5rem', height: '2.5rem' }"
                     >
-                    <img src="assets/images/tokens/{{token.image}}_icon.svg" style="margin-right: 5px;" />
+                    <img src="assets/images/tokens/{{token?.fundToken?.image}}_icon.svg" style="margin-right: 5px;" />
 
                     </div>
                   </div>
                   <span   class="font-medium">{{token.rewardAmount}} </span>
                   <span class="text-500">Required Reward Amount, please fund the reward </span>
+                  <button
+                  pButton
+                  pRipple
+                  style="position: absolute; bottom: 8px; right: 20px; width:fit-content"
+                  (click)="doFunding(token)"
+                  type="button"
+                  label="Fund"
+                  class="p-button-rounded mr-2 mb-2"
+                ></button>
                 </div>
+            
               </div>
           </div>
           <div style="position:relative;background-color: var(--surface-ground);" class="card mt-3 flex align-items-center justify-content-center">
@@ -93,10 +103,26 @@
   
         </div>
       </div>
-
-      <div class="card">
-        <h5>Pcr's Rewards Received</h5>
-      </div>
+    </div>
+    <div style="position: relative; border-color: transparent"  class="card">
+      <h5>Pcr's Rewards Received</h5>
     </div>
   </div>
 </div>
+<p-dialog header="Let's fund!" [(visible)]="showFunding" [modal]="true" showEffect="fade" [style]="{width: '40vw'}" [breakpoints]="{'960px': '75vw'}">
+	<p class="line-height-3 m-0">
+		You are about to fund the PCR Token <span style="color:green">"{{toUpdateToken?.title}}"</span> <br>
+		It requires the {{toUpdateToken?.fundToken.name}} superToken, your current balance is: {{toUpdateToken?.fundToken.superTokenBalance}}. You may wamt to:
+	</p>
+  <h6>Fund The PCR Token</h6>
+  <p class="flex justify-content-between" *ngIf="+toUpdateToken?.fundToken.superTokenBalance > +toUpdateToken?.rewardAmount">
+   	
+    <p-inputNumber [formControl]="toFundAmountCtrl"  placeholder="Amount" mode="decimal" [showButtons]="true" [min]="0">
+    </p-inputNumber>
+    <button pButton icon="pi pi-check"  label="Fund"  (click)="fundDeposit()" class="p-button-outlined"></button>
+
+  </p>
+	<ng-template pTemplate="footer">
+			<button pButton icon="pi pi-check"  label="Fund" class="p-button-outlined"></button>
+	</ng-template>
+</p-dialog>

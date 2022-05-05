@@ -79,8 +79,7 @@ export interface PcrOptimisticOracleInterface extends utils.Interface {
     "TOKEN_INDEX_PUBLISHER_ADDRESS()": FunctionFragment;
     "_proposalId()": FunctionFragment;
     "ancillaryBytesLimit()": FunctionFragment;
-    "changeTarget(int256)": FunctionFragment;
-    "changeTargetCondition(uint8)": FunctionFragment;
+    "changeTarget(int256,uint8)": FunctionFragment;
     "depositReward(uint256)": FunctionFragment;
     "executeDistribution()": FunctionFragment;
     "finder()": FunctionFragment;
@@ -94,6 +93,7 @@ export interface PcrOptimisticOracleInterface extends utils.Interface {
     "reward()": FunctionFragment;
     "rewardToken()": FunctionFragment;
     "store()": FunctionFragment;
+    "switchRewardStatus()": FunctionFragment;
     "syncUmaEcosystemParams()": FunctionFragment;
   };
 
@@ -123,11 +123,7 @@ export interface PcrOptimisticOracleInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "changeTarget",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "changeTargetCondition",
-    values: [BigNumberish]
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "depositReward",
@@ -167,6 +163,10 @@ export interface PcrOptimisticOracleInterface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "store", values?: undefined): string;
   encodeFunctionData(
+    functionFragment: "switchRewardStatus",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "syncUmaEcosystemParams",
     values?: undefined
   ): string;
@@ -200,10 +200,6 @@ export interface PcrOptimisticOracleInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "changeTargetCondition",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "depositReward",
     data: BytesLike
   ): Result;
@@ -234,6 +230,10 @@ export interface PcrOptimisticOracleInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "store", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "switchRewardStatus",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "syncUmaEcosystemParams",
     data: BytesLike
@@ -285,10 +285,6 @@ export interface PcrOptimisticOracle extends BaseContract {
 
     changeTarget(
       _newTarget: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    changeTargetCondition(
       _newTargetCondition: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -377,6 +373,10 @@ export interface PcrOptimisticOracle extends BaseContract {
 
     store(overrides?: CallOverrides): Promise<[string]>;
 
+    switchRewardStatus(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     syncUmaEcosystemParams(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -396,10 +396,6 @@ export interface PcrOptimisticOracle extends BaseContract {
 
   changeTarget(
     _newTarget: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  changeTargetCondition(
     _newTargetCondition: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -488,6 +484,10 @@ export interface PcrOptimisticOracle extends BaseContract {
 
   store(overrides?: CallOverrides): Promise<string>;
 
+  switchRewardStatus(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   syncUmaEcosystemParams(
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -507,10 +507,6 @@ export interface PcrOptimisticOracle extends BaseContract {
 
     changeTarget(
       _newTarget: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    changeTargetCondition(
       _newTargetCondition: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -594,6 +590,8 @@ export interface PcrOptimisticOracle extends BaseContract {
 
     store(overrides?: CallOverrides): Promise<string>;
 
+    switchRewardStatus(overrides?: CallOverrides): Promise<void>;
+
     syncUmaEcosystemParams(overrides?: CallOverrides): Promise<void>;
   };
 
@@ -616,10 +614,6 @@ export interface PcrOptimisticOracle extends BaseContract {
 
     changeTarget(
       _newTarget: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    changeTargetCondition(
       _newTargetCondition: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -670,6 +664,10 @@ export interface PcrOptimisticOracle extends BaseContract {
 
     store(overrides?: CallOverrides): Promise<BigNumber>;
 
+    switchRewardStatus(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     syncUmaEcosystemParams(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -696,10 +694,6 @@ export interface PcrOptimisticOracle extends BaseContract {
 
     changeTarget(
       _newTarget: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    changeTargetCondition(
       _newTargetCondition: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
@@ -749,6 +743,10 @@ export interface PcrOptimisticOracle extends BaseContract {
     rewardToken(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     store(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    switchRewardStatus(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
 
     syncUmaEcosystemParams(
       overrides?: Overrides & { from?: string | Promise<string> }

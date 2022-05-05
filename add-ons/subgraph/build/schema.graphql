@@ -59,7 +59,7 @@ type Reward @entity {
 
 }
 
-type Subscription @entity { 
+type UserSubscription @entity { 
   id:ID!
   units:BigInt!
 }

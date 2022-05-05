@@ -1,4 +1,4 @@
-import { Proposal, Reward, RewardIndexHistory, Subscription } from '../generated/schema';
+import { Proposal, Reward, RewardIndexHistory, UserSubscription } from '../generated/schema';
 import { RewardCreated } from '../generated/PcrHost/PcrHost';
 import {
   ProposalAccepted,
@@ -139,10 +139,10 @@ export function handleRewardUnitsIssued(event: RewardUnitsIssued): void {
   }
   //// CREATE/UPDATE the Reward/subscription per user
   let subscriptionId = event.params.beneficiary.toHexString().concat(prId);
-  let subscription = Subscription.load(subscriptionId);
+  let subscription = UserSubscription.load(subscriptionId);
 
   if (subscription == null) {
-    subscription = new Subscription(subscriptionId);
+    subscription = new UserSubscription(subscriptionId);
     subscription.units = event.params.amount;
   } else {
     subscription.units = subscription.units.plus(event.params.amount);
@@ -169,7 +169,7 @@ export function handleRewardUnitsDeleted(event: RewardUnitsDeleted): void {
   }
   //// CREATE/UPDATE the Reward/subscription per user
   let subscriptionId = event.params.beneficiary.toHexString().concat(prId);
-  let subscription = Subscription.load(subscriptionId);
+  let subscription = UserSubscription.load(subscriptionId);
   if (subscription !== null) {
     subscription.units = subscription.units.minus(event.params.amount);
     subscription.save();

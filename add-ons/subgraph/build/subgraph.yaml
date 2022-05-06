@@ -6,7 +6,7 @@ dataSources:
     name: PcrHost
     network: localhost
     source:
-      address: "0xD9d684546ED4c727B136503016E137822DD9b4D7"
+      address: "0xd31d3e1F60552ba8B35aA3Bd17c949404fdd12c4"
       abi: PcrHost
       startBlock: 31301672
     mapping:
@@ -21,11 +21,11 @@ dataSources:
         - UserSubscription
       abis:
         - name: PcrHost
-          file: PcrHost/abis/host.json
+          file: PcrHost\abis\host.json
       eventHandlers:
         - event: RewardCreated((address,int256,uint8,address,string,uint256,uint256,(address,int256,uint8,uint256,uint256,uint256,bytes32,bytes),address,address,string,string))
           handler: handleRewardCreated
-      file: PcrHost/PcrHost.wasm
+      file: PcrHost\PcrHost.wasm
 templates:
   - name: PcrOptimisticOracle
     kind: ethereum/contract
@@ -36,7 +36,7 @@ templates:
       kind: ethereum/events
       apiVersion: 0.0.5
       language: wasm/assemblyscript
-      file: PcrHost/PcrHost.wasm
+      file: PcrHost\PcrHost.wasm
       entities:
         - Reward
         - Proposal
@@ -45,7 +45,7 @@ templates:
         - UserSubscription
       abis:
         - name: PcrOptimisticOracle
-          file: PcrOptimisticOracle/abis/pcr_optimistic_oracle.json
+          file: PcrOptimisticOracle\abis\pcr_optimistic_oracle.json
       eventHandlers:
         - event: RewardDeposit(uint256,uint256)
           handler: handleRewardDeposit
@@ -68,7 +68,7 @@ templates:
       kind: ethereum/events
       apiVersion: 0.0.5
       language: wasm/assemblyscript
-      file: PcrHost/PcrHost.wasm
+      file: PcrHost\PcrHost.wasm
       entities:
         - Reward
         - Proposal
@@ -77,7 +77,7 @@ templates:
         - UserSubscription
       abis:
         - name: PcrToken
-          file: PcrToken/abis/pcr_token.json
+          file: PcrToken\abis\pcr_token.json
       eventHandlers:
         - event: RewardUnitsIssued(uint256,address,uint256)
           handler: handleRewardUnitsIssued

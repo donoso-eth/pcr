@@ -1,3 +1,5 @@
+import { string } from "hardhat/internal/core/params/argumentTypes";
+
 export enum REWARD_STEP {
   QUALIFYING,
   AWAITING_PROPOSAL,
@@ -18,8 +20,13 @@ export interface IPCR_REWARD {
   rewardToken: string;
   title: string;
   url: string | null;
-  token: string
+  token: string;
   
+
+  totalDistributed: string;
+  currentIndex: string;
+  unitsIssued:string;
+
 
   fundToken: { 
     name: string; 

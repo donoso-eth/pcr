@@ -35,9 +35,18 @@ export class HomeComponent extends DappBaseComponent {
 
   //// FormControls
   toFundAmountCtrl = new FormControl(0, Validators.required);
+  routeItems: { label: string }[];
+
+  activeStep = 0;
 
   constructor(private router: Router, dapp: DappInjector, store: Store, private graphqlService: GraphQlService) {
     super(dapp, store);
+    this.routeItems = [
+      {label: 'Qualifying'},
+      {label: 'Propose Period'},
+      {label: 'Liveness Period'},
+      {label: 'Execution Period'},
+  ];
   }
 
   changeStatus(value: boolean, i: number) {

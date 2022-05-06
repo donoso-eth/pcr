@@ -9,7 +9,7 @@ import {ensureDir } from 'fs-extra'
 import { ethers,hardhatArguments } from "hardhat";
 import config from "../hardhat.config";
 import { join } from "path";
-
+import {load,dump} from 'js-yaml'
 
 interface ICONTRACT_DEPLOY {
   artifactsPath:string,
@@ -19,7 +19,7 @@ interface ICONTRACT_DEPLOY {
 }
 
 const processDir = process.cwd()
-const subgraphPath =join(processDir,'../subgraph/')
+const subgraphPath =join(processDir,'../add-ons/subgraph/')
 const abiPath = join(subgraphPath,'abis')
 ensureDir(abiPath)
 const srcPath = join(subgraphPath,'src')
@@ -36,7 +36,7 @@ if (network == undefined) {
 
   const contract_config = JSON.parse(readFileSync( join(processDir,'contract.config.json'),'utf-8')) as {[key:string]: ICONTRACT_DEPLOY}
   
-  const deployContracts=["<%= contractCode %>"]
+  const deployContracts=["pcrHost"]
  
   // Hardhat always runs the compile task when running scripts with its command
   // line interface.
@@ -60,7 +60,7 @@ if (network == undefined) {
       const metadata =  JSON.parse(readFileSync(`${contract_path}/${toDeployContract.jsonName}_metadata.json`,'utf-8'));
 
   
-      const doc = load(readFileSync(join(srcPath,'subgraph.template.yaml'), 'utf8')) as any
+      const doc = load(readFileSync(join(subgraphPath,'subgraph.yaml'), 'utf8')) as any
       const dataSources = doc['dataSources']
 
       dataSources.name = toDeployContract.name;
@@ -72,6 +72,13 @@ if (network == undefined) {
 
       const contractSource = contract_key.source;
       contractSource.address = metadata.address;
+
+
+    writeFileSync(join(subgraphPath,'subgraph.yaml'), dump(doc))
+
+
+    if (contractSource.address == 'asdasd'){
+
       contractSource.abi = toDeployContract.name;
 
       const contractMapping = contract_key.mapping;
@@ -103,9 +110,14 @@ if (network == undefined) {
           path:`./abis/${toDeployContract.jsonName}.json`
         }
         abis.push(newAbiEntry)
- 
+      }
+    }
 
-}
+
+    }
+  }
+
+
 
 // We recommend this pattern to be able to use async/await everywhere
 // and properly handle errors.

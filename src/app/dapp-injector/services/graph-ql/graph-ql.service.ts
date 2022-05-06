@@ -29,7 +29,10 @@ const rewards = gql`
     earliestNextAction,
     interval,
     rewardStep,
-    rewardStatus
+    rewardStatus,
+    totalDistributed,
+    currentIndex,
+    unitsIssued
   }
 }
 `;

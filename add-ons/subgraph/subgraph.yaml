@@ -6,7 +6,7 @@ dataSources:
     name: PcrHost
     network: localhost
     source:
-      address: '0xD9d684546ED4c727B136503016E137822DD9b4D7'
+      address: '0xd31d3e1F60552ba8B35aA3Bd17c949404fdd12c4'
       abi: PcrHost
       startBlock: 31301672
     mapping:
@@ -16,14 +16,15 @@ dataSources:
       entities:
         - Reward
         - Proposal
-        - RewardTargetHitory 
+        - RewardTargetHitory
         - RewardIndexHistory
-        - UserSubscription 
+        - UserSubscription
       abis:
         - name: PcrHost
           file: ./abis/host.json
       eventHandlers:
-        - event: RewardCreated((address,int256,uint8,address,string,uint256,uint256,(address,int256,uint8,uint256,uint256,uint256,bytes32,bytes),address,address,string,string))
+        - event: >-
+            RewardCreated((address,int256,uint8,address,string,uint256,uint256,(address,int256,uint8,uint256,uint256,uint256,bytes32,bytes),address,address,string,string))
           handler: handleRewardCreated
       file: ./src/mapping.ts
 templates:
@@ -40,9 +41,9 @@ templates:
       entities:
         - Reward
         - Proposal
-        - RewardTargetHitory 
+        - RewardTargetHitory
         - RewardIndexHistory
-        - UserSubscription 
+        - UserSubscription
       abis:
         - name: PcrOptimisticOracle
           file: ./abis/pcr_optimistic_oracle.json
@@ -72,9 +73,9 @@ templates:
       entities:
         - Reward
         - Proposal
-        - RewardTargetHitory 
+        - RewardTargetHitory
         - RewardIndexHistory
-        - UserSubscription 
+        - UserSubscription
       abis:
         - name: PcrToken
           file: ./abis/pcr_token.json

@@ -22,10 +22,18 @@
                 <div style="background-color: var(--surface-ground);" class="card mb-0">
                   <div class="flex justify-content-between mb-3">
                
-                    <div *ngIf="reward.displayStep == 0">
-                      <span class="block text-500 font-medium mb-3">Reward in Qualyfing Period</span>
-                      <div class="text-900 font-medium text-xl">{{reward.earliestNextAction}}</div>
+                    <div>
+                      <div class="flex mb-3 align-items-center">
+                        <div
+                          [style.background]="+reward.unitsIssued > 0? 'var(--green-500)':'var(--orange-500)'"
+                          style="width:25px;height:25px;border-radius: 13px;background: lightgreen;"></div> <span
+                          class="block text-500 font-medium ml-2"> Summary</span>
+                      </div>
+                      <div
+                        [class]="+reward.rewardAmount<= +reward.currentdeposit ? 'text-green-500' : 'text-orange-500' "
+                        class="text-900 font-medium text-xl">Issued to Members {{reward.unitsIssued}}</div>
                     </div>
+               
                     <div *ngIf="reward.displayStep == 1">
                       <span class="block text-500 font-medium mb-3">Waiting for Propositions</span>
                       <div class="text-900 font-medium text-xl">
@@ -47,12 +55,12 @@
                 </div>
               </div>
               <div class="col-12 lg:col-6 xl:col-6">
-                <div style="background-color: var(--surface-ground);" style="position:relative" class="card mb-0">
+                <div style="background-color: var(--surface-ground);position:relative"  class="card mb-0">
                   <div class="flex justify-content-between mb-3">
                     <div>
                       <div class="flex mb-3 align-items-center">
                         <div
-                          [style.background]="+reward.rewardAmount<= +reward.currentdeposit ? 'var(--green-500)':'orange'"
+                          [style.background]="+reward.rewardAmount<= +reward.currentdeposit ? 'var(--green-500)':'var(--orange-500)'"
                           style="width:25px;height:25px;border-radius: 13px;background: lightgreen;"></div> <span
                           class="block text-500 font-medium ml-2"> Deposit</span>
                       </div>
@@ -76,9 +84,11 @@
               </div>
             </div>
             <div style="position:relative;background-color: var(--surface-ground);"
-              class="card mt-3 flex align-items-center justify-content-center">
-              <h4>Current Status</h4>
-
+              class="card mt-3 flex align-items-center flex-column justify-content-center">
+              <h4 class="mb-1">Current Status</h4>
+              <div style="width:100%;" class="grid p-fluid">
+              <p-steps  class="col-12"  [model]="routeItems" (activeIndexChange)="activeStep = 0"   [(activeIndex)]="activeStep" styleClass="mt-5" [readonly]="false"></p-steps>
+            </div>
             </div>
           </div>
           <div *ngIf="pcrTokens?.length == 0" class="card">

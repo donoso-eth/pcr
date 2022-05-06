@@ -1,7 +1,7 @@
 import { Proposal, Reward, RewardIndexHistory, UserSubscription } from '../generated/schema';
 import { RewardCreated } from '../generated/PcrHost/PcrHost';
 import {
-  ProposalAccepted,
+  ProposalAcceptedAndDistribuition,
   ProposalCreated,
   ProposalRejected,
   RewardDeposit,
@@ -12,7 +12,7 @@ import {RewardUnitsDeleted, RewardUnitsIssued } from '../generated/templates/Pcr
 import { PcrOptimisticOracle, PcrToken } from '../generated/templates';
 import { BigDecimal, BigInt } from '@graphprotocol/graph-ts';
 
-function createNewProposal(id: string, reward: Reward) {
+function createNewProposal(id: string, reward: Reward):void {
   let proposal = new Proposal(id);
   proposal.startQualifying = reward.earliestNextAction.minus(reward.interval);
   proposal.startProposePeriod = new BigInt(0);
@@ -128,7 +128,7 @@ export function handleProposalRejected(event: ProposalRejected): void {
   }
 }
 
-export function handleProposalAcceptedAndDistribuition(event: ProposalAccepted): void {
+export function handleProposalAcceptedAndDistribuition(event: ProposalAcceptedAndDistribuition): void {
   let prId = event.params.pcrId.toString();
   let reward = Reward.load(prId);
 

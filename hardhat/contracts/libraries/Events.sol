@@ -25,7 +25,7 @@ library Events {
 
     event ProposalRejected(uint256 pcrId, uint256 proposalId, uint256 newProposalId);
 
-    event handleProposalAcceptedAndDistribuition(uint256 pcrId, uint256 proposalId, uint256 newProposalId);
+    event ProposalAcceptedAndDistribuition(uint256 pcrId, uint256 proposalId, uint256 newProposalId);
 
     //// TOKEN CONTRACT
     event RewardUnitsIssued(uint256 pcrId, address beneficiary, uint256 amount);

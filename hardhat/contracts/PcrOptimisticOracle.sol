@@ -220,7 +220,7 @@ contract PcrOptimisticOracle is IPcrOptimisticOracle, Initializable, MultiCaller
              
          
 
-             emit Events.ProposalAccepted(proposal.pcrId, proposal.proposalId,new_proposal_id);
+             emit Events.ProposalAcceptedAndDistribuition(proposal.pcrId, proposal.proposalId,new_proposal_id);
 
         }
         // ProposalRejected can be emitted multiple times whenever someone tries to execute the same rejected proposal.

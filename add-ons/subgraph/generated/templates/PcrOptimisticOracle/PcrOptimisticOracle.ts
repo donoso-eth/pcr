@@ -10,16 +10,16 @@ import {
   BigInt
 } from "@graphprotocol/graph-ts";
 
-export class ProposalAccepted extends ethereum.Event {
-  get params(): ProposalAccepted__Params {
-    return new ProposalAccepted__Params(this);
+export class ProposalAcceptedAndDistribuition extends ethereum.Event {
+  get params(): ProposalAcceptedAndDistribuition__Params {
+    return new ProposalAcceptedAndDistribuition__Params(this);
   }
 }
 
-export class ProposalAccepted__Params {
-  _event: ProposalAccepted;
+export class ProposalAcceptedAndDistribuition__Params {
+  _event: ProposalAcceptedAndDistribuition;
 
-  constructor(event: ProposalAccepted) {
+  constructor(event: ProposalAcceptedAndDistribuition) {
     this._event = event;
   }
 

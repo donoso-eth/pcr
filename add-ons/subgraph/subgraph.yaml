@@ -54,8 +54,8 @@ templates:
           handler: handleProposalCreated
         - event: ProposalRejected(uint256,uint256,uint256)
           handler: handleProposalRejected
-        - event: ProposalAccepted(uint256,uint256,uint256)
-          handler: handleProposalAccepted
+        - event: ProposalAcceptedAndDistribuition(uint256,uint256,uint256)
+          handler: handleProposalAcceptedAndDistribuition
         - event: RewardTargetAndConditionChanged(uint256,int256,uint8)
           handler: handleRewardTargetAndConditionChanged
         - event: RewardSwitchStatus(uint8)

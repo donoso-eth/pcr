@@ -51,10 +51,10 @@ templates:
           handler: handleRewardDeposit
         - event: ProposalCreated(address,uint256,uint256)
           handler: handleProposalCreated
-        - event: ProposalRejected(uint256,uint256)
+        - event: ProposalRejected(uint256,uint256,uint256)
           handler: handleProposalRejected
-        - event: ProposalAccepted(uint256,uint256,uint256)
-          handler: handleProposalAccepted
+        - event: ProposalAcceptedAndDistribuition(uint256,uint256,uint256)
+          handler: handleProposalAcceptedAndDistribuition
         - event: RewardTargetAndConditionChanged(uint256,int256,uint8)
           handler: handleRewardTargetAndConditionChanged
         - event: RewardSwitchStatus(uint8)
@@ -83,5 +83,3 @@ templates:
           handler: handleRewardUnitsIssued
         - event: RewardUnitsDeleted(uint256,address,uint256)
           handler: handleRewardUnitsDeleted
-        - event: RewardDistributed(uint256,uint256)
-          handler: handleRewardDistributed

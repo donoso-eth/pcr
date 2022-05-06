@@ -30,6 +30,10 @@ export class ProposalAccepted__Params {
   get proposalId(): BigInt {
     return this._event.parameters[1].value.toBigInt();
   }
+
+  get newProposalId(): BigInt {
+    return this._event.parameters[2].value.toBigInt();
+  }
 }
 
 export class ProposalCreated extends ethereum.Event {
@@ -77,6 +81,10 @@ export class ProposalRejected__Params {
 
   get proposalId(): BigInt {
     return this._event.parameters[1].value.toBigInt();
+  }
+
+  get newProposalId(): BigInt {
+    return this._event.parameters[2].value.toBigInt();
   }
 }
 

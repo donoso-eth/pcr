@@ -29,6 +29,7 @@ export class Reward extends Entity {
     this.set("totalDistributed", Value.fromBigInt(BigInt.zero()));
     this.set("currentIndex", Value.fromBigInt(BigInt.zero()));
     this.set("unitsIssued", Value.fromBigInt(BigInt.zero()));
+    this.set("currentProposal", Value.fromString(""));
   }
 
   save(): void {
@@ -301,6 +302,15 @@ export class Reward extends Entity {
   set rewardIndexHistory(value: Array<string>) {
     this.set("rewardIndexHistory", Value.fromStringArray(value));
   }
+
+  get currentProposal(): string {
+    let value = this.get("currentProposal");
+    return value!.toString();
+  }
+
+  set currentProposal(value: string) {
+    this.set("currentProposal", Value.fromString(value));
+  }
 }
 
 export class UserSubscription extends Entity {
@@ -522,6 +532,7 @@ export class Proposal extends Entity {
     this.set("startProposePeriod", Value.fromBigInt(BigInt.zero()));
     this.set("startLivenessPeriod", Value.fromBigInt(BigInt.zero()));
     this.set("startExecutionPeriod", Value.fromBigInt(BigInt.zero()));
+    this.set("reward", Value.fromString(""));
   }
 
   save(): void {
@@ -595,21 +606,13 @@ export class Proposal extends Entity {
     this.set("startExecutionPeriod", Value.fromBigInt(value));
   }
 
-  get reward(): string | null {
+  get reward(): string {
     let value = this.get("reward");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toString();
-    }
+    return value!.toString();
   }
 
-  set reward(value: string | null) {
-    if (!value) {
-      this.unset("reward");
-    } else {
-      this.set("reward", Value.fromString(<string>value));
-    }
+  set reward(value: string) {
+    this.set("reward", Value.fromString(value));
   }
 
   get status(): string | null {

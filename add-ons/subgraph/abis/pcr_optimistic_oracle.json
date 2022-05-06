@@ -13,9 +13,15 @@
         "internalType": "uint256",
         "name": "proposalId",
         "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "newProposalId",
+        "type": "uint256"
       }
     ],
-    "name": "ProposalAccepted",
+    "name": "handleProposalAcceptedAndDistribuition",
     "type": "event"
   },{
     "anonymous": false,
@@ -55,6 +61,12 @@
         "indexed": false,
         "internalType": "uint256",
         "name": "proposalId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "newProposalId",
         "type": "uint256"
       }
     ],

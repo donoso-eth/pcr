@@ -119,7 +119,7 @@ contract PcrOptimisticOracle is IPcrOptimisticOracle, Initializable, MultiCaller
 
             // Generate hash for proposalId.
         _proposalId.increment();
-        uint256 id = _proposalId.current();
+       
     }
 
     /********************************************
@@ -156,6 +156,8 @@ contract PcrOptimisticOracle is IPcrOptimisticOracle, Initializable, MultiCaller
         console.log(timestamp);
         require(timestamp >= reward.earliestNextAction, "Cannot propose in funding period");
         require(reward.rewardStep == DataTypes.RewardStep.Funding, "New proposals blocked");
+
+         uint256 id = _proposalId.current();
 
         // Flag reward as proposed so that any subsequent proposals are blocked till dispute.
         reward.rewardStep = DataTypes.RewardStep.Pending;
@@ -201,7 +203,10 @@ contract PcrOptimisticOracle is IPcrOptimisticOracle, Initializable, MultiCaller
         // in the same transaction when settleAndGetPrice is called above.
 
         bool isConditionMet = _checkTargetCondition(resolvedPrice, reward.target, reward.targetCondition);
-
+        
+        _proposalId.increment();
+        uint256 new_proposal_id = _proposalId.current();
+        
         if (isConditionMet == true) {
             SuperToken(rewardToken).approve(TOKEN_INDEX_PUBLISHER_ADDRESS, reward.rewardAmount);
             SuperToken(rewardToken).send(TOKEN_INDEX_PUBLISHER_ADDRESS, reward.rewardAmount, "0x");
@@ -212,13 +217,15 @@ contract PcrOptimisticOracle is IPcrOptimisticOracle, Initializable, MultiCaller
 
             reward.rewardStep = DataTypes.RewardStep.Funding;
 
+             
+         
 
-             emit Events.ProposalAccepted(proposal.pcrId, proposal.proposalId);
+             emit Events.ProposalAccepted(proposal.pcrId, proposal.proposalId,new_proposal_id);
 
         }
         // ProposalRejected can be emitted multiple times whenever someone tries to execute the same rejected proposal.
         else {
-            emit Events.ProposalRejected(proposal.pcrId, proposal.proposalId);
+            emit Events.ProposalRejected(proposal.pcrId, proposal.proposalId,new_proposal_id);
         }
     }
 

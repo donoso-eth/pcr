@@ -194,7 +194,7 @@ contract PcrToken is
     // do stuff
     _distribute(amount);
 
-  emit Events.RewardDistributed( pcrId, amount);
+  // emit Events.RewardDistributed( pcrId, amount);
 
   }
 

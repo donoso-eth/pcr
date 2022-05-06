@@ -7,10 +7,21 @@ import {
   RewardDeposit,
   RewardTargetAndConditionChanged,
 } from '../generated/templates/PcrOptimisticOracle/PcrOptimisticOracle';
-import { RewardDistributed, RewardUnitsDeleted, RewardUnitsIssued } from '../generated/templates/PcrToken/PcrToken';
+import {RewardUnitsDeleted, RewardUnitsIssued } from '../generated/templates/PcrToken/PcrToken';
 
 import { PcrOptimisticOracle, PcrToken } from '../generated/templates';
 import { BigDecimal, BigInt } from '@graphprotocol/graph-ts';
+
+function createNewProposal(id: string, reward: Reward) {
+  let proposal = new Proposal(id);
+  proposal.startQualifying = reward.earliestNextAction.minus(reward.interval);
+  proposal.startProposePeriod = new BigInt(0);
+  proposal.startLivenessPeriod = new BigInt(0);
+  proposal.startExecutionPeriod = new BigInt(0);
+  proposal.reward = reward.id;
+  proposal.status = 'Pending';
+  proposal.save();
+}
 
 export function handleRewardCreated(event: RewardCreated): void {
   let id = event.params.reward.pcrId.toString();
@@ -43,16 +54,20 @@ export function handleRewardCreated(event: RewardCreated): void {
     reward.unitsIssued = new BigInt(0);
     reward.totalDistributed = new BigInt(0);
     reward.currentIndex = new BigInt(0);
+    reward.currentProposal = '1';
+
+    let propossalId = '1';
+    let proposal = Proposal.load(propossalId);
+
+    if (proposal === null) {
+      createNewProposal(propossalId, reward);
+    }
   }
 
   reward.save();
 
   PcrOptimisticOracle.create(event.params.reward.optimisticOracleContract);
   PcrToken.create(event.params.reward.tokenContract);
-
-
-
-  
 }
 
 export function handleRewardDeposit(event: RewardDeposit): void {
@@ -66,59 +81,78 @@ export function handleRewardDeposit(event: RewardDeposit): void {
 }
 
 export function handleProposalCreated(event: ProposalCreated): void {
-
   let id = event.params.proposalId.toString();
   let prId = event.params.pcrId.toString();
   let reward = Reward.load(prId);
-
- 
-
-  let proposal = Proposal.load(id);
-
-  if (proposal === null) {
-    let proposal = new Proposal(id);
-    proposal.proposer = event.params.proposer.toHexString();
-    proposal.startQualifying = reward.earliestNextAction.minus(reward.interval);
-    proposal.startProposePeriod = event.block.timestamp;
-    proposal.reward = prId;
-    proposal.status = 'Pending';
-    proposal.save();
-  }
-
-  
-  
   if (reward !== null) {
+    let proposal = Proposal.load(id);
+
+    if (proposal !== null) {
+      proposal.proposer = event.params.proposer.toHexString();
+      proposal.startProposePeriod = event.block.timestamp;
+      proposal.status = 'Pending';
+      proposal.save();
+    }
+
     reward.rewardStep = new BigInt(1);
     reward.earliestNextAction = event.block.timestamp.plus(reward.optimisticOracleLivenessTime);
     reward.save();
   }
-
-
 }
 
 export function handleProposalRejected(event: ProposalRejected): void {
   let prId = event.params.pcrId.toString();
+
   let reward = Reward.load(prId);
+
+  let newProposalId = event.params.newProposalId.toString();
+
   if (reward !== null) {
     reward.rewardStep = new BigInt(0);
-
+    reward.earliestNextAction = event.block.timestamp.plus(reward.optimisticOracleLivenessTime);
+    reward.currentProposal = newProposalId;
     reward.save();
-  }
 
-  let id = event.params.proposalId.toString();
-  let proposal = Proposal.load(id);
+    let id = event.params.proposalId.toString();
+    let proposal = Proposal.load(id);
 
-  if (proposal !== null) {
-    proposal.status = 'Rejected';
+    if (proposal !== null) {
+      proposal.status = 'Rejected';
+      proposal.save();
+    }
+
+    let newProposal = Proposal.load(newProposalId);
+    if (newProposal === null) {
+      createNewProposal(newProposalId, reward);
+    }
   }
 }
 
-export function handleProposalAccepted(event: ProposalAccepted): void {
-  let id = event.params.proposalId.toString();
-  let proposal = Proposal.load(id);
+export function handleProposalAcceptedAndDistribuition(event: ProposalAccepted): void {
+  let prId = event.params.pcrId.toString();
+  let reward = Reward.load(prId);
 
-  if (proposal !== null) {
-    proposal.status = 'Accepted';
+  let newProposalId = event.params.newProposalId.toString();
+
+  if (reward !== null) {
+    reward.totalDistributed = reward.totalDistributed.plus(reward.rewardAmount);
+    reward.currentdeposit = reward.currentdeposit.minus(reward.rewardAmount);
+    reward.rewardStatus = new BigInt(0);
+    reward.rewardStep = new BigInt(0);
+    reward.earliestNextAction = event.block.timestamp.plus(reward.optimisticOracleLivenessTime);
+    reward.currentProposal = newProposalId;
+    reward.save();
+
+    let id = event.params.proposalId.toString();
+    let proposal = Proposal.load(id);
+    if (proposal !== null) {
+      proposal.status = 'Accepted';
+      proposal.save();
+    }
+    let newProposal = Proposal.load(newProposalId);
+    if (newProposal === null) {
+      createNewProposal(newProposalId, reward);
+    }
   }
 }
 
@@ -132,6 +166,11 @@ export function handleRewardTargetAndConditionChanged(event: RewardTargetAndCond
     reward.save();
   }
 }
+
+
+
+///////// PCRTOKEN/IDA EVENTS
+
 
 export function handleRewardUnitsIssued(event: RewardUnitsIssued): void {
   //// UPDATE The Current Index in the Reward Entity
@@ -189,16 +228,3 @@ export function handleRewardUnitsDeleted(event: RewardUnitsDeleted): void {
   }
 }
 
-export function handleRewardDistributed(event: RewardDistributed): void {
-  //// UPDATE The Current Index in the Reward Entity
-  let prId = event.params.pcrId.toString();
-  let reward = Reward.load(prId);
-  if (reward !== null) {
-    reward.totalDistributed = reward.totalDistributed.plus(event.params.rewardAmount);
-    reward.currentdeposit = reward.currentdeposit.minus(reward.rewardAmount);
-    reward.rewardStatus = new BigInt(0);
-    reward.rewardStep = new BigInt(0);
-    reward.earliestNextAction = event.block.timestamp.plus(reward.optimisticOracleLivenessTime);
-    reward.save();
-  }
-}

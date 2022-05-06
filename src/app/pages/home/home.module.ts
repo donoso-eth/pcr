@@ -14,6 +14,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { StepsModule } from 'primeng/steps';
+import { ChartModule } from 'primeng/chart';
 
 @NgModule({
   declarations: [
@@ -33,6 +34,7 @@ import { StepsModule } from 'primeng/steps';
     InputSwitchModule,
     DialogModule,
     StepsModule,
+    ChartModule
   ]
 })
 export class HomeModule { }

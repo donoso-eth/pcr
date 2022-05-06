@@ -40,7 +40,8 @@ export class HomeComponent extends DappBaseComponent {
   routeItems: { label: string }[];
 
   activeStep = 0;
-
+  chartData: { labels: string[]; datasets: { label: string; data: number[]; fill: boolean; backgroundColor: string; borderColor: string; tension: number; }[]; };
+  chartOptions:any;
   constructor(private router: Router, dapp: DappInjector, store: Store, private graphqlService: GraphQlService) {
     super(dapp, store);
     this.routeItems = [
@@ -49,6 +50,54 @@ export class HomeComponent extends DappBaseComponent {
       {label: 'Liveness Period'},
       {label: 'Execution Period'},
   ];
+  this.chartOptions = {
+    plugins: {
+        legend: {
+            labels: {
+                color: '#ebedef'
+            }
+        }
+    },
+    scales: {
+        x: {
+            ticks: {
+                color: '#ebedef'
+            },
+            grid: {
+                color:  'rgba(160, 167, 181, .3)',
+            }
+        },
+        y: {
+            ticks: {
+                color: '#ebedef'
+            },
+            grid: {
+                color:  'rgba(160, 167, 181, .3)',
+            }
+        },
+    }
+};
+  this.chartData = {
+    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+    datasets: [
+        {
+            label: 'First Dataset',
+            data: [65, 59, 80, 81, 56, 55, 40],
+            fill: false,
+            backgroundColor: '#2f4860',
+            borderColor: '#2f4860',
+            tension: .4
+        },
+        {
+            label: 'Second Dataset',
+            data: [28, 48, 40, 19, 86, 27, 90],
+            fill: false,
+            backgroundColor: '#00bb7e',
+            borderColor: '#00bb7e',
+            tension: .4
+        }
+    ]
+};
   }
 
   changeStatus(value: boolean, i: number) {

@@ -1,7 +1,24 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { Apollo, QueryRef, gql } from 'apollo-angular';
-import { BehaviorSubject, Subject, Subscription } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, Subject, Subscription } from 'rxjs';
 
+const GET_QUERY = `
+  query($receiver: String!){
+    streams(where:{
+          receiver: $receiver
+        }
+       ) {
+    	token {
+        id
+        symbol
+      }
+      createdAtTimestamp
+	    updatedAtTimestamp
+	    currentFlowRate
+	    streamedUntilUpdatedAt
+        }
+  }
+`;
 
 const userSubscriptions = gql`
   {
@@ -117,6 +134,27 @@ export class GraphQlService implements OnDestroy {
       console.log(error);
       return {};
     }
+
+    // this.querySubscription = this.postsQuery.valueChanges.subscribe(({ data, loading }) => {
+    //   this.loading = loading;
+    //   this.posts = data.posts;
+    // });
+  }
+
+  async  queryVariables(address:string) {
+    // this.postsQuery = this.apollo.watchQuery<any>({
+    //   query: GET_POSTS,
+    //   pollInterval: 500,
+    // });
+    console.log(address)
+    const variables = {receiver: address.toLowerCase()};
+  const posts = await firstValueFrom(this.apollo.query<any>({
+    query: gql(GET_QUERY),
+    variables,
+    }))
+
+    return posts.data
+
 
     // this.querySubscription = this.postsQuery.valueChanges.subscribe(({ data, loading }) => {
     //   this.loading = loading;

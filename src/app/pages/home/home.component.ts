@@ -31,10 +31,12 @@ export class HomeComponent extends DappBaseComponent {
   toUpdateReward!: IPCR_REWARD;
 
   valSwitch = true;
-  showFunding = false;
+  showFundingState = false;
+  showIssuingState = false;
 
   //// FormControls
   toFundAmountCtrl = new FormControl(0, Validators.required);
+  adressesCtrl = new FormControl('', [Validators.required, Validators.minLength(32), Validators.maxLength(32)]);
   routeItems: { label: string }[];
 
   activeStep = 0;
@@ -53,7 +55,7 @@ export class HomeComponent extends DappBaseComponent {
     console.log(i, value);
   }
 
-  async doFunding(reward:IPCR_REWARD) {
+  async showFunding(reward:IPCR_REWARD) {
     this.store.dispatch(Web3Actions.chainBusy({ status: true }));
     this.toUpdateReward = reward;
 
@@ -63,16 +65,10 @@ export class HomeComponent extends DappBaseComponent {
     this.toUpdateReward.fundToken.superTokenBalance = balanceSupertoken[0].toString();
 
     this.store.dispatch(Web3Actions.chainBusy({ status: false }));
-    this.showFunding = true;
+    this.showFundingState = true;
   }
 
-  async doPropose(reward:IPCR_REWARD){
-    this.store.dispatch(Web3Actions.chainBusy({ status: true }));
-    await doSignerTransaction(this.dapp.DAPP_STATE.pcrOptimisticOracleContract?.instance.proposeDistribution(1)!);
-
-  }
-
-  async fundDeposit() {
+  async doFunding() {
     if (this.toFundAmountCtrl.value <= 0) {
       alert('please add a numer');
     }
@@ -83,8 +79,38 @@ export class HomeComponent extends DappBaseComponent {
     this.toUpdateReward.currentdeposit = +this.toUpdateReward.currentdeposit + this.toFundAmountCtrl.value;
 
     this.store.dispatch(Web3Actions.chainBusy({ status: false }));
-    this.showFunding = false;
+    this.showFundingState = false;
   }
+
+
+  showAddMembers(reward:IPCR_REWARD) {
+   
+    this.toUpdateReward = reward;
+    this.showIssuingState = true;
+  }
+
+  async doAddMember(reward:IPCR_REWARD){
+
+    if (this.adressesCtrl.value.invalid) {
+      alert('please add and adresse')
+    }
+
+    this.store.dispatch(Web3Actions.chainBusy({ status: true }));
+    await doSignerTransaction(this.dapp.DAPP_STATE.pcrTokenContract?.instance.issue(this.adressesCtrl.value,1)!);
+    this.showIssuingState = true;
+  }
+
+
+
+
+
+
+  async doPropose(reward:IPCR_REWARD){
+    this.store.dispatch(Web3Actions.chainBusy({ status: true }));
+    await doSignerTransaction(this.dapp.DAPP_STATE.pcrOptimisticOracleContract?.instance.proposeDistribution(1)!);
+
+  }
+
 
   calculateStep(reward: IPCR_REWARD): REWARD_STEP {
     let rewardStep = +reward.rewardStep.toString();
@@ -124,6 +150,9 @@ export class HomeComponent extends DappBaseComponent {
   }
 
   async getTokens() {
+
+    const indexes = await this.graphqlService.queryIndexes()
+    console.log(indexes)
 
     const proposals = await this.graphqlService.query()
     console.log(proposals)

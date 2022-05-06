@@ -51,10 +51,11 @@ type Reward @entity {
   totalDistributed: BigInt!
   currentIndex: BigInt!
   unitsIssued: BigInt!
+  usersSubscriptions:BigOnt!
   rewardIndexHistory: [RewardIndexHistory!]! @derivedFrom(field: "reward")
 
 
-  currentProposal: Proposal!
+  currentProposal: Proposal
 
 }
 

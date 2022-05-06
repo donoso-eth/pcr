@@ -518,6 +518,10 @@ export class Proposal extends Entity {
     this.set("id", Value.fromString(id));
 
     this.set("proposer", Value.fromString(""));
+    this.set("startQualifying", Value.fromBigInt(BigInt.zero()));
+    this.set("startProposePeriod", Value.fromBigInt(BigInt.zero()));
+    this.set("startLivenessPeriod", Value.fromBigInt(BigInt.zero()));
+    this.set("startExecutionPeriod", Value.fromBigInt(BigInt.zero()));
   }
 
   save(): void {
@@ -555,6 +559,42 @@ export class Proposal extends Entity {
     this.set("proposer", Value.fromString(value));
   }
 
+  get startQualifying(): BigInt {
+    let value = this.get("startQualifying");
+    return value!.toBigInt();
+  }
+
+  set startQualifying(value: BigInt) {
+    this.set("startQualifying", Value.fromBigInt(value));
+  }
+
+  get startProposePeriod(): BigInt {
+    let value = this.get("startProposePeriod");
+    return value!.toBigInt();
+  }
+
+  set startProposePeriod(value: BigInt) {
+    this.set("startProposePeriod", Value.fromBigInt(value));
+  }
+
+  get startLivenessPeriod(): BigInt {
+    let value = this.get("startLivenessPeriod");
+    return value!.toBigInt();
+  }
+
+  set startLivenessPeriod(value: BigInt) {
+    this.set("startLivenessPeriod", Value.fromBigInt(value));
+  }
+
+  get startExecutionPeriod(): BigInt {
+    let value = this.get("startExecutionPeriod");
+    return value!.toBigInt();
+  }
+
+  set startExecutionPeriod(value: BigInt) {
+    this.set("startExecutionPeriod", Value.fromBigInt(value));
+  }
+
   get reward(): string | null {
     let value = this.get("reward");
     if (!value || value.kind == ValueKind.NULL) {
@@ -569,23 +609,6 @@ export class Proposal extends Entity {
       this.unset("reward");
     } else {
       this.set("reward", Value.fromString(<string>value));
-    }
-  }
-
-  get timeStamp(): BigInt | null {
-    let value = this.get("timeStamp");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toBigInt();
-    }
-  }
-
-  set timeStamp(value: BigInt | null) {
-    if (!value) {
-      this.unset("timeStamp");
-    } else {
-      this.set("timeStamp", Value.fromBigInt(<BigInt>value));
     }
   }
 

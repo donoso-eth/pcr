@@ -49,6 +49,10 @@ export function handleRewardCreated(event: RewardCreated): void {
 
   PcrOptimisticOracle.create(event.params.reward.optimisticOracleContract);
   PcrToken.create(event.params.reward.tokenContract);
+
+
+
+  
 }
 
 export function handleRewardDeposit(event: RewardDeposit): void {
@@ -62,25 +66,34 @@ export function handleRewardDeposit(event: RewardDeposit): void {
 }
 
 export function handleProposalCreated(event: ProposalCreated): void {
+
+  let id = event.params.proposalId.toString();
   let prId = event.params.pcrId.toString();
   let reward = Reward.load(prId);
+
+ 
+
+  let proposal = Proposal.load(id);
+
+  if (proposal === null) {
+    let proposal = new Proposal(id);
+    proposal.proposer = event.params.proposer.toHexString();
+    proposal.startQualifying = reward.earliestNextAction.minus(reward.interval);
+    proposal.startProposePeriod = event.block.timestamp;
+    proposal.reward = prId;
+    proposal.status = 'Pending';
+    proposal.save();
+  }
+
+  
+  
   if (reward !== null) {
     reward.rewardStep = new BigInt(1);
     reward.earliestNextAction = event.block.timestamp.plus(reward.optimisticOracleLivenessTime);
     reward.save();
   }
 
-  let id = event.params.proposalId.toString();
-  let proposal = Proposal.load(id);
 
-  if (proposal === null) {
-    let proposal = new Proposal(id);
-    proposal.proposer = event.params.proposer.toHexString();
-    proposal.timeStamp = event.block.timestamp;
-    proposal.reward = prId;
-    proposal.status = 'Pending';
-    proposal.save();
-  }
 }
 
 export function handleProposalRejected(event: ProposalRejected): void {

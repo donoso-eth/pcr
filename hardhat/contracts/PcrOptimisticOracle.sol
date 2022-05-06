@@ -116,6 +116,10 @@ contract PcrOptimisticOracle is IPcrOptimisticOracle, Initializable, MultiCaller
             optimisticOracleinitializer.optimisticOracleInput.priceIdentifier,
             optimisticOracleinitializer.optimisticOracleInput.customAncillaryData
         );
+
+            // Generate hash for proposalId.
+        _proposalId.increment();
+        uint256 id = _proposalId.current();
     }
 
     /********************************************
@@ -159,9 +163,6 @@ contract PcrOptimisticOracle is IPcrOptimisticOracle, Initializable, MultiCaller
         // Append pcrId to ancillary data.
         bytes memory ancillaryData = _appendpcrId(reward.customAncillaryData);
 
-        // Generate hash for proposalId.
-        _proposalId.increment();
-        uint256 id = _proposalId.current();
 
         // Request price from Optimistic Oracle.
         optimisticOracle.requestPrice(reward.priceIdentifier, timestamp, ancillaryData, IERC20(0x489Bf230d4Ab5c2083556E394a28276C22c3B580), 0);

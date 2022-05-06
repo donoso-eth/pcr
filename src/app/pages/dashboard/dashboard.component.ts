@@ -22,11 +22,22 @@ export class DashboardComponent implements OnInit {
 
     subscription: Subscription = new Subscription;
 
-    config!: AppConfig;
+    
 
+    config!: AppConfig;
+    routeItems!: { label: string; routerLink: string; }[];
+    ind = 0;
     constructor(private productService: ProductService, public configService: ConfigService) {}
 
     ngOnInit() {
+
+        this.routeItems = [
+            {label: 'Personal', routerLink:'personal'},
+            {label: 'Seat', routerLink:'seat'},
+            {label: 'Payment', routerLink:'payment'},
+            {label: 'Confirmation', routerLink:'confirmation'},
+        ];
+
         this.config = this.configService.config;
         this.subscription = this.configService.configUpdate$.subscribe((config:AppConfig) => {
             this.config = config;

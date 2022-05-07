@@ -35,7 +35,7 @@ export class DappBaseComponent implements OnDestroy, AfterViewInit {
 
   async hookReadyContractReady() {}
 
-  async hookForceDisconnect() { console.log(38)}
+  async hookForceDisconnect() {}
 
 
   ngAfterViewInit(): void {
@@ -61,6 +61,7 @@ export class DappBaseComponent implements OnDestroy, AfterViewInit {
       .pipe(web3Selectors.hookFailToconnect)
       .pipe(takeUntil(this.destroyHooks))
       .subscribe(() => {
+      
         this.hookFailedtoConnectNetwork();
       });
 
@@ -75,6 +76,17 @@ export class DappBaseComponent implements OnDestroy, AfterViewInit {
         this.signerAdress = this.dapp.signerAddress as string;
         this.hookContractConnected();
       });
+
+
+    //////  WALLET IS CONNECTED TO CONTRACT
+    this.store
+    .pipe(web3Selectors.hookWalletNotConnected)
+    .pipe(takeUntil(this.destroyHooks))
+    .subscribe(() => {
+      console.log('pur que')
+      this.hookWalletNotConnected();
+    });
+
 
     //////   READ CONTRACT IS READY
     this.store

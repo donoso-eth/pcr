@@ -237,6 +237,8 @@ export class HomeComponent extends DappBaseComponent {
     this.router.navigateByUrl('create-pcr');
   }
 
+
+
   override async hookContractConnected(): Promise<void> {
     this.getTokens();
 

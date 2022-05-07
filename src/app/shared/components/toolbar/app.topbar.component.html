@@ -1,29 +1,47 @@
 <div class="layout-topbar">
-    <a class="layout-topbar-logo" routerLink="">
+    <a style="width:unset;" class="layout-topbar-logo" routerLink="">
         <img src="assets/layout/images/logo-white.svg" alt="logo">
-        <span>SAKAI</span>
+        <span>Perpetual Conditional Rewward</span>
     </a>
-
+<!-- 
     <a class="p-link layout-menu-button layout-topbar-button" href="#" (click)="toggleMenu($event)">
         <i class="pi pi-bars"></i>
     </a>
 
     <a class="p-link layout-topbar-menu-button layout-topbar-button" href="#" (click)="toggleTopMenu($event)">
         <i class="pi pi-ellipsis-v"></i>
-    </a>
+    </a> -->
 
-    <div class="layout-topbar-menu" >
-         <a href="#" class="p-link layout-topbar-button">
+ <div  *ngIf="blockchain_status == 'wallet-connected'"  style="align-items: center;
+ margin-right: 30px;" class="layout-topbar-menu" >
+    <a>{{ address_to_show}}</a>
+    <a  (click)="doDisconnect()" class="p-link layout-topbar-button">
+        <i class="pi pi-cog"></i>
+        <span>Settings</span>
+    </a>
+    <p-dropdown [options]="users"  [formControl]="localUserCtrl"  placeholder="Select a RewardType">
+        <ng-template pTemplate="selectedItem">
+            <div  style="display:inline-flex; width: 100%;" class="country-item country-item-value" >
+                        <div>User {{localUserCtrl.value}}</div>
+            </div>
+        </ng-template>
+        <ng-template let-user pTemplate="user">
+            <div  style="width: 100%;" class="flex align-items-center">
+                        <span>User {{user}}</span>
+            </div>
+        </ng-template>
+    </p-dropdown>
+         <!-- <a href="#" class="p-link layout-topbar-button">
             <i class="pi pi-calendar"></i>
             <span>Calendar</span>
         </a>
-        <a href="#" class="p-link layout-topbar-button">
+        <a  (click)="doDisconnect()" class="p-link layout-topbar-button">
             <i class="pi pi-cog"></i>
             <span>Settings</span>
         </a>
         <a href="#" class="p-link layout-topbar-button">
             <i class="pi pi-user"></i>
-            <span>Profile</span>
-        </a>
-    </div>
+            <span>Profile</span> 
+        </a>-->
+    </div> 
 </div>

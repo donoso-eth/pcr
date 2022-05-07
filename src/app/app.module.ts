@@ -26,6 +26,8 @@ import { GraphQlModule } from './dapp-injector/services/graph-ql/graph-ql.module
 import PcrHostMetadata from '../assets/contracts/pcr_host_metadata.json';
 import { ICONTRACT_METADATA } from 'angular-web3';
 import { LoadingComponent } from './shared/components/loading/loading.component';
+import { DropdownModule } from 'primeng/dropdown';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 export const contractMetadata = new InjectionToken<ICONTRACT_METADATA>('contractMetadata')
 
 export const contractProvider= {provide: 'contractMetadata', useValue:PcrHostMetadata };
@@ -45,10 +47,14 @@ export const contractProvider= {provide: 'contractMetadata', useValue:PcrHostMet
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
+    FormsModule,
+    ReactiveFormsModule,
     AppRoutingModule,
     DappInjectorModule.forRoot({wallet:'local', defaultNetwork:'localhost'}),
     StoreModule.forRoot({web3: we3ReducerFunction}),
-    GraphQlModule.forRoot({uri:"http://localhost:8000/subgraphs/name/angular-web3/pcr"})
+    GraphQlModule.forRoot({uri:"http://localhost:8000/subgraphs/name/angular-web3/pcr"}),
+
+    DropdownModule
 
   ],
   providers: [ConfigService, MenuService, ProductService,contractProvider],

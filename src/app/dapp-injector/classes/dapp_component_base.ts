@@ -35,7 +35,7 @@ export class DappBaseComponent implements OnDestroy, AfterViewInit {
 
   async hookReadyContractReady() {}
 
-  async hookForceDisconnect() {}
+  async hookForceDisconnect() { console.log(38)}
 
 
   ngAfterViewInit(): void {
@@ -89,6 +89,7 @@ export class DappBaseComponent implements OnDestroy, AfterViewInit {
       .pipe(web3Selectors.hookForceDisconnect)
       .pipe(takeUntil(this.destroyHooks))
       .subscribe(() => {
+        console.log('force discoonetc')
         this.hookForceDisconnect;
       });
 

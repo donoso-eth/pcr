@@ -61,9 +61,9 @@ type Reward @entity {
 
 type User @entity {
  id:ID!
- rewardsCreated: [Reward!]! @derivedFrom(field: "admin")
- rewardsSubscriptions: [UserSubscription!]! @derivedFrom(field: "beneficiary")
- proposaslsSubmitted: [Proposal!]! @derivedFrom(field: "proposer")
+ rewardsCreated: [Reward!] @derivedFrom(field: "admin")
+ rewardsSubscriptions: [UserSubscription!] @derivedFrom(field: "beneficiary")
+ proposaslsSubmitted: [Proposal!] @derivedFrom(field: "proposer")
 
 }
 

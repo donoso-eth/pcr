@@ -122,8 +122,8 @@ export class HomeComponent extends DappBaseComponent {
       alert('please add a numer');
     }
     this.store.dispatch(Web3Actions.chainBusy({ status: true }));
-    await doSignerTransaction(this._createERC20Instance(this.toUpdateReward.fundToken.superToken).approve(this.dapp.DAPP_STATE.pcrOptimisticOracleContract?.address, 50));
-    await doSignerTransaction(this.dapp.DAPP_STATE.pcrOptimisticOracleContract?.instance.depositReward(this.toFundAmountCtrl.value)!);
+    await doSignerTransaction(this._createERC20Instance(this.toUpdateReward.fundToken.superToken).approve(this.dapp.DAPP_STATE.contracts[+this.toUpdateReward.id]?.pcrOptimisticOracle.address, 50));
+    await doSignerTransaction(this.dapp.DAPP_STATE.contracts[+this.toUpdateReward.id]?.pcrOptimisticOracle.instance.depositReward(this.toFundAmountCtrl.value)!);
 
     this.toUpdateReward.currentdeposit = +this.toUpdateReward.currentdeposit + this.toFundAmountCtrl.value;
 
@@ -145,7 +145,7 @@ export class HomeComponent extends DappBaseComponent {
     }
 
     this.store.dispatch(Web3Actions.chainBusy({ status: true }));
-    await doSignerTransaction(this.dapp.DAPP_STATE.pcrTokenContract?.instance.issue(this.adressesCtrl.value,1)!);
+    await doSignerTransaction(this.dapp.DAPP_STATE.contracts[+reward.id]?.pcrToken?.instance.issue(this.adressesCtrl.value,1)!);
     this.showIssuingState = true;
   }
 
@@ -156,7 +156,7 @@ export class HomeComponent extends DappBaseComponent {
 
   async doPropose(reward:IPCR_REWARD){
     this.store.dispatch(Web3Actions.chainBusy({ status: true }));
-    await doSignerTransaction(this.dapp.DAPP_STATE.pcrOptimisticOracleContract?.instance.proposeDistribution(1)!);
+    await doSignerTransaction(this.dapp.DAPP_STATE.contracts[+reward.id]?.pcrOptimisticOracle.instance.proposeDistribution(1)!);
 
   }
 
@@ -199,6 +199,9 @@ export class HomeComponent extends DappBaseComponent {
   }
 
   async getTokens() {
+
+    const  users = await this.graphqlService.queryUsers()
+    console.log(users)
 
     const indexes = await this.graphqlService.queryIndexes()
     console.log(indexes)
@@ -245,7 +248,7 @@ export class HomeComponent extends DappBaseComponent {
     let pcrAddress = await this.dapp.DAPP_STATE.pcrHostContract?.instance!.getTokensAddressByUserAndId(this.dapp.signerAddress!, 1);
 
     if (pcrAddress !== undefined) {
-      await this.dapp.launchClones(pcrAddress!.tokenContract, pcrAddress!.optimisticOracleContract);
+      await this.dapp.launchClones(pcrAddress!.tokenContract, pcrAddress!.optimisticOracleContract,1);
     }
   }
 }

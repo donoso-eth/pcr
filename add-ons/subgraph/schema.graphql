@@ -28,7 +28,7 @@ type Reward @entity {
   id: ID!
   title: String
   url: String
-  admin: String
+  admin: User!
 
   rewardToken: String
   rewardAmount: BigInt!
@@ -51,7 +51,7 @@ type Reward @entity {
   totalDistributed: BigInt!
   currentIndex: BigInt!
   unitsIssued: BigInt!
-  usersSubscriptions:BigOnt!
+  usersSubscriptions:BigInt!
   rewardIndexHistory: [RewardIndexHistory!]! @derivedFrom(field: "reward")
 
 
@@ -59,8 +59,17 @@ type Reward @entity {
 
 }
 
+type User @entity {
+ id:ID!
+ rewardsCreated: [Reward!]! @derivedFrom(field: "admin")
+ rewardsSubscriptions: [UserSubscription!]! @derivedFrom(field: "beneficiary")
+ proposaslsSubmitted: [Proposal!]! @derivedFrom(field: "proposer")
+
+}
+
 type UserSubscription @entity {
   id: ID!
+  beneficiary: User!
   units: BigInt!
 }
 
@@ -81,7 +90,7 @@ type RewardIndexHistory @entity {
 
 type Proposal @entity {
   id: ID!
-  proposer: String!
+  proposer: User!
   startQualifying: BigInt!
   startProposePeriod: BigInt!
   startLivenessPeriod: BigInt!

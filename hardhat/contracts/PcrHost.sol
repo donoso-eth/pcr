@@ -26,8 +26,7 @@ contract PcrHost {
     address optimisticOracleContract;
   }
 
-  mapping(address => mapping(uint256 => Pcr_addresses))
-    private _pcrTokensContractsByUser;
+  mapping(address => mapping(uint256 => Pcr_addresses)) private _pcrTokensContractsByUser;
   mapping(address => uint256) private _pcrTokensByUser;
 
   constructor() {}

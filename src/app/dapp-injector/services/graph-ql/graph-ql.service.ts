@@ -20,12 +20,21 @@ const GET_QUERY = `
   }
 `;
 
+const users = gql`
+  {
+    users(first: 5) {
+      id
+      rewardsCreated
+      rewardsSubscriptions
+      proposaslsSubmitted
+    }
+  }
+`;
+
 const userSubscriptions = gql`
   {
     userSubscriptions(first: 5) {
-   
       units
-   
     }
   }
 `;
@@ -55,7 +64,9 @@ const rewards = gql`
   {
     rewards(first: 5) {
       id
-      admin
+      admin {
+        id
+      }
       rewardAmount
       rewardToken
       currentdeposit
@@ -119,6 +130,27 @@ export class GraphQlService implements OnDestroy {
     // });
   }
 
+  async queryUsers() {
+    try {
+      const posts = await this.apollo
+        .query<any>({
+          query: users,
+        })
+        .toPromise();
+
+      console.log(posts);
+      return posts;
+    } catch (error) {
+      console.log(error);
+      return {};
+    }
+
+    // this.querySubscription = this.postsQuery.valueChanges.subscribe(({ data, loading }) => {
+    //   this.loading = loading;
+    //   this.posts = data.posts;
+    // });
+  }
+
 
   async queryIndexes() {
     try {
@@ -141,25 +173,25 @@ export class GraphQlService implements OnDestroy {
     // });
   }
 
-  async  queryVariables(address:string) {
+  async queryVariables(address: string) {
     // this.postsQuery = this.apollo.watchQuery<any>({
     //   query: GET_POSTS,
     //   pollInterval: 500,
     // });
-    console.log(address)
-    const variables = {receiver: address.toLowerCase()};
-  const posts = await firstValueFrom(this.apollo.query<any>({
-    query: gql(GET_QUERY),
-    variables,
-    }))
+    console.log(address);
+    const variables = { receiver: address.toLowerCase() };
+    const posts = await firstValueFrom(
+      this.apollo.query<any>({
+        query: gql(GET_QUERY),
+        variables,
+      })
+    );
 
-    return posts.data
-
+    return posts.data;
 
     // this.querySubscription = this.postsQuery.valueChanges.subscribe(({ data, loading }) => {
     //   this.loading = loading;
     //   this.posts = data.posts;
     // });
   }
-
 }

@@ -1,4 +1,4 @@
-import { Proposal, Reward, RewardIndexHistory, UserSubscription } from '../generated/schema';
+import { Proposal, Reward, RewardIndexHistory, User, UserSubscription } from '../generated/schema';
 import { RewardCreated } from '../generated/PcrHost/PcrHost';
 import {
   ProposalAcceptedAndDistribuition,
@@ -7,12 +7,13 @@ import {
   RewardDeposit,
   RewardTargetAndConditionChanged,
 } from '../generated/templates/PcrOptimisticOracle/PcrOptimisticOracle';
-import {RewardUnitsDeleted, RewardUnitsIssued } from '../generated/templates/PcrToken/PcrToken';
+import { RewardUnitsDeleted, RewardUnitsIssued } from '../generated/templates/PcrToken/PcrToken';
 
 import { PcrOptimisticOracle, PcrToken } from '../generated/templates';
 import { BigDecimal, BigInt } from '@graphprotocol/graph-ts';
+import { store } from '@graphprotocol/graph-ts'
 
-function createNewProposal(id: string, reward: Reward):void {
+function createNewProposal(id: string, reward: Reward): void {
   let proposal = new Proposal(id);
   proposal.startQualifying = reward.earliestNextAction.minus(reward.interval);
   proposal.startProposePeriod = new BigInt(0);
@@ -23,16 +24,28 @@ function createNewProposal(id: string, reward: Reward):void {
   proposal.save();
 }
 
-export function handleRewardCreated(event: RewardCreated): void {
-  let id = event.params.reward.pcrId.toString();
 
+function createUser(userId:string):void {
+  let user = User.load(userId);
+  if (user === null) {
+    user = new User(userId);
+    user.save();
+  }
+}
+
+
+export function handleRewardCreated(event: RewardCreated): void {
+  let userId = event.params.reward.admin.toHexString();
+  createUser(userId);
+
+  let id = event.params.reward.pcrId.toString();
   let reward = Reward.load(id);
 
   if (reward === null) {
     reward = new Reward(id);
     reward.title = event.params.reward.title;
     reward.url = event.params.reward.url;
-    reward.admin = event.params.reward.admin.toHexString();
+    reward.admin = userId;
 
     reward.rewardToken = event.params.reward.rewardToken.toHexString();
     reward.rewardAmount = event.params.reward.optimisticOracleInput.rewardAmount;
@@ -81,6 +94,9 @@ export function handleRewardDeposit(event: RewardDeposit): void {
 }
 
 export function handleProposalCreated(event: ProposalCreated): void {
+  let proposerId = event.params.proposer.toHexString();
+  createUser(proposerId);
+
   let id = event.params.proposalId.toString();
   let prId = event.params.pcrId.toString();
   let reward = Reward.load(prId);
@@ -88,7 +104,7 @@ export function handleProposalCreated(event: ProposalCreated): void {
     let proposal = Proposal.load(id);
 
     if (proposal !== null) {
-      proposal.proposer = event.params.proposer.toHexString();
+      proposal.proposer = proposerId;
       proposal.startProposePeriod = event.block.timestamp;
       proposal.status = 'Pending';
       proposal.save();
@@ -167,12 +183,12 @@ export function handleRewardTargetAndConditionChanged(event: RewardTargetAndCond
   }
 }
 
-
-
 ///////// PCRTOKEN/IDA EVENTS
 
-
 export function handleRewardUnitsIssued(event: RewardUnitsIssued): void {
+  let beneficiaryId = event.params.beneficiary.toHexString();
+   createUser(beneficiaryId);
+
   //// UPDATE The Current Index in the Reward Entity
   let prId = event.params.pcrId.toString();
   let reward = Reward.load(prId);
@@ -193,9 +209,10 @@ export function handleRewardUnitsIssued(event: RewardUnitsIssued): void {
   let subscriptionId = event.params.beneficiary.toHexString().concat(prId);
   let subscription = UserSubscription.load(subscriptionId);
 
-  if (subscription == null) {
+  if (subscription === null) {
     subscription = new UserSubscription(subscriptionId);
     subscription.units = event.params.amount;
+    subscription.beneficiary = beneficiaryId;
   } else {
     subscription.units = subscription.units.plus(event.params.amount);
   }
@@ -224,7 +241,11 @@ export function handleRewardUnitsDeleted(event: RewardUnitsDeleted): void {
   let subscription = UserSubscription.load(subscriptionId);
   if (subscription !== null) {
     subscription.units = subscription.units.minus(event.params.amount);
-    subscription.save();
+    if (subscription.units.gt( new BigInt(0))) {
+      subscription.save();
+    } else {
+      store.remove('UserSubscription',subscriptionId )
+    }
+   
   }
 }
-

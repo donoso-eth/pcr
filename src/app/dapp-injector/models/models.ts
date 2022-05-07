@@ -18,10 +18,16 @@ export interface IDAPP_STATE<T extends Contract,X extends Contract, Y extends Co
   signerAddress:string | null,
 
   pcrHostContract: AngularContract<T>| null,
-  pcrTokenContract: AngularContract<X>| null,
-  pcrOptimisticOracleContract: AngularContract<Y>| null,
+  // pcrTokenContract: AngularContract<X>| null,
+  // pcrOptimisticOracleContract: AngularContract<Y>| null,
   viewContract :Contract | null,
 
+  contracts: {
+    [key:number]:{ 
+      pcrToken: AngularContract<X>;
+      pcrOptimisticOracle:  AngularContract<Y>
+    };
+  }
 
 
 }

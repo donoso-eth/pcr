@@ -17,6 +17,7 @@ export class Reward extends Entity {
     super();
     this.set("id", Value.fromString(id));
 
+    this.set("admin", Value.fromString(""));
     this.set("rewardAmount", Value.fromBigInt(BigInt.zero()));
     this.set("currentdeposit", Value.fromBigInt(BigInt.zero()));
     this.set("rewardStatus", Value.fromBigInt(BigInt.zero()));
@@ -29,7 +30,7 @@ export class Reward extends Entity {
     this.set("totalDistributed", Value.fromBigInt(BigInt.zero()));
     this.set("currentIndex", Value.fromBigInt(BigInt.zero()));
     this.set("unitsIssued", Value.fromBigInt(BigInt.zero()));
-    this.set("currentProposal", Value.fromString(""));
+    this.set("usersSubscriptions", Value.fromBigInt(BigInt.zero()));
   }
 
   save(): void {
@@ -92,21 +93,13 @@ export class Reward extends Entity {
     }
   }
 
-  get admin(): string | null {
+  get admin(): string {
     let value = this.get("admin");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toString();
-    }
+    return value!.toString();
   }
 
-  set admin(value: string | null) {
-    if (!value) {
-      this.unset("admin");
-    } else {
-      this.set("admin", Value.fromString(<string>value));
-    }
+  set admin(value: string) {
+    this.set("admin", Value.fromString(value));
   }
 
   get rewardToken(): string | null {
@@ -294,6 +287,15 @@ export class Reward extends Entity {
     this.set("unitsIssued", Value.fromBigInt(value));
   }
 
+  get usersSubscriptions(): BigInt {
+    let value = this.get("usersSubscriptions");
+    return value!.toBigInt();
+  }
+
+  set usersSubscriptions(value: BigInt) {
+    this.set("usersSubscriptions", Value.fromBigInt(value));
+  }
+
   get rewardIndexHistory(): Array<string> {
     let value = this.get("rewardIndexHistory");
     return value!.toStringArray();
@@ -303,13 +305,81 @@ export class Reward extends Entity {
     this.set("rewardIndexHistory", Value.fromStringArray(value));
   }
 
-  get currentProposal(): string {
+  get currentProposal(): string | null {
     let value = this.get("currentProposal");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set currentProposal(value: string | null) {
+    if (!value) {
+      this.unset("currentProposal");
+    } else {
+      this.set("currentProposal", Value.fromString(<string>value));
+    }
+  }
+}
+
+export class User extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save User entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        "Cannot save User entity with non-string ID. " +
+          'Considering using .toHex() to convert the "id" to a string.'
+      );
+      store.set("User", id.toString(), this);
+    }
+  }
+
+  static load(id: string): User | null {
+    return changetype<User | null>(store.get("User", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
     return value!.toString();
   }
 
-  set currentProposal(value: string) {
-    this.set("currentProposal", Value.fromString(value));
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get rewardsCreated(): Array<string> {
+    let value = this.get("rewardsCreated");
+    return value!.toStringArray();
+  }
+
+  set rewardsCreated(value: Array<string>) {
+    this.set("rewardsCreated", Value.fromStringArray(value));
+  }
+
+  get rewardsSubscriptions(): Array<string> {
+    let value = this.get("rewardsSubscriptions");
+    return value!.toStringArray();
+  }
+
+  set rewardsSubscriptions(value: Array<string>) {
+    this.set("rewardsSubscriptions", Value.fromStringArray(value));
+  }
+
+  get proposaslsSubmitted(): Array<string> {
+    let value = this.get("proposaslsSubmitted");
+    return value!.toStringArray();
+  }
+
+  set proposaslsSubmitted(value: Array<string>) {
+    this.set("proposaslsSubmitted", Value.fromStringArray(value));
   }
 }
 
@@ -318,6 +388,7 @@ export class UserSubscription extends Entity {
     super();
     this.set("id", Value.fromString(id));
 
+    this.set("beneficiary", Value.fromString(""));
     this.set("units", Value.fromBigInt(BigInt.zero()));
   }
 
@@ -347,6 +418,15 @@ export class UserSubscription extends Entity {
 
   set id(value: string) {
     this.set("id", Value.fromString(value));
+  }
+
+  get beneficiary(): string {
+    let value = this.get("beneficiary");
+    return value!.toString();
+  }
+
+  set beneficiary(value: string) {
+    this.set("beneficiary", Value.fromString(value));
   }
 
   get units(): BigInt {

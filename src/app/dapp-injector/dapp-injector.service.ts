@@ -35,8 +35,9 @@ export class DappInjector implements OnDestroy {
     signerAddress: null,
 
     pcrHostContract: null,
-    pcrTokenContract: null,
-    pcrOptimisticOracleContract: null,
+
+    contracts: {},
+
     viewContract: null,
   };
 
@@ -195,6 +196,8 @@ export class DappInjector implements OnDestroy {
     await contract.init();
     this.DAPP_STATE.pcrHostContract = contract;
 
+    this.DAPP_STATE.contracts = {};
+
     const providerNetwork = await this.DAPP_STATE.defaultProvider!.getNetwork();
 
     const networkString = netWorkById(providerNetwork.chainId)?.name as string;
@@ -251,9 +254,15 @@ export class DappInjector implements OnDestroy {
   }
 
   //////// Custom implementation
-  public async launchClones(pcrTokenAddress?: string, pcrOptimisticOracleAddress?: string) {
+  public async launchClones(pcrTokenAddress: string, pcrOptimisticOracleAddress: string, index:number) {
+    
+    if (this.DAPP_STATE.contracts[index] !== undefined)  {
+      return this.DAPP_STATE.contracts[index]
+    }
+    
     this.tokenImpl = PcrTokenMetadata.address;
     this.optimisticOracleImpl = PcrOptimisticOracleMetadata.address;
+
 
     const pcrTokenMetadata = PcrTokenMetadata;
     const pcrOptimisticOracleMetadata = PcrOptimisticOracleMetadata;
@@ -264,7 +273,7 @@ export class DappInjector implements OnDestroy {
 
     const pcrToken = new AngularContract<PcrToken>({ metadata: pcrTokenMetadata, provider: this.DAPP_STATE.defaultProvider!, signer: this.DAPP_STATE.signer! });
     await pcrToken.init();
-    this.DAPP_STATE.pcrTokenContract = pcrToken;
+   
 
     const pcrOptimisticOracle = new AngularContract<PcrOptimisticOracle>({
       metadata: pcrOptimisticOracleMetadata,
@@ -272,7 +281,11 @@ export class DappInjector implements OnDestroy {
       signer: this.DAPP_STATE.signer!,
     });
     await pcrOptimisticOracle.init();
-    this.DAPP_STATE.pcrOptimisticOracleContract = pcrOptimisticOracle;
+   
+
+    this.DAPP_STATE.contracts[index] = {pcrToken,pcrOptimisticOracle}
+
+    return this.DAPP_STATE.contracts[index]
   }
 
   /////// VIEW FUCNTIONS

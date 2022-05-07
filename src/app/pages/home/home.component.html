@@ -103,6 +103,9 @@
 
               </div>
             </div>
+
+            <!-- ////// STATUS PROPOSAL -->
+
             <div style="position:relative;background-color: var(--surface-ground);"
               class="card mt-3 flex align-items-center flex-column justify-content-center">
               <h4 class="mb-1">Current Status</h4>
@@ -111,6 +114,24 @@
                   [(activeIndex)]="activeStep" styleClass="mt-5" [readonly]="false"></p-steps>
               </div>
             </div>
+
+            <!-- ////// CHARTSSS  -->
+            <div style="margin-top: 20px" class="grid p-fluid">
+              <div class="col-12 lg:col-6 xl:col-6">
+                <div class="card">
+                  <h5>Index Evolution</h5>
+                  <p-chart type="line" [data]="chartData" [options]="chartOptions"></p-chart>
+                </div>
+              </div>
+              <div class="col-12 lg:col-6 xl:col-6">
+                <div class="card">
+                  <h5>Last Distributions</h5>
+                  <p-chart type="line" [data]="chartData" [options]="chartOptions"></p-chart>
+                </div>
+              </div>
+
+            </div>
+
           </div>
           <div *ngIf="pcrTokens?.length == 0" class="card">
             <div class="grid flex flex-column align-items-center">
@@ -122,10 +143,7 @@
               <h1 class="text-900 font-bold text-5xl mb-2">Nothing Found</h1>
               <span class="text-600">Please create a new Perpetual Conditional Reward</span>
             </div>
-            <div class="card">
-              <h5>Sales Overview</h5>
-              <p-chart type="line" [data]="chartData" [options]="chartOptions"></p-chart>
-          </div>
+
           </div>
 
         </div>
@@ -133,6 +151,18 @@
     </div>
     <div style="position: relative; border-color: transparent" class="card">
       <h5>Pcr's Rewards Received</h5>
+      <div *ngIf="pcrTokens?.length == 0" class="card">
+        <div class="grid flex flex-column align-items-center">
+          <div class="flex justify-content-center align-items-center bg-pink-500 border-circle"
+            style="height: 3.2rem; width: 3.2rem">
+            <i class="pi pi-fw pi-exclamation-circle text-2xl text-white"></i>
+
+          </div>
+          <!-- <h1 class="text-900 font-bold text-5xl mb-2"></h1> -->
+          <span class="text-600">So far not subscription to perpetual rewards avaialble</span>
+        </div>
+
+      </div>
     </div>
   </div>
 </div>

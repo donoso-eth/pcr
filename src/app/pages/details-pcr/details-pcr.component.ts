@@ -21,11 +21,11 @@ export enum REWARD_STEP {
 }
 
 @Component({
-  selector: 'app-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss'],
+  selector: 'details-pcr',
+  templateUrl: './details-pcr.component.html',
+  styleUrls: ['./details-pcr.component.scss'],
 })
-export class HomeComponent extends DappBaseComponent {
+export class DetailsPcrComponent extends DappBaseComponent {
   pcrTokens: Array<IPCR_REWARD> = [];
 
   toUpdateReward!: IPCR_REWARD;

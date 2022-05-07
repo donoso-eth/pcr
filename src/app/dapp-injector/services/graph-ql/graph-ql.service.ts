@@ -20,12 +20,17 @@ const GET_QUERY = `
   }
 `;
 
-const users = gql`
-  {
-    users(first: 5) {
+const GET_USER= `
+query($address: String!){
+    user(id:$address) {
       id
-      rewardsCreated
-      rewardsSubscriptions
+      rewardsCreated {
+      title
+      id
+      }
+      rewardsSubscriptions {
+      id
+      }
       proposaslsSubmitted
     }
   }
@@ -130,26 +135,6 @@ export class GraphQlService implements OnDestroy {
     // });
   }
 
-  async queryUsers() {
-    try {
-      const posts = await this.apollo
-        .query<any>({
-          query: users,
-        })
-        .toPromise();
-
-      console.log(posts);
-      return posts;
-    } catch (error) {
-      console.log(error);
-      return {};
-    }
-
-    // this.querySubscription = this.postsQuery.valueChanges.subscribe(({ data, loading }) => {
-    //   this.loading = loading;
-    //   this.posts = data.posts;
-    // });
-  }
 
 
   async queryIndexes() {
@@ -173,25 +158,13 @@ export class GraphQlService implements OnDestroy {
     // });
   }
 
-  async queryVariables(address: string) {
-    // this.postsQuery = this.apollo.watchQuery<any>({
-    //   query: GET_POSTS,
-    //   pollInterval: 500,
-    // });
-    console.log(address);
-    const variables = { receiver: address.toLowerCase() };
-    const posts = await firstValueFrom(
-      this.apollo.query<any>({
-        query: gql(GET_QUERY),
+  queryUser(address: string) {
+
+    const variables = { address: address.toLowerCase() };
+    return this.apollo.watchQuery<any>({
+        query: gql(GET_USER),
         variables,
-      })
-    );
+      }).valueChanges
 
-    return posts.data;
-
-    // this.querySubscription = this.postsQuery.valueChanges.subscribe(({ data, loading }) => {
-    //   this.loading = loading;
-    //   this.posts = data.posts;
-    // });
   }
 }

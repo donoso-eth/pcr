@@ -1,9 +1,9 @@
 {
   "_format": "hh-sol-cache-2",
   "files": {
-    "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/hardhat/contracts/interfaces/IPcrOptimisticOracle.sol": {
-      "lastModificationDate": 1651570476086,
-      "contentHash": "fac3c43ec097b4f37ce5c6a4b1221f98",
+    "C:\\Users\\javie\\Documents\\WEB\\BLOCKCHAIN\\pcr\\hardhat\\contracts\\interfaces\\IPcrOptimisticOracle.sol": {
+      "lastModificationDate": 1651778624044,
+      "contentHash": "3ed3c2d97664733c352c1920426cd389",
       "sourceName": "contracts/interfaces/IPcrOptimisticOracle.sol",
       "solcConfig": {
         "version": "0.8.12",
@@ -39,8 +39,8 @@
         "IPcrOptimisticOracle"
       ]
     },
-    "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/node_modules/@uma/core/contracts/oracle/interfaces/FinderInterface.sol": {
-      "lastModificationDate": 1651832894070,
+    "C:\\Users\\javie\\Documents\\WEB\\BLOCKCHAIN\\pcr\\node_modules\\@uma\\core\\contracts\\oracle\\interfaces\\FinderInterface.sol": {
+      "lastModificationDate": 1651339722702,
       "contentHash": "3d0d50a782fec7c1d0782dfd8d232ed4",
       "sourceName": "@uma/core/contracts/oracle/interfaces/FinderInterface.sol",
       "solcConfig": {
@@ -74,9 +74,9 @@
         "FinderInterface"
       ]
     },
-    "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/hardhat/contracts/libraries/DataTypes.sol": {
-      "lastModificationDate": 1651592173128,
-      "contentHash": "cba40edb517faa31cad4e8f2a5bb97f3",
+    "C:\\Users\\javie\\Documents\\WEB\\BLOCKCHAIN\\pcr\\hardhat\\contracts\\libraries\\DataTypes.sol": {
+      "lastModificationDate": 1651778624045,
+      "contentHash": "70c87994693f84e5a63cf7a14eddcb9d",
       "sourceName": "contracts/libraries/DataTypes.sol",
       "solcConfig": {
         "version": "0.8.12",
@@ -111,9 +111,9 @@
         "DataTypes"
       ]
     },
-    "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/hardhat/contracts/PcrOptimisticOracle.sol": {
-      "lastModificationDate": 1651839771573,
-      "contentHash": "8bec2498f92bec75849013d02b38721d",
+    "C:\\Users\\javie\\Documents\\WEB\\BLOCKCHAIN\\pcr\\hardhat\\contracts\\PcrOptimisticOracle.sol": {
+      "lastModificationDate": 1651853471202,
+      "contentHash": "096d4c66105cb5152891e937fcfc43da",
       "sourceName": "contracts/PcrOptimisticOracle.sol",
       "solcConfig": {
         "version": "0.8.12",
@@ -167,8 +167,8 @@
         "PcrOptimisticOracle"
       ]
     },
-    "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/node_modules/hardhat/console.sol": {
-      "lastModificationDate": 1651830873353,
+    "C:\\Users\\javie\\Documents\\WEB\\BLOCKCHAIN\\pcr\\node_modules\\hardhat\\console.sol": {
+      "lastModificationDate": 1651328296809,
       "contentHash": "cc4777addd464ea56fa35b1c45df0591",
       "sourceName": "hardhat/console.sol",
       "solcConfig": {
@@ -202,8 +202,8 @@
         "console"
       ]
     },
-    "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/node_modules/@openzeppelin/contracts/token/ERC20/IERC20.sol": {
-      "lastModificationDate": 1651832472756,
+    "C:\\Users\\javie\\Documents\\WEB\\BLOCKCHAIN\\pcr\\node_modules\\@openzeppelin\\contracts\\token\\ERC20\\IERC20.sol": {
+      "lastModificationDate": 1651095689360,
       "contentHash": "ad7c2d0af148c8f9f097d65deeb4da6b",
       "sourceName": "@openzeppelin/contracts/token/ERC20/IERC20.sol",
       "solcConfig": {
@@ -237,8 +237,8 @@
         "IERC20"
       ]
     },
-    "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/node_modules/@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol": {
-      "lastModificationDate": 1651832490755,
+    "C:\\Users\\javie\\Documents\\WEB\\BLOCKCHAIN\\pcr\\node_modules\\@openzeppelin\\contracts\\token\\ERC20\\utils\\SafeERC20.sol": {
+      "lastModificationDate": 1651095689778,
       "contentHash": "76814c83c32552ed2b521c816b4d801a",
       "sourceName": "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol",
       "solcConfig": {
@@ -275,8 +275,8 @@
         "SafeERC20"
       ]
     },
-    "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/node_modules/@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol": {
-      "lastModificationDate": 1651832468646,
+    "C:\\Users\\javie\\Documents\\WEB\\BLOCKCHAIN\\pcr\\node_modules\\@openzeppelin\\contracts-upgradeable\\proxy\\utils\\Initializable.sol": {
+      "lastModificationDate": 1651339708790,
       "contentHash": "49c8ad51a559f6dda13d35874f7dfdb9",
       "sourceName": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol",
       "solcConfig": {
@@ -312,8 +312,8 @@
         "Initializable"
       ]
     },
-    "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/node_modules/@openzeppelin/contracts/token/ERC777/ERC777.sol": {
-      "lastModificationDate": 1651832456244,
+    "C:\\Users\\javie\\Documents\\WEB\\BLOCKCHAIN\\pcr\\node_modules\\@openzeppelin\\contracts\\token\\ERC777\\ERC777.sol": {
+      "lastModificationDate": 1651095689029,
       "contentHash": "b5c598bde291b370b42997355697951d",
       "sourceName": "@openzeppelin/contracts/token/ERC777/ERC777.sol",
       "solcConfig": {
@@ -355,8 +355,8 @@
         "ERC777"
       ]
     },
-    "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/node_modules/@openzeppelin/contracts/utils/Counters.sol": {
-      "lastModificationDate": 1651832406548,
+    "C:\\Users\\javie\\Documents\\WEB\\BLOCKCHAIN\\pcr\\node_modules\\@openzeppelin\\contracts\\utils\\Counters.sol": {
+      "lastModificationDate": 1651095688600,
       "contentHash": "74654e3ae5d7f39555055dfe244dab7a",
       "sourceName": "@openzeppelin/contracts/utils/Counters.sol",
       "solcConfig": {
@@ -390,8 +390,8 @@
         "Counters"
       ]
     },
-    "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/node_modules/@uma/core/contracts/common/implementation/AncillaryData.sol": {
-      "lastModificationDate": 1651832893854,
+    "C:\\Users\\javie\\Documents\\WEB\\BLOCKCHAIN\\pcr\\node_modules\\@uma\\core\\contracts\\common\\implementation\\AncillaryData.sol": {
+      "lastModificationDate": 1651339722449,
       "contentHash": "925000c6f3e453f7ba8a0332e5c123a5",
       "sourceName": "@uma/core/contracts/common/implementation/AncillaryData.sol",
       "solcConfig": {
@@ -425,8 +425,8 @@
         "AncillaryData"
       ]
     },
-    "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/node_modules/@uma/core/contracts/common/implementation/Lockable.sol": {
-      "lastModificationDate": 1651832894321,
+    "C:\\Users\\javie\\Documents\\WEB\\BLOCKCHAIN\\pcr\\node_modules\\@uma\\core\\contracts\\common\\implementation\\Lockable.sol": {
+      "lastModificationDate": 1651339722801,
       "contentHash": "e24e4db843dedf786dc2e25a70590a7e",
       "sourceName": "@uma/core/contracts/common/implementation/Lockable.sol",
       "solcConfig": {
@@ -460,8 +460,8 @@
         "Lockable"
       ]
     },
-    "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/node_modules/@uma/core/contracts/common/implementation/MultiCaller.sol": {
-      "lastModificationDate": 1651832895252,
+    "C:\\Users\\javie\\Documents\\WEB\\BLOCKCHAIN\\pcr\\node_modules\\@uma\\core\\contracts\\common\\implementation\\MultiCaller.sol": {
+      "lastModificationDate": 1651339722832,
       "contentHash": "5d8a458939b51d2a49bb39cd9714aa93",
       "sourceName": "@uma/core/contracts/common/implementation/MultiCaller.sol",
       "solcConfig": {
@@ -495,8 +495,8 @@
         "MultiCaller"
       ]
     },
-    "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/node_modules/@uma/core/contracts/common/implementation/Testable.sol": {
-      "lastModificationDate": 1651832895788,
+    "C:\\Users\\javie\\Documents\\WEB\\BLOCKCHAIN\\pcr\\node_modules\\@uma\\core\\contracts\\common\\implementation\\Testable.sol": {
+      "lastModificationDate": 1651339723326,
       "contentHash": "534d1f25cc7fbe77cc4493621cce244a",
       "sourceName": "@uma/core/contracts/common/implementation/Testable.sol",
       "solcConfig": {
@@ -532,8 +532,8 @@
         "Testable"
       ]
     },
-    "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/node_modules/@uma/core/contracts/common/interfaces/AddressWhitelistInterface.sol": {
-      "lastModificationDate": 1651832893850,
+    "C:\\Users\\javie\\Documents\\WEB\\BLOCKCHAIN\\pcr\\node_modules\\@uma\\core\\contracts\\common\\interfaces\\AddressWhitelistInterface.sol": {
+      "lastModificationDate": 1651339722434,
       "contentHash": "c41763a68a7ae18caebbebc8c9d6d208",
       "sourceName": "@uma/core/contracts/common/interfaces/AddressWhitelistInterface.sol",
       "solcConfig": {
@@ -567,8 +567,8 @@
         "AddressWhitelistInterface"
       ]
     },
-    "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/node_modules/@uma/core/contracts/oracle/implementation/Constants.sol": {
-      "lastModificationDate": 1651832893972,
+    "C:\\Users\\javie\\Documents\\WEB\\BLOCKCHAIN\\pcr\\node_modules\\@uma\\core\\contracts\\oracle\\implementation\\Constants.sol": {
+      "lastModificationDate": 1651339722614,
       "contentHash": "c161dd237480dc4d7590f0582f96f469",
       "sourceName": "@uma/core/contracts/oracle/implementation/Constants.sol",
       "solcConfig": {
@@ -603,8 +603,8 @@
         "OracleInterfaces"
       ]
     },
-    "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/node_modules/@uma/core/contracts/oracle/interfaces/IdentifierWhitelistInterface.sol": {
-      "lastModificationDate": 1651832894191,
+    "C:\\Users\\javie\\Documents\\WEB\\BLOCKCHAIN\\pcr\\node_modules\\@uma\\core\\contracts\\oracle\\interfaces\\IdentifierWhitelistInterface.sol": {
+      "lastModificationDate": 1651339722786,
       "contentHash": "cb5009017f24230e0132da3fcc70d78c",
       "sourceName": "@uma/core/contracts/oracle/interfaces/IdentifierWhitelistInterface.sol",
       "solcConfig": {
@@ -638,8 +638,8 @@
         "IdentifierWhitelistInterface"
       ]
     },
-    "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/node_modules/@uma/core/contracts/oracle/interfaces/OptimisticOracleInterface.sol": {
-      "lastModificationDate": 1651832895530,
+    "C:\\Users\\javie\\Documents\\WEB\\BLOCKCHAIN\\pcr\\node_modules\\@uma\\core\\contracts\\oracle\\interfaces\\OptimisticOracleInterface.sol": {
+      "lastModificationDate": 1651339722993,
       "contentHash": "bd8580312eb7fbc0ca42ed9dad6717a5",
       "sourceName": "@uma/core/contracts/oracle/interfaces/OptimisticOracleInterface.sol",
       "solcConfig": {
@@ -675,8 +675,8 @@
         "OptimisticOracleInterface"
       ]
     },
-    "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/node_modules/@uma/core/contracts/oracle/interfaces/StoreInterface.sol": {
-      "lastModificationDate": 1651832895784,
+    "C:\\Users\\javie\\Documents\\WEB\\BLOCKCHAIN\\pcr\\node_modules\\@uma\\core\\contracts\\oracle\\interfaces\\StoreInterface.sol": {
+      "lastModificationDate": 1651339723313,
       "contentHash": "ab2976314c45b189c3160a0a0e38c2a5",
       "sourceName": "@uma/core/contracts/oracle/interfaces/StoreInterface.sol",
       "solcConfig": {
@@ -713,8 +713,8 @@
         "StoreInterface"
       ]
     },
-    "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/node_modules/@superfluid-finance/ethereum-contracts/contracts/superfluid/SuperToken.sol": {
-      "lastModificationDate": 1651832092665,
+    "C:\\Users\\javie\\Documents\\WEB\\BLOCKCHAIN\\pcr\\node_modules\\@superfluid-finance\\ethereum-contracts\\contracts\\superfluid\\SuperToken.sol": {
+      "lastModificationDate": 1651326272783,
       "contentHash": "d55f48c4e94a14b689b095c21e297f1e",
       "sourceName": "@superfluid-finance/ethereum-contracts/contracts/superfluid/SuperToken.sol",
       "solcConfig": {
@@ -759,9 +759,9 @@
         "SuperToken"
       ]
     },
-    "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/hardhat/contracts/libraries/Events.sol": {
-      "lastModificationDate": 1651839759795,
-      "contentHash": "0a58db336441a895255fb968d7d88f09",
+    "C:\\Users\\javie\\Documents\\WEB\\BLOCKCHAIN\\pcr\\hardhat\\contracts\\libraries\\Events.sol": {
+      "lastModificationDate": 1651853471204,
+      "contentHash": "1fcc0f8777ea68daf61a1042da9bc152",
       "sourceName": "contracts/libraries/Events.sol",
       "solcConfig": {
         "version": "0.8.12",
@@ -796,8 +796,8 @@
         "Events"
       ]
     },
-    "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/node_modules/@openzeppelin/contracts/utils/Address.sol": {
-      "lastModificationDate": 1651832403842,
+    "C:\\Users\\javie\\Documents\\WEB\\BLOCKCHAIN\\pcr\\node_modules\\@openzeppelin\\contracts\\utils\\Address.sol": {
+      "lastModificationDate": 1651095688529,
       "contentHash": "ad714a6368ee7d43cded6bbe8af0b155",
       "sourceName": "@openzeppelin/contracts/utils/Address.sol",
       "solcConfig": {
@@ -831,8 +831,8 @@
         "Address"
       ]
     },
-    "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/node_modules/@openzeppelin/contracts-upgradeable/utils/AddressUpgradeable.sol": {
-      "lastModificationDate": 1651832387288,
+    "C:\\Users\\javie\\Documents\\WEB\\BLOCKCHAIN\\pcr\\node_modules\\@openzeppelin\\contracts-upgradeable\\utils\\AddressUpgradeable.sol": {
+      "lastModificationDate": 1651339707349,
       "contentHash": "b70d2e0552ab1f44f7e44b5f8379c358",
       "sourceName": "@openzeppelin/contracts-upgradeable/utils/AddressUpgradeable.sol",
       "solcConfig": {
@@ -866,8 +866,8 @@
         "AddressUpgradeable"
       ]
     },
-    "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/node_modules/@openzeppelin/contracts/token/ERC777/IERC777.sol": {
-      "lastModificationDate": 1651832478132,
+    "C:\\Users\\javie\\Documents\\WEB\\BLOCKCHAIN\\pcr\\node_modules\\@openzeppelin\\contracts\\token\\ERC777\\IERC777.sol": {
+      "lastModificationDate": 1651095689494,
       "contentHash": "840fa65314c73b948a5923169daa8cdc",
       "sourceName": "@openzeppelin/contracts/token/ERC777/IERC777.sol",
       "solcConfig": {
@@ -901,8 +901,8 @@
         "IERC777"
       ]
     },
-    "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/node_modules/@openzeppelin/contracts/token/ERC777/IERC777Recipient.sol": {
-      "lastModificationDate": 1651832478591,
+    "C:\\Users\\javie\\Documents\\WEB\\BLOCKCHAIN\\pcr\\node_modules\\@openzeppelin\\contracts\\token\\ERC777\\IERC777Recipient.sol": {
+      "lastModificationDate": 1651095689512,
       "contentHash": "268af1696d7a83a7e78a1a8f5ba1c685",
       "sourceName": "@openzeppelin/contracts/token/ERC777/IERC777Recipient.sol",
       "solcConfig": {
@@ -936,8 +936,8 @@
         "IERC777Recipient"
       ]
     },
-    "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/node_modules/@openzeppelin/contracts/token/ERC777/IERC777Sender.sol": {
-      "lastModificationDate": 1651832478615,
+    "C:\\Users\\javie\\Documents\\WEB\\BLOCKCHAIN\\pcr\\node_modules\\@openzeppelin\\contracts\\token\\ERC777\\IERC777Sender.sol": {
+      "lastModificationDate": 1651095689540,
       "contentHash": "7c1ce5bc5bc5f57fe7106ba767063e08",
       "sourceName": "@openzeppelin/contracts/token/ERC777/IERC777Sender.sol",
       "solcConfig": {
@@ -971,8 +971,8 @@
         "IERC777Sender"
       ]
     },
-    "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/node_modules/@openzeppelin/contracts/utils/Context.sol": {
-      "lastModificationDate": 1651832406460,
+    "C:\\Users\\javie\\Documents\\WEB\\BLOCKCHAIN\\pcr\\node_modules\\@openzeppelin\\contracts\\utils\\Context.sol": {
+      "lastModificationDate": 1651095688590,
       "contentHash": "5f2c5c4b6af2dd4551027144797bc8be",
       "sourceName": "@openzeppelin/contracts/utils/Context.sol",
       "solcConfig": {
@@ -1006,8 +1006,8 @@
         "Context"
       ]
     },
-    "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/node_modules/@openzeppelin/contracts/utils/introspection/IERC1820Registry.sol": {
-      "lastModificationDate": 1651832472375,
+    "C:\\Users\\javie\\Documents\\WEB\\BLOCKCHAIN\\pcr\\node_modules\\@openzeppelin\\contracts\\utils\\introspection\\IERC1820Registry.sol": {
+      "lastModificationDate": 1651095689350,
       "contentHash": "b6d012794ce0d001210e52233bf439fc",
       "sourceName": "@openzeppelin/contracts/utils/introspection/IERC1820Registry.sol",
       "solcConfig": {
@@ -1041,8 +1041,8 @@
         "IERC1820Registry"
       ]
     },
-    "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/node_modules/@uma/core/contracts/common/implementation/Timer.sol": {
-      "lastModificationDate": 1651832895793,
+    "C:\\Users\\javie\\Documents\\WEB\\BLOCKCHAIN\\pcr\\node_modules\\@uma\\core\\contracts\\common\\implementation\\Timer.sol": {
+      "lastModificationDate": 1651339723337,
       "contentHash": "3b069029e651f6d904cdf5afce811d32",
       "sourceName": "@uma/core/contracts/common/implementation/Timer.sol",
       "solcConfig": {
@@ -1076,8 +1076,8 @@
         "Timer"
       ]
     },
-    "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/node_modules/@uma/core/contracts/common/implementation/FixedPoint.sol": {
-      "lastModificationDate": 1651832894071,
+    "C:\\Users\\javie\\Documents\\WEB\\BLOCKCHAIN\\pcr\\node_modules\\@uma\\core\\contracts\\common\\implementation\\FixedPoint.sol": {
+      "lastModificationDate": 1651339722705,
       "contentHash": "3ce8325f63214a016c5268855b41279d",
       "sourceName": "@uma/core/contracts/common/implementation/FixedPoint.sol",
       "solcConfig": {
@@ -1114,8 +1114,8 @@
         "FixedPoint"
       ]
     },
-    "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/node_modules/@openzeppelin/contracts/utils/math/SafeMath.sol": {
-      "lastModificationDate": 1651832490920,
+    "C:\\Users\\javie\\Documents\\WEB\\BLOCKCHAIN\\pcr\\node_modules\\@openzeppelin\\contracts\\utils\\math\\SafeMath.sol": {
+      "lastModificationDate": 1651095689788,
       "contentHash": "2337f0279507b5edf14a07067adf0d05",
       "sourceName": "@openzeppelin/contracts/utils/math/SafeMath.sol",
       "solcConfig": {
@@ -1149,8 +1149,8 @@
         "SafeMath"
       ]
     },
-    "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/node_modules/@openzeppelin/contracts/utils/math/SignedSafeMath.sol": {
-      "lastModificationDate": 1651832492324,
+    "C:\\Users\\javie\\Documents\\WEB\\BLOCKCHAIN\\pcr\\node_modules\\@openzeppelin\\contracts\\utils\\math\\SignedSafeMath.sol": {
+      "lastModificationDate": 1651095689824,
       "contentHash": "f7b3809e202b5547e9ddd97aaeb1d907",
       "sourceName": "@openzeppelin/contracts/utils/math/SignedSafeMath.sol",
       "solcConfig": {
@@ -1184,8 +1184,8 @@
         "SignedSafeMath"
       ]
     },
-    "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/node_modules/@superfluid-finance/ethereum-contracts/contracts/upgradability/UUPSProxiable.sol": {
-      "lastModificationDate": 1651832110190,
+    "C:\\Users\\javie\\Documents\\WEB\\BLOCKCHAIN\\pcr\\node_modules\\@superfluid-finance\\ethereum-contracts\\contracts\\upgradability\\UUPSProxiable.sol": {
+      "lastModificationDate": 1651326272978,
       "contentHash": "4d4cbaf23c58daf2a358f9888928d00f",
       "sourceName": "@superfluid-finance/ethereum-contracts/contracts/upgradability/UUPSProxiable.sol",
       "solcConfig": {
@@ -1222,8 +1222,8 @@
         "UUPSProxiable"
       ]
     },
-    "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/node_modules/@superfluid-finance/ethereum-contracts/contracts/interfaces/superfluid/ISuperfluid.sol": {
-      "lastModificationDate": 1651832062934,
+    "C:\\Users\\javie\\Documents\\WEB\\BLOCKCHAIN\\pcr\\node_modules\\@superfluid-finance\\ethereum-contracts\\contracts\\interfaces\\superfluid\\ISuperfluid.sol": {
+      "lastModificationDate": 1651326272339,
       "contentHash": "741c5bf7054694d8564c45169b1def4a",
       "sourceName": "@superfluid-finance/ethereum-contracts/contracts/interfaces/superfluid/ISuperfluid.sol",
       "solcConfig": {
@@ -1268,8 +1268,8 @@
         "ISuperfluid"
       ]
     },
-    "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/node_modules/@superfluid-finance/ethereum-contracts/contracts/superfluid/SuperfluidToken.sol": {
-      "lastModificationDate": 1651832091364,
+    "C:\\Users\\javie\\Documents\\WEB\\BLOCKCHAIN\\pcr\\node_modules\\@superfluid-finance\\ethereum-contracts\\contracts\\superfluid\\SuperfluidToken.sol": {
+      "lastModificationDate": 1651326272766,
       "contentHash": "5631765579a4252697312324446967f6",
       "sourceName": "@superfluid-finance/ethereum-contracts/contracts/superfluid/SuperfluidToken.sol",
       "solcConfig": {
@@ -1310,8 +1310,8 @@
         "SuperfluidToken"
       ]
     },
-    "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/node_modules/@superfluid-finance/ethereum-contracts/contracts/libs/ERC777Helper.sol": {
-      "lastModificationDate": 1651832025420,
+    "C:\\Users\\javie\\Documents\\WEB\\BLOCKCHAIN\\pcr\\node_modules\\@superfluid-finance\\ethereum-contracts\\contracts\\libs\\ERC777Helper.sol": {
+      "lastModificationDate": 1651326272098,
       "contentHash": "d47339b219bef884fff8fdc3b2baf167",
       "sourceName": "@superfluid-finance/ethereum-contracts/contracts/libs/ERC777Helper.sol",
       "solcConfig": {
@@ -1347,8 +1347,8 @@
         "ERC777Helper"
       ]
     },
-    "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/node_modules/@openzeppelin/contracts/utils/math/SafeCast.sol": {
-      "lastModificationDate": 1651832489650,
+    "C:\\Users\\javie\\Documents\\WEB\\BLOCKCHAIN\\pcr\\node_modules\\@openzeppelin\\contracts\\utils\\math\\SafeCast.sol": {
+      "lastModificationDate": 1651095689768,
       "contentHash": "cd91252bfcbee6eaba8f5144f504583c",
       "sourceName": "@openzeppelin/contracts/utils/math/SafeCast.sol",
       "solcConfig": {
@@ -1382,8 +1382,8 @@
         "SafeCast"
       ]
     },
-    "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/node_modules/@superfluid-finance/ethereum-contracts/contracts/upgradability/UUPSUtils.sol": {
-      "lastModificationDate": 1651832111902,
+    "C:\\Users\\javie\\Documents\\WEB\\BLOCKCHAIN\\pcr\\node_modules\\@superfluid-finance\\ethereum-contracts\\contracts\\upgradability\\UUPSUtils.sol": {
+      "lastModificationDate": 1651326273017,
       "contentHash": "684b181df08b12e58ac475271309922f",
       "sourceName": "@superfluid-finance/ethereum-contracts/contracts/upgradability/UUPSUtils.sol",
       "solcConfig": {
@@ -1417,8 +1417,8 @@
         "UUPSUtils"
       ]
     },
-    "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/node_modules/@openzeppelin/contracts/proxy/utils/Initializable.sol": {
-      "lastModificationDate": 1651832483789,
+    "C:\\Users\\javie\\Documents\\WEB\\BLOCKCHAIN\\pcr\\node_modules\\@openzeppelin\\contracts\\proxy\\utils\\Initializable.sol": {
+      "lastModificationDate": 1651095689605,
       "contentHash": "f0c92df5bfd98a90d0eda04719bafda5",
       "sourceName": "@openzeppelin/contracts/proxy/utils/Initializable.sol",
       "solcConfig": {
@@ -1454,8 +1454,8 @@
         "Initializable"
       ]
     },
-    "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/node_modules/@superfluid-finance/ethereum-contracts/contracts/interfaces/superfluid/ISuperfluidGovernance.sol": {
-      "lastModificationDate": 1651832064136,
+    "C:\\Users\\javie\\Documents\\WEB\\BLOCKCHAIN\\pcr\\node_modules\\@superfluid-finance\\ethereum-contracts\\contracts\\interfaces\\superfluid\\ISuperfluidGovernance.sol": {
+      "lastModificationDate": 1651326272359,
       "contentHash": "1b5a6cd4e7f9b5b33c42261db07c29ef",
       "sourceName": "@superfluid-finance/ethereum-contracts/contracts/interfaces/superfluid/ISuperfluidGovernance.sol",
       "solcConfig": {
@@ -1494,8 +1494,8 @@
         "ISuperfluidGovernance"
       ]
     },
-    "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/node_modules/@superfluid-finance/ethereum-contracts/contracts/interfaces/superfluid/ISuperfluidToken.sol": {
-      "lastModificationDate": 1651832064626,
+    "C:\\Users\\javie\\Documents\\WEB\\BLOCKCHAIN\\pcr\\node_modules\\@superfluid-finance\\ethereum-contracts\\contracts\\interfaces\\superfluid\\ISuperfluidToken.sol": {
+      "lastModificationDate": 1651326272377,
       "contentHash": "6af8c46981c33eb2f13b7aac2bf34e7a",
       "sourceName": "@superfluid-finance/ethereum-contracts/contracts/interfaces/superfluid/ISuperfluidToken.sol",
       "solcConfig": {
@@ -1531,8 +1531,8 @@
         "ISuperfluidToken"
       ]
     },
-    "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/node_modules/@superfluid-finance/ethereum-contracts/contracts/interfaces/superfluid/ISuperToken.sol": {
-      "lastModificationDate": 1651832066217,
+    "C:\\Users\\javie\\Documents\\WEB\\BLOCKCHAIN\\pcr\\node_modules\\@superfluid-finance\\ethereum-contracts\\contracts\\interfaces\\superfluid\\ISuperToken.sol": {
+      "lastModificationDate": 1651326272399,
       "contentHash": "dbcf2ee0a785e2ec1f4725e8a69ea806",
       "sourceName": "@superfluid-finance/ethereum-contracts/contracts/interfaces/superfluid/ISuperToken.sol",
       "solcConfig": {
@@ -1572,8 +1572,8 @@
         "ISuperToken"
       ]
     },
-    "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/node_modules/@superfluid-finance/ethereum-contracts/contracts/interfaces/superfluid/ISuperTokenFactory.sol": {
-      "lastModificationDate": 1651832066786,
+    "C:\\Users\\javie\\Documents\\WEB\\BLOCKCHAIN\\pcr\\node_modules\\@superfluid-finance\\ethereum-contracts\\contracts\\interfaces\\superfluid\\ISuperTokenFactory.sol": {
+      "lastModificationDate": 1651326272434,
       "contentHash": "78c9d7e553510ba136ebafc2dab49f84",
       "sourceName": "@superfluid-finance/ethereum-contracts/contracts/interfaces/superfluid/ISuperTokenFactory.sol",
       "solcConfig": {
@@ -1610,8 +1610,8 @@
         "ISuperTokenFactory"
       ]
     },
-    "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/node_modules/@superfluid-finance/ethereum-contracts/contracts/interfaces/superfluid/ISuperAgreement.sol": {
-      "lastModificationDate": 1651832060465,
+    "C:\\Users\\javie\\Documents\\WEB\\BLOCKCHAIN\\pcr\\node_modules\\@superfluid-finance\\ethereum-contracts\\contracts\\interfaces\\superfluid\\ISuperAgreement.sol": {
+      "lastModificationDate": 1651326272309,
       "contentHash": "2d64c005180c737dcb5206fb199ee410",
       "sourceName": "@superfluid-finance/ethereum-contracts/contracts/interfaces/superfluid/ISuperAgreement.sol",
       "solcConfig": {
@@ -1647,8 +1647,8 @@
         "ISuperAgreement"
       ]
     },
-    "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/node_modules/@superfluid-finance/ethereum-contracts/contracts/interfaces/superfluid/ISuperApp.sol": {
-      "lastModificationDate": 1651832061813,
+    "C:\\Users\\javie\\Documents\\WEB\\BLOCKCHAIN\\pcr\\node_modules\\@superfluid-finance\\ethereum-contracts\\contracts\\interfaces\\superfluid\\ISuperApp.sol": {
+      "lastModificationDate": 1651326272327,
       "contentHash": "14173bc1970975d856a048a5cda11e6f",
       "sourceName": "@superfluid-finance/ethereum-contracts/contracts/interfaces/superfluid/ISuperApp.sol",
       "solcConfig": {
@@ -1684,8 +1684,8 @@
         "ISuperApp"
       ]
     },
-    "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/node_modules/@superfluid-finance/ethereum-contracts/contracts/interfaces/superfluid/Definitions.sol": {
-      "lastModificationDate": 1651832020963,
+    "C:\\Users\\javie\\Documents\\WEB\\BLOCKCHAIN\\pcr\\node_modules\\@superfluid-finance\\ethereum-contracts\\contracts\\interfaces\\superfluid\\Definitions.sol": {
+      "lastModificationDate": 1651326272063,
       "contentHash": "65cc697f08e0b765dde9d7e0c1761ddf",
       "sourceName": "@superfluid-finance/ethereum-contracts/contracts/interfaces/superfluid/Definitions.sol",
       "solcConfig": {
@@ -1722,8 +1722,8 @@
         "SuperfluidGovernanceConfigs"
       ]
     },
-    "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/node_modules/@superfluid-finance/ethereum-contracts/contracts/interfaces/tokens/TokenInfo.sol": {
-      "lastModificationDate": 1651832107639,
+    "C:\\Users\\javie\\Documents\\WEB\\BLOCKCHAIN\\pcr\\node_modules\\@superfluid-finance\\ethereum-contracts\\contracts\\interfaces\\tokens\\TokenInfo.sol": {
+      "lastModificationDate": 1651326272934,
       "contentHash": "fe802041bd6b048d85da932320da4798",
       "sourceName": "@superfluid-finance/ethereum-contracts/contracts/interfaces/tokens/TokenInfo.sol",
       "solcConfig": {
@@ -1757,8 +1757,8 @@
         "TokenInfo"
       ]
     },
-    "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/node_modules/@superfluid-finance/ethereum-contracts/contracts/interfaces/tokens/ERC20WithTokenInfo.sol": {
-      "lastModificationDate": 1651832024515,
+    "C:\\Users\\javie\\Documents\\WEB\\BLOCKCHAIN\\pcr\\node_modules\\@superfluid-finance\\ethereum-contracts\\contracts\\interfaces\\tokens\\ERC20WithTokenInfo.sol": {
+      "lastModificationDate": 1651326272073,
       "contentHash": "f9a398f500009c0b16a69e0521170429",
       "sourceName": "@superfluid-finance/ethereum-contracts/contracts/interfaces/tokens/ERC20WithTokenInfo.sol",
       "solcConfig": {
@@ -1795,8 +1795,8 @@
         "ERC20WithTokenInfo"
       ]
     },
-    "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/node_modules/@superfluid-finance/ethereum-contracts/contracts/libs/FixedSizeData.sol": {
-      "lastModificationDate": 1651832031733,
+    "C:\\Users\\javie\\Documents\\WEB\\BLOCKCHAIN\\pcr\\node_modules\\@superfluid-finance\\ethereum-contracts\\contracts\\libs\\FixedSizeData.sol": {
+      "lastModificationDate": 1651326272133,
       "contentHash": "c2da248c6cb3c94f4b3e5f4b5de7dd32",
       "sourceName": "@superfluid-finance/ethereum-contracts/contracts/libs/FixedSizeData.sol",
       "solcConfig": {
@@ -1830,9 +1830,9 @@
         "FixedSizeData"
       ]
     },
-    "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/hardhat/contracts/PcrToken.sol": {
-      "lastModificationDate": 1651839387001,
-      "contentHash": "841e542e421cf5d7437d06dde6697aba",
+    "C:\\Users\\javie\\Documents\\WEB\\BLOCKCHAIN\\pcr\\hardhat\\contracts\\PcrToken.sol": {
+      "lastModificationDate": 1651853471203,
+      "contentHash": "e8a8e5bdaf9f8e02d98d14d1c81ca4ad",
       "sourceName": "contracts/PcrToken.sol",
       "solcConfig": {
         "version": "0.8.12",
@@ -1879,9 +1879,9 @@
         "PcrToken"
       ]
     },
-    "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/hardhat/contracts/interfaces/IPcrToken.sol": {
-      "lastModificationDate": 1651662741446,
-      "contentHash": "22f89fd285705ea04795cc6ff9bf23e2",
+    "C:\\Users\\javie\\Documents\\WEB\\BLOCKCHAIN\\pcr\\hardhat\\contracts\\interfaces\\IPcrToken.sol": {
+      "lastModificationDate": 1651778624045,
+      "contentHash": "eec782d68167f2a78e91316c4d33fa89",
       "sourceName": "contracts/interfaces/IPcrToken.sol",
       "solcConfig": {
         "version": "0.8.12",
@@ -1918,8 +1918,8 @@
         "IPcrToken"
       ]
     },
-    "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/node_modules/@superfluid-finance/ethereum-contracts/contracts/apps/SuperAppBase.sol": {
-      "lastModificationDate": 1651832076242,
+    "C:\\Users\\javie\\Documents\\WEB\\BLOCKCHAIN\\pcr\\node_modules\\@superfluid-finance\\ethereum-contracts\\contracts\\apps\\SuperAppBase.sol": {
+      "lastModificationDate": 1651326272616,
       "contentHash": "4ad2109d5a8003eca4b9a792c863bc87",
       "sourceName": "@superfluid-finance/ethereum-contracts/contracts/apps/SuperAppBase.sol",
       "solcConfig": {
@@ -1955,8 +1955,8 @@
         "SuperAppBase"
       ]
     },
-    "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/node_modules/@superfluid-finance/ethereum-contracts/contracts/interfaces/agreements/IInstantDistributionAgreementV1.sol": {
-      "lastModificationDate": 1651832051683,
+    "C:\\Users\\javie\\Documents\\WEB\\BLOCKCHAIN\\pcr\\node_modules\\@superfluid-finance\\ethereum-contracts\\contracts\\interfaces\\agreements\\IInstantDistributionAgreementV1.sol": {
+      "lastModificationDate": 1651326272194,
       "contentHash": "228576650f8fabe214a9f38b33d5f013",
       "sourceName": "@superfluid-finance/ethereum-contracts/contracts/interfaces/agreements/IInstantDistributionAgreementV1.sol",
       "solcConfig": {
@@ -1993,8 +1993,8 @@
         "IInstantDistributionAgreementV1"
       ]
     },
-    "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/node_modules/@openzeppelin/contracts/utils/Strings.sol": {
-      "lastModificationDate": 1651832495864,
+    "C:\\Users\\javie\\Documents\\WEB\\BLOCKCHAIN\\pcr\\node_modules\\@openzeppelin\\contracts\\utils\\Strings.sol": {
+      "lastModificationDate": 1651095689842,
       "contentHash": "9c54c6c065d9e590fdcdd72c451425b9",
       "sourceName": "@openzeppelin/contracts/utils/Strings.sol",
       "solcConfig": {
@@ -2028,8 +2028,8 @@
         "Strings"
       ]
     },
-    "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/node_modules/@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol": {
-      "lastModificationDate": 1651832423201,
+    "C:\\Users\\javie\\Documents\\WEB\\BLOCKCHAIN\\pcr\\node_modules\\@openzeppelin\\contracts-upgradeable\\token\\ERC20\\ERC20Upgradeable.sol": {
+      "lastModificationDate": 1651339708082,
       "contentHash": "41f034b817abdbfcced998bf8c9fd34a",
       "sourceName": "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol",
       "solcConfig": {
@@ -2068,8 +2068,8 @@
         "ERC20Upgradeable"
       ]
     },
-    "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/node_modules/@superfluid-finance/ethereum-contracts/contracts/apps/IDAv1Library.sol": {
-      "lastModificationDate": 1651832047611,
+    "C:\\Users\\javie\\Documents\\WEB\\BLOCKCHAIN\\pcr\\node_modules\\@superfluid-finance\\ethereum-contracts\\contracts\\apps\\IDAv1Library.sol": {
+      "lastModificationDate": 1651326272170,
       "contentHash": "51d4cfe16ee98c45fa8e41d5a1d28fa8",
       "sourceName": "@superfluid-finance/ethereum-contracts/contracts/apps/IDAv1Library.sol",
       "solcConfig": {
@@ -2106,8 +2106,8 @@
         "IDAv1Library"
       ]
     },
-    "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/node_modules/@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol": {
-      "lastModificationDate": 1651832465358,
+    "C:\\Users\\javie\\Documents\\WEB\\BLOCKCHAIN\\pcr\\node_modules\\@openzeppelin\\contracts-upgradeable\\token\\ERC20\\IERC20Upgradeable.sol": {
+      "lastModificationDate": 1651339708618,
       "contentHash": "42737d1d02061ade4f91d1e08b45f835",
       "sourceName": "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol",
       "solcConfig": {
@@ -2141,8 +2141,8 @@
         "IERC20Upgradeable"
       ]
     },
-    "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/node_modules/@openzeppelin/contracts-upgradeable/token/ERC20/extensions/IERC20MetadataUpgradeable.sol": {
-      "lastModificationDate": 1651832465283,
+    "C:\\Users\\javie\\Documents\\WEB\\BLOCKCHAIN\\pcr\\node_modules\\@openzeppelin\\contracts-upgradeable\\token\\ERC20\\extensions\\IERC20MetadataUpgradeable.sol": {
+      "lastModificationDate": 1651339708602,
       "contentHash": "9efcd5467a7f0bf533910ee8a267adb2",
       "sourceName": "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/IERC20MetadataUpgradeable.sol",
       "solcConfig": {
@@ -2178,8 +2178,8 @@
         "IERC20MetadataUpgradeable"
       ]
     },
-    "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/node_modules/@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol": {
-      "lastModificationDate": 1651832396529,
+    "C:\\Users\\javie\\Documents\\WEB\\BLOCKCHAIN\\pcr\\node_modules\\@openzeppelin\\contracts-upgradeable\\utils\\ContextUpgradeable.sol": {
+      "lastModificationDate": 1651339707509,
       "contentHash": "6200b84950eb05b4a92a39fd1d6e0f9b",
       "sourceName": "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol",
       "solcConfig": {
@@ -2215,9 +2215,9 @@
         "ContextUpgradeable"
       ]
     },
-    "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/hardhat/contracts/PcrHost.sol": {
-      "lastModificationDate": 1651591210880,
-      "contentHash": "a92dea83bbccd563f29acb5fbb263e29",
+    "C:\\Users\\javie\\Documents\\WEB\\BLOCKCHAIN\\pcr\\hardhat\\contracts\\PcrHost.sol": {
+      "lastModificationDate": 1651946235906,
+      "contentHash": "3c48892c812c2d5013ae86ad53fdf238",
       "sourceName": "contracts/PcrHost.sol",
       "solcConfig": {
         "version": "0.8.12",
@@ -2262,8 +2262,8 @@
         "PcrHost"
       ]
     },
-    "/Users/javier/Documents/WEB/BLOCKCHAIN/pcr/node_modules/@openzeppelin/contracts/proxy/Clones.sol": {
-      "lastModificationDate": 1651832405690,
+    "C:\\Users\\javie\\Documents\\WEB\\BLOCKCHAIN\\pcr\\node_modules\\@openzeppelin\\contracts\\proxy\\Clones.sol": {
+      "lastModificationDate": 1651095688580,
       "contentHash": "f741efede98f234458f02f818f80c7f3",
       "sourceName": "@openzeppelin/contracts/proxy/Clones.sol",
       "solcConfig": {

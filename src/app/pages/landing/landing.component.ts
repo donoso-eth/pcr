@@ -21,8 +21,9 @@ export class LandingComponent extends DappBaseComponent {
 
  async  connect() {
 
+  this.dapp.localWallet(1)
 
-    this.router.navigate(['home'])
+   // this.router.navigate(['home'])
     
   }
 

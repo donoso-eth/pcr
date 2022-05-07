@@ -95,8 +95,11 @@ export class DappInjector implements OnDestroy {
           this.harhdat_local_privKeys = (await import('../../assets/contracts/local_accouts.json')).default;
 
           let wallet: Wallet = new Wallet(this.harhdat_local_privKeys[0].key);
-          this.DAPP_STATE.signer = await wallet.connect(this.DAPP_STATE.defaultProvider!);
-          this.DAPP_STATE.signerAddress = this.harhdat_local_privKeys[0].address; //await this.DAPP_STATE.signer.getAddress()
+          this.store.dispatch(Web3Actions.chainStatus({ status: 'wallet-not-connected' }));
+          this.store.dispatch(Web3Actions.chainBusy({ status: false }));
+          throw new Error('WALLET_NOT_CONNECTED');
+          // this.DAPP_STATE.signer = await wallet.connect(this.DAPP_STATE.defaultProvider!);
+          // this.DAPP_STATE.signerAddress = this.harhdat_local_privKeys[0].address; //await this.DAPP_STATE.signer.getAddress()
 
           break;
 

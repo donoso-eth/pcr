@@ -143,9 +143,9 @@ export class DetailsPcrComponent extends DappBaseComponent {
     this.showIssuingState = true;
   }
 
-  async doPropose(reward: IPCR_REWARD) {
+  async proposeValue(value:number) {
     this.store.dispatch(Web3Actions.chainBusy({ status: true }));
-    await doSignerTransaction(this.dapp.DAPP_STATE.contracts[+reward.id]?.pcrOptimisticOracle.instance.proposeDistribution(1)!);
+    await doSignerTransaction(this.dapp.DAPP_STATE.contracts[+this.toUpdateReward!.id]?.pcrOptimisticOracle.instance.proposeDistribution(value)!);
   }
 
   transformRewardObject(reward: IPCR_REWARD) {

@@ -2,6 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProposalDetailComponent } from './proposal-detail/proposal-detail.component';
 import { StepsModule } from 'primeng/steps';
+import { ButtonModule } from 'primeng/button';
+import { InputNumberModule } from 'primeng/inputnumber';
 
 
 @NgModule({
@@ -10,7 +12,9 @@ import { StepsModule } from 'primeng/steps';
   ],
   imports: [
     CommonModule,
-    StepsModule
+    StepsModule,
+    ButtonModule,
+    InputNumberModule
   ],
   exports: [
     ProposalDetailComponent

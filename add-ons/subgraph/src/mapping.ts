@@ -107,12 +107,12 @@ export function handleProposalCreated(event: ProposalCreated): void {
 
     if (proposal !== null) {
       proposal.proposer = proposerId;
-      proposal.startProposePeriod = event.block.timestamp;
+      proposal.startLivenessPeriod = event.block.timestamp;
       proposal.status = 'Pending';
       proposal.save();
     }
 
-    reward.rewardStep = new BigInt(1);
+    reward.rewardStep = new BigInt(2);
     reward.earliestNextAction = event.block.timestamp.plus(reward.optimisticOracleLivenessTime);
     reward.save();
   }

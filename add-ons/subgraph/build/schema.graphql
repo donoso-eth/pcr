@@ -95,9 +95,7 @@ type Proposal @entity {
   id: ID!
   proposer: User!
   startQualifying: BigInt!
-  startProposePeriod: BigInt!
   startLivenessPeriod: BigInt!
-  startExecutionPeriod: BigInt!
   reward: Reward!
   status: ProposalStatus
 }

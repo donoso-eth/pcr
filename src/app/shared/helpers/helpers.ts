@@ -11,9 +11,9 @@ export const calculateStep = (_step: number, _earliestNextAction: number): REWAR
     step = REWARD_STEP.QUALIFYING;
   } else if (rewardStep == 0 && timeStamp >= earliestNextAction) {
     step = REWARD_STEP.AWAITING_PROPOSAL;
-  } else if (rewardStep == 1 && timeStamp < earliestNextAction) {
+  } else if (rewardStep == 2 && timeStamp < earliestNextAction) {
     step = REWARD_STEP.LIVENESS_PERIOD;
-  } else if (rewardStep == 1 && timeStamp >= earliestNextAction) {
+  } else if (rewardStep == 2 && timeStamp >= earliestNextAction) {
     step = REWARD_STEP.AWAITING_EXECUTION;
   }
   return step;

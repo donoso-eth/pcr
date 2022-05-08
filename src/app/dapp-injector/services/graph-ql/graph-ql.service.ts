@@ -98,6 +98,7 @@ query($id: String!)
       optimisticOracleImpl
       earliestNextAction
       interval
+      optimisticOracleLivenessTime
       rewardStep
       rewardStatus
       totalDistributed
@@ -106,9 +107,7 @@ query($id: String!)
       currentProposal {
         id
         startQualifying
-        startProposePeriod
         startLivenessPeriod
-        startExecutionPeriod
         status
       }
     }

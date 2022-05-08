@@ -109,12 +109,12 @@
 
             <div style="position:relative;background-color: var(--surface-ground);"
               class="card mt-3 flex align-items-center flex-column justify-content-center">
-              <h4 class="mb-1">Current Status</h4>
+           
               <!-- <div style="width:100%;" class="grid p-fluid">
                 <p-steps class="col-12" [model]="routeItems" (activeIndexChange)="activeStep = 0"
                   [(activeIndex)]="activeStep" styleClass="mt-5" [readonly]="false"></p-steps>
               </div> -->
-              <proposal-detail style="width:100%;" *ngIf="currentProposal !== undefined" [proposal]="currentProposal"></proposal-detail>
+              <proposal-detail  (proposeValue)="proposeValue($event)" style="width:100%;" *ngIf="currentProposal !== undefined" [proposal]="currentProposal"></proposal-detail>
             </div>
 
             <!-- ////// CHARTSSS  -->

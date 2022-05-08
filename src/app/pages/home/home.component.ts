@@ -27,138 +27,33 @@ export enum REWARD_STEP {
 })
 export class HomeComponent extends DappBaseComponent {
   pcrTokens: Array<IPCR_REWARD> = [];
+  pcrMemberships:Array<any> = [];
 
-  toUpdateReward!: IPCR_REWARD;
 
-  valSwitch = true;
-  showFundingState = false;
-  showIssuingState = false;
-
-  //// FormControls
-  toFundAmountCtrl = new FormControl(0, Validators.required);
-  adressesCtrl = new FormControl('', [Validators.required, Validators.minLength(32), Validators.maxLength(32)]);
-  routeItems: { label: string }[];
-
+ 
   activeStep = 0;
-  chartData: { labels: string[]; datasets: { label: string; data: number[]; fill: boolean; backgroundColor: string; borderColor: string; tension: number; }[]; };
-  chartOptions:any;
-  constructor(private router: Router, dapp: DappInjector, store: Store, private graphqlService: GraphQlService) {
+   constructor(private router: Router, dapp: DappInjector, store: Store, private graphqlService: GraphQlService) {
     super(dapp, store);
-    this.routeItems = [
-      {label: 'Qualifying'},
-      {label: 'Propose Period'},
-      {label: 'Liveness Period'},
-      {label: 'Execution Period'},
-  ];
-  this.chartOptions = {
-    plugins: {
-        legend: {
-            labels: {
-                color: '#ebedef'
-            }
-        }
-    },
-    scales: {
-        x: {
-            ticks: {
-                color: '#ebedef'
-            },
-            grid: {
-                color:  'rgba(160, 167, 181, .3)',
-            }
-        },
-        y: {
-            ticks: {
-                color: '#ebedef'
-            },
-            grid: {
-                color:  'rgba(160, 167, 181, .3)',
-            }
-        },
-    }
-};
-  this.chartData = {
-    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-    datasets: [
-        {
-            label: 'First Dataset',
-            data: [65, 59, 80, 81, 56, 55, 40],
-            fill: false,
-            backgroundColor: '#2f4860',
-            borderColor: '#2f4860',
-            tension: .4
-        },
-        {
-            label: 'Second Dataset',
-            data: [28, 48, 40, 19, 86, 27, 90],
-            fill: false,
-            backgroundColor: '#00bb7e',
-            borderColor: '#00bb7e',
-            tension: .4
-        }
-    ]
-};
+
+
+
   }
 
   changeStatus(value: boolean, i: number) {
     console.log(i, value);
   }
 
-  async showFunding(reward:IPCR_REWARD) {
-    this.store.dispatch(Web3Actions.chainBusy({ status: true }));
-    this.toUpdateReward = reward;
 
-    const superToken = this._createSuperTokenInstance(this.toUpdateReward.fundToken.superToken);
-    const balanceSupertoken = await superToken.realtimeBalanceOfNow(this.dapp.signerAddress);
 
-    this.toUpdateReward.fundToken.superTokenBalance = balanceSupertoken[0].toString();
-
-    this.store.dispatch(Web3Actions.chainBusy({ status: false }));
-    this.showFundingState = true;
-  }
-
-  async doFunding() {
-    if (this.toFundAmountCtrl.value <= 0) {
-      alert('please add a numer');
-    }
-    this.store.dispatch(Web3Actions.chainBusy({ status: true }));
-    await doSignerTransaction(this._createERC20Instance(this.toUpdateReward.fundToken.superToken).approve(this.dapp.DAPP_STATE.contracts[+this.toUpdateReward.id]?.pcrOptimisticOracle.address, 50));
-    await doSignerTransaction(this.dapp.DAPP_STATE.contracts[+this.toUpdateReward.id]?.pcrOptimisticOracle.instance.depositReward(this.toFundAmountCtrl.value)!);
-
-    this.toUpdateReward.currentdeposit = +this.toUpdateReward.currentdeposit + this.toFundAmountCtrl.value;
-
-    this.store.dispatch(Web3Actions.chainBusy({ status: false }));
-    this.showFundingState = false;
+  goDetailsToken(reward:IPCR_REWARD){
+    this.router.navigateByUrl(`details-pcr/${reward.id}`)
   }
 
 
-  showAddMembers(reward:IPCR_REWARD) {
-   
-    this.toUpdateReward = reward;
-    this.showIssuingState = true;
+  goDetailsMembership(membership:any){
+    this.router.navigateByUrl(`details-membership/${membership.id}`)
   }
 
-  async doAddMember(reward:IPCR_REWARD){
-
-    if (this.adressesCtrl.value.invalid) {
-      alert('please add and adresse')
-    }
-
-    this.store.dispatch(Web3Actions.chainBusy({ status: true }));
-    await doSignerTransaction(this.dapp.DAPP_STATE.contracts[+reward.id]?.pcrToken?.instance.issue(this.adressesCtrl.value,1)!);
-    this.showIssuingState = true;
-  }
-
-
-
-
-
-
-  async doPropose(reward:IPCR_REWARD){
-    this.store.dispatch(Web3Actions.chainBusy({ status: true }));
-    await doSignerTransaction(this.dapp.DAPP_STATE.contracts[+reward.id]?.pcrOptimisticOracle.instance.proposeDistribution(1)!);
-
-  }
 
 
   calculateStep(reward: IPCR_REWARD): REWARD_STEP {
@@ -179,46 +74,27 @@ export class HomeComponent extends DappBaseComponent {
   }
 
   transformRewardObject(reward: IPCR_REWARD) {
-    reward.displayCustomAncillaryData = utils.toUtf8String(reward.customAncillaryData);
-    console.log(new Date(+reward.earliestNextAction * 1000).toLocaleString());
+    console.log();
     // reward.status = true;
     // reward.step = 0);
-
+    reward.displayDate = new Date(+reward.earliestNextAction * 1000).toLocaleString()
     const displayReward = global_tokens.filter((fil) => fil.superToken == reward.rewardToken)[0];
     reward.fundToken = displayReward;
     reward.displayStep = this.calculateStep(reward);
     return reward;
   }
 
-  private _createERC20Instance(ERC: string): Contract {
-    return new Contract(ERC, abi_ERC20, this.dapp.signer!);
-  }
 
-  private _createSuperTokenInstance(SuperToken: string): Contract {
-    return new Contract(SuperToken, abi_SuperToken, this.dapp.signer!);
-  }
 
   async getTokens() {
-
-    const  users = this.graphqlService.queryUser(this.dapp.signerAddress!).subscribe((val=> {
+    this.pcrTokens = [];
+    this.pcrMemberships = [];
+    const  users = this.graphqlService.queryUser(this.dapp.signerAddress!).pipe(takeUntil(this.destroyHooks)).subscribe((val=> {
       console.log(val)
-      
+      const user = val.data.user;
+      if (!!user) {
 
-
-    }))
-    console.log(users)
-
-    const indexes = await this.graphqlService.queryIndexes()
-    console.log(indexes)
-
-    const proposals = await this.graphqlService.query()
-    console.log(proposals)
-
-    this.graphqlService.tokens$.pipe(takeUntil(this.destroyHooks)).subscribe((data: any) => {
-      console.log(data);
-      if (data) {
-        const localTokens = data['rewards'];
-
+        const localTokens = user.rewardsCreated;
         if (localTokens !== undefined) {
           localTokens.forEach((each: any) => {
             const availableTokenIndex = this.pcrTokens.map((fil) => fil.id).indexOf(each.id);
@@ -231,12 +107,33 @@ export class HomeComponent extends DappBaseComponent {
         } else {
           this.pcrTokens = [];
         }
-      }
-      this.store.dispatch(Web3Actions.chainBusy({ status: false}));
-      console.log(this.pcrTokens);
-    });
 
-    this.graphqlService.watchTokens();
+
+        const localSubscriptions = user.rewardsSubscriptions;
+        if (localSubscriptions !== undefined) {
+          localSubscriptions.forEach((each: any) => {
+            const availableSubscriptionIndex = this.pcrMemberships.map((fil) => fil.id).indexOf(each.id);
+            if (availableSubscriptionIndex == -1) {
+              let membership = {... each.reward, ...{ units:each.units, id:each.id}}
+              this.pcrMemberships.push(this.transformRewardObject(membership));
+            } else {
+              let membership = {... each.reward, ...{ units:each.units, id:each.id}}
+              this.pcrMemberships[availableSubscriptionIndex] = { ...this.pcrMemberships[availableSubscriptionIndex], ...membership, ...{ step: this.calculateStep(membership) }};
+            }
+          });
+        } else {
+          this.pcrMemberships = [];
+        }
+
+       
+      }
+   
+      console.log(this.pcrMemberships)
+
+    }))
+  
+
+ 
 
     this.store.dispatch(Web3Actions.chainBusy({ status: false }));
   }
@@ -248,12 +145,9 @@ export class HomeComponent extends DappBaseComponent {
 
 
   override async hookContractConnected(): Promise<void> {
+    console.log(' I am down 127')
     this.getTokens();
 
-    let pcrAddress = await this.dapp.DAPP_STATE.pcrHostContract?.instance!.getTokensAddressByUserAndId(this.dapp.signerAddress!, 1);
 
-    if (pcrAddress !== undefined) {
-      await this.dapp.launchClones(pcrAddress!.tokenContract, pcrAddress!.optimisticOracleContract,1);
-    }
   }
 }

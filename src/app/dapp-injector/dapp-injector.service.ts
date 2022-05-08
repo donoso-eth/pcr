@@ -50,12 +50,18 @@ export class DappInjector implements OnDestroy {
   //// Store Implementation addressess
   tokenImpl!: string;
   optimisticOracleImpl!: string;
+
   constructor(
     @Inject(DappConfigService) private dappConfig: IDAPP_CONFIG,
     @Inject(DOCUMENT) private readonly document: any,
     @Inject('contractMetadata') public contractMetadata: ICONTRACT_METADATA,
     private store: Store
   ) {
+
+    ////
+    this.tokenImpl = PcrTokenMetadata.address;
+    this.optimisticOracleImpl = PcrOptimisticOracleMetadata.address;
+
     ///// ---------  Blockchain Bootstrap
     this.dappBootstrap();
   }

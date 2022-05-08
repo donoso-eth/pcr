@@ -120,9 +120,9 @@ export class CreatePcrComponent extends DappBaseComponent implements OnInit {
 
   ngOnInit(): void { }
 
-  goTOwned() {
+  goHome() {
     this.display = false;
-    this.router.navigateByUrl('');
+    this.router.navigateByUrl('home');
   }
 
   async createPcr() {

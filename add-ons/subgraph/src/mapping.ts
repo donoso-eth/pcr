@@ -1,4 +1,4 @@
-import { Proposal, Reward, RewardIndexHistory, User, UserSubscription } from '../generated/schema';
+import { Proposal, Reward, RewardIndexHistory, User, UserMembership } from '../generated/schema';
 import { RewardCreated } from '../generated/PcrHost/PcrHost';
 import {
   ProposalAcceptedAndDistribuition,
@@ -46,6 +46,8 @@ export function handleRewardCreated(event: RewardCreated): void {
     reward.title = event.params.reward.title;
     reward.url = event.params.reward.url;
     reward.admin = userId;
+    reward.optimisticOracleImpl = event.params.reward.optimisticOracleContract.toHexString();
+    reward.tokenImpl = event.params.reward.tokenContract.toHexString();
 
     reward.rewardToken = event.params.reward.rewardToken.toHexString();
     reward.rewardAmount = event.params.reward.optimisticOracleInput.rewardAmount;
@@ -207,12 +209,13 @@ export function handleRewardUnitsIssued(event: RewardUnitsIssued): void {
   }
   //// CREATE/UPDATE the Reward/subscription per user
   let subscriptionId = event.params.beneficiary.toHexString().concat(prId);
-  let subscription = UserSubscription.load(subscriptionId);
+  let subscription = UserMembership.load(subscriptionId);
 
   if (subscription === null) {
-    subscription = new UserSubscription(subscriptionId);
+    subscription = new UserMembership(subscriptionId);
     subscription.units = event.params.amount;
     subscription.beneficiary = beneficiaryId;
+    subscription.reward = prId;
   } else {
     subscription.units = subscription.units.plus(event.params.amount);
   }
@@ -238,13 +241,13 @@ export function handleRewardUnitsDeleted(event: RewardUnitsDeleted): void {
   }
   //// CREATE/UPDATE the Reward/subscription per user
   let subscriptionId = event.params.beneficiary.toHexString().concat(prId);
-  let subscription = UserSubscription.load(subscriptionId);
+  let subscription = UserMembership.load(subscriptionId);
   if (subscription !== null) {
     subscription.units = subscription.units.minus(event.params.amount);
     if (subscription.units.gt( new BigInt(0))) {
       subscription.save();
     } else {
-      store.remove('UserSubscription',subscriptionId )
+      store.remove('UserMembership',subscriptionId )
     }
    
   }

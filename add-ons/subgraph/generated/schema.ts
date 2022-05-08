@@ -18,6 +18,8 @@ export class Reward extends Entity {
     this.set("id", Value.fromString(id));
 
     this.set("admin", Value.fromString(""));
+    this.set("tokenImpl", Value.fromString(""));
+    this.set("optimisticOracleImpl", Value.fromString(""));
     this.set("rewardAmount", Value.fromBigInt(BigInt.zero()));
     this.set("currentdeposit", Value.fromBigInt(BigInt.zero()));
     this.set("rewardStatus", Value.fromBigInt(BigInt.zero()));
@@ -30,7 +32,7 @@ export class Reward extends Entity {
     this.set("totalDistributed", Value.fromBigInt(BigInt.zero()));
     this.set("currentIndex", Value.fromBigInt(BigInt.zero()));
     this.set("unitsIssued", Value.fromBigInt(BigInt.zero()));
-    this.set("usersSubscriptions", Value.fromBigInt(BigInt.zero()));
+    this.set("userMemberships", Value.fromBigInt(BigInt.zero()));
   }
 
   save(): void {
@@ -100,6 +102,24 @@ export class Reward extends Entity {
 
   set admin(value: string) {
     this.set("admin", Value.fromString(value));
+  }
+
+  get tokenImpl(): string {
+    let value = this.get("tokenImpl");
+    return value!.toString();
+  }
+
+  set tokenImpl(value: string) {
+    this.set("tokenImpl", Value.fromString(value));
+  }
+
+  get optimisticOracleImpl(): string {
+    let value = this.get("optimisticOracleImpl");
+    return value!.toString();
+  }
+
+  set optimisticOracleImpl(value: string) {
+    this.set("optimisticOracleImpl", Value.fromString(value));
   }
 
   get rewardToken(): string | null {
@@ -287,13 +307,13 @@ export class Reward extends Entity {
     this.set("unitsIssued", Value.fromBigInt(value));
   }
 
-  get usersSubscriptions(): BigInt {
-    let value = this.get("usersSubscriptions");
+  get userMemberships(): BigInt {
+    let value = this.get("userMemberships");
     return value!.toBigInt();
   }
 
-  set usersSubscriptions(value: BigInt) {
-    this.set("usersSubscriptions", Value.fromBigInt(value));
+  set userMemberships(value: BigInt) {
+    this.set("userMemberships", Value.fromBigInt(value));
   }
 
   get rewardIndexHistory(): Array<string> {
@@ -355,60 +375,89 @@ export class User extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get rewardsCreated(): Array<string> {
+  get rewardsCreated(): Array<string> | null {
     let value = this.get("rewardsCreated");
-    return value!.toStringArray();
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toStringArray();
+    }
   }
 
-  set rewardsCreated(value: Array<string>) {
-    this.set("rewardsCreated", Value.fromStringArray(value));
+  set rewardsCreated(value: Array<string> | null) {
+    if (!value) {
+      this.unset("rewardsCreated");
+    } else {
+      this.set("rewardsCreated", Value.fromStringArray(<Array<string>>value));
+    }
   }
 
-  get rewardsSubscriptions(): Array<string> {
-    let value = this.get("rewardsSubscriptions");
-    return value!.toStringArray();
+  get rewardsMembership(): Array<string> | null {
+    let value = this.get("rewardsMembership");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toStringArray();
+    }
   }
 
-  set rewardsSubscriptions(value: Array<string>) {
-    this.set("rewardsSubscriptions", Value.fromStringArray(value));
+  set rewardsMembership(value: Array<string> | null) {
+    if (!value) {
+      this.unset("rewardsMembership");
+    } else {
+      this.set(
+        "rewardsMembership",
+        Value.fromStringArray(<Array<string>>value)
+      );
+    }
   }
 
-  get proposaslsSubmitted(): Array<string> {
+  get proposaslsSubmitted(): Array<string> | null {
     let value = this.get("proposaslsSubmitted");
-    return value!.toStringArray();
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toStringArray();
+    }
   }
 
-  set proposaslsSubmitted(value: Array<string>) {
-    this.set("proposaslsSubmitted", Value.fromStringArray(value));
+  set proposaslsSubmitted(value: Array<string> | null) {
+    if (!value) {
+      this.unset("proposaslsSubmitted");
+    } else {
+      this.set(
+        "proposaslsSubmitted",
+        Value.fromStringArray(<Array<string>>value)
+      );
+    }
   }
 }
 
-export class UserSubscription extends Entity {
+export class UserMembership extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
 
     this.set("beneficiary", Value.fromString(""));
+    this.set("reward", Value.fromString(""));
     this.set("units", Value.fromBigInt(BigInt.zero()));
   }
 
   save(): void {
     let id = this.get("id");
-    assert(id != null, "Cannot save UserSubscription entity without an ID");
+    assert(id != null, "Cannot save UserMembership entity without an ID");
     if (id) {
       assert(
         id.kind == ValueKind.STRING,
-        "Cannot save UserSubscription entity with non-string ID. " +
+        "Cannot save UserMembership entity with non-string ID. " +
           'Considering using .toHex() to convert the "id" to a string.'
       );
-      store.set("UserSubscription", id.toString(), this);
+      store.set("UserMembership", id.toString(), this);
     }
   }
 
-  static load(id: string): UserSubscription | null {
-    return changetype<UserSubscription | null>(
-      store.get("UserSubscription", id)
-    );
+  static load(id: string): UserMembership | null {
+    return changetype<UserMembership | null>(store.get("UserMembership", id));
   }
 
   get id(): string {
@@ -427,6 +476,15 @@ export class UserSubscription extends Entity {
 
   set beneficiary(value: string) {
     this.set("beneficiary", Value.fromString(value));
+  }
+
+  get reward(): string {
+    let value = this.get("reward");
+    return value!.toString();
+  }
+
+  set reward(value: string) {
+    this.set("reward", Value.fromString(value));
   }
 
   get units(): BigInt {

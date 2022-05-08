@@ -29,6 +29,8 @@ type Reward @entity {
   title: String
   url: String
   admin: User!
+  tokenImpl:String!
+  optimisticOracleImpl:String!
 
   rewardToken: String
   rewardAmount: BigInt!
@@ -51,7 +53,7 @@ type Reward @entity {
   totalDistributed: BigInt!
   currentIndex: BigInt!
   unitsIssued: BigInt!
-  usersSubscriptions:BigInt!
+  userMemberships:BigInt!
   rewardIndexHistory: [RewardIndexHistory!]! @derivedFrom(field: "reward")
 
 
@@ -62,14 +64,15 @@ type Reward @entity {
 type User @entity {
  id:ID!
  rewardsCreated: [Reward!] @derivedFrom(field: "admin")
- rewardsSubscriptions: [UserSubscription!] @derivedFrom(field: "beneficiary")
+ rewardsMembership: [UserMembership!] @derivedFrom(field: "beneficiary")
  proposaslsSubmitted: [Proposal!] @derivedFrom(field: "proposer")
 
 }
 
-type UserSubscription @entity {
+type UserMembership @entity {
   id: ID!
   beneficiary: User!
+  reward: Reward!
   units: BigInt!
 }
 

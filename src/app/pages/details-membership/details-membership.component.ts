@@ -21,14 +21,14 @@ export enum REWARD_STEP {
 }
 
 @Component({
-  selector: 'details-pcr',
-  templateUrl: './details-pcr.component.html',
-  styleUrls: ['./details-pcr.component.scss'],
+  selector: 'details-membership',
+  templateUrl: './details-membership.component.html',
+  styleUrls: ['./details-membership.component.scss'],
 })
-export class DetailsPcrComponent extends DappBaseComponent {
+export class DetailsMembershipComponent extends DappBaseComponent {
   pcrTokens: Array<IPCR_REWARD> = [];
 
-  toUpdateReward: IPCR_REWARD | undefined = undefined;
+  toUpdateMembership: any | undefined = undefined;
 
   valSwitch = true;
   showFundingState = false;
@@ -108,10 +108,10 @@ export class DetailsPcrComponent extends DappBaseComponent {
     this.store.dispatch(Web3Actions.chainBusy({ status: true }));
     
 
-    const superToken = this._createSuperTokenInstance(this.toUpdateReward!.fundToken.superToken);
+    const superToken = this._createSuperTokenInstance(this.toUpdateMembership!.fundToken.superToken);
     const balanceSupertoken = await superToken.realtimeBalanceOfNow(this.dapp.signerAddress);
 
-    this.toUpdateReward!.fundToken.superTokenBalance = balanceSupertoken[0].toString();
+    this.toUpdateMembership!.fundToken.superTokenBalance = balanceSupertoken[0].toString();
 
     this.store.dispatch(Web3Actions.chainBusy({ status: false }));
     this.showFundingState = true;
@@ -122,10 +122,10 @@ export class DetailsPcrComponent extends DappBaseComponent {
       alert('please add a numer');
     }
     this.store.dispatch(Web3Actions.chainBusy({ status: true }));
-    await doSignerTransaction(this._createERC20Instance(this.toUpdateReward!.fundToken.superToken).approve(this.dapp.DAPP_STATE.contracts[+this.toUpdateReward!.id]?.pcrOptimisticOracle.address, 50));
-    await doSignerTransaction(this.dapp.DAPP_STATE.contracts[+this.toUpdateReward!.id]?.pcrOptimisticOracle.instance.depositReward(this.toFundAmountCtrl.value)!);
+    await doSignerTransaction(this._createERC20Instance(this.toUpdateMembership!.fundToken.superToken).approve(this.dapp.DAPP_STATE.contracts[+this.toUpdateMembership!.id]?.pcrOptimisticOracle.address, 50));
+    await doSignerTransaction(this.dapp.DAPP_STATE.contracts[+this.toUpdateMembership!.id]?.pcrOptimisticOracle.instance.depositReward(this.toFundAmountCtrl.value)!);
 
-    this.toUpdateReward!.currentdeposit = +this.toUpdateReward!.currentdeposit + this.toFundAmountCtrl.value;
+    this.toUpdateMembership!.currentdeposit = +this.toUpdateMembership!.currentdeposit + this.toFundAmountCtrl.value;
 
     this.store.dispatch(Web3Actions.chainBusy({ status: false }));
     this.showFundingState = false;
@@ -197,32 +197,35 @@ export class DetailsPcrComponent extends DappBaseComponent {
     return new Contract(SuperToken, abi_SuperToken, this.dapp.signer!);
   }
 
-  async getTokens(id:string) {
-
-    this.graphqlService.watchTokens(id).pipe(takeUntil(this.destroyHooks)).subscribe( async (data: any) => {
+  async getMemberships(id:string) {
+    console.log(id)
+    this.graphqlService.watchMemberships(id).pipe(takeUntil(this.destroyHooks)).subscribe( async (data: any) => {
       console.log(data);
       if (data) {
-        const localReward = data.data['reward'];
+        let localmembership = data.data['userMembership'];
 
-        if (localReward !== undefined) {
+        if (localmembership !== undefined) {
       
-            if ( this.toUpdateReward == undefined) {
-              this.pcrTokens.push(this.transformRewardObject(localReward));
-              this.toUpdateReward= this.transformRewardObject(localReward)
+          let membership = {... localmembership.reward, ...{ units:localmembership.units, id:localmembership.id}}
+
+
+            if ( this.toUpdateMembership == undefined) {
+           
+              this.toUpdateMembership= this.transformRewardObject(membership)
 
             } else {
-              this.toUpdateReward = { ...this.toUpdateReward, ...localReward, ...{ step: this.calculateStep(localReward) } };
+              this.toUpdateMembership = { ...this.toUpdateMembership, ...membership, ...{ step: this.calculateStep(membership) } };
             }
         
         } else {
-          this.toUpdateReward = undefined;
+          this.toUpdateMembership = undefined;
         }
       }
 
-      await this.dapp.launchClones(this.toUpdateReward!.tokenImpl, this.toUpdateReward!.optimisticOracleImpl, +this.toUpdateReward!.id)
+      await this.dapp.launchClones(this.toUpdateMembership!.tokenImpl, this.toUpdateMembership!.optimisticOracleImpl, +this.toUpdateMembership!.id)
 
       this.store.dispatch(Web3Actions.chainBusy({ status: false}));
-      console.log(this.toUpdateReward)
+      console.log(this.toUpdateMembership)
     });
 
   
@@ -241,7 +244,8 @@ export class DetailsPcrComponent extends DappBaseComponent {
     const params = this.route.snapshot.params
     console.log(params)
     if (params['id']!== undefined) {
-      this.getTokens(params['id'])
+      this.getMemberships(params['id'])
+      
     }
 
     // let pcrAddress = await this.dapp.DAPP_STATE.pcrHostContract?.instance!.getTokensAddressByUserAndId(this.dapp.signerAddress!, 1);

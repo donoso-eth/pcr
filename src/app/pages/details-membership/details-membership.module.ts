@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { HomeRoutingModule } from './home-routing.module';
-import { HomeComponent } from './home.component';
+import { DetailsMembershipRoutingModule } from './details-membership-routing.module';
+import { DetailsMembershipComponent } from './details-membership.component';
 
 import { TabViewModule } from 'primeng/tabview';
 
@@ -18,20 +18,23 @@ import { ChartModule } from 'primeng/chart';
 
 @NgModule({
   declarations: [
-    HomeComponent
+    DetailsMembershipComponent
   ],
   imports: [
     CommonModule,
-    HomeRoutingModule,
+    DetailsMembershipRoutingModule,
     FormsModule,
     ReactiveFormsModule,
 
-  
+    TabViewModule,
     ButtonModule,
     InputTextModule, 
     InputNumberModule,
     InputTextareaModule,
     InputSwitchModule,
+    DialogModule,
+    StepsModule,
+    ChartModule
   ]
 })
-export class HomeModule { }
+export class DetailsMembershipModule{ }

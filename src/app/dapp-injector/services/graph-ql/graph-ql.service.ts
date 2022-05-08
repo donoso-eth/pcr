@@ -20,25 +20,39 @@ const GET_QUERY = `
   }
 `;
 
-const GET_USER= `
+const GET_USER = `
 query($address: String!){
     user(id:$address) {
       id
-      rewardsCreated {
+      rewardsCreated {  
+      id
       title
-      id
+      rewardStep 
+      earliestNextAction
+      rewardToken
+      rewardAmount
       }
-      rewardsSubscriptions {
+      rewardsMembership {
       id
+      units
+      reward  {  
+        id
+        title
+        rewardStep 
+        earliestNextAction
+        rewardToken
+        currentIndex
+        rewardAmount
+        }
       }
       proposaslsSubmitted
     }
   }
 `;
 
-const userSubscriptions = gql`
+const userMemberships = gql`
   {
-    userSubscriptions(first: 5) {
+    userMemberships(first: 5) {
       units
     }
   }
@@ -65,9 +79,10 @@ const proposals = gql`
   }
 `;
 
-const rewards = gql`
+const GET_REWARD = `
+query($id: String!)
   {
-    rewards(first: 5) {
+    reward(id:$id) {
       id
       admin {
         id
@@ -79,6 +94,8 @@ const rewards = gql`
       token
       title
       url
+      tokenImpl
+      optimisticOracleImpl
       earliestNextAction
       interval
       rewardStep
@@ -90,29 +107,62 @@ const rewards = gql`
   }
 `;
 
+
+const GET_MEMBERSHIP = `
+query($id: String!)
+  {
+    userMembership(id:$id) {
+      id
+      units
+      reward {
+      rewardAmount
+      rewardToken
+      currentdeposit
+      customAncillaryData
+      token
+      title
+      url
+      tokenImpl
+      optimisticOracleImpl
+      earliestNextAction
+      interval
+      rewardStep
+      rewardStatus
+      totalDistributed
+      currentIndex
+      unitsIssued
+      }
+    }
+  }
+`;
+
+
 @Injectable({
   providedIn: 'root',
 })
 export class GraphQlService implements OnDestroy {
-  tokens$ = new Subject();
-
-  private tokensSubscription!: Subscription;
-
   constructor(private apollo: Apollo) {}
-  ngOnDestroy(): void {
-    this.tokensSubscription.unsubscribe();
+  ngOnDestroy(): void {}
+
+  watchTokens(id: string) {
+    const variables = { id: id };
+    return this.apollo.watchQuery<any>({
+      query: gql(GET_REWARD),
+      pollInterval: 500,
+      variables,
+    }).valueChanges;
   }
 
-  watchTokens() {
-    this.tokensSubscription = this.apollo
-      .watchQuery<any>({
-        query: rewards,
-        pollInterval: 500,
-      })
-      .valueChanges.subscribe(({ data, loading }) => {
-        this.tokens$.next(data);
-      });
+  watchMemberships(id: string) {
+    const variables = { id: id };
+    return this.apollo.watchQuery<any>({
+      query: gql(GET_MEMBERSHIP),
+      pollInterval: 500,
+      variables,
+    }).valueChanges;
   }
+
+
 
   async query() {
     try {
@@ -134,8 +184,6 @@ export class GraphQlService implements OnDestroy {
     //   this.posts = data.posts;
     // });
   }
-
-
 
   async queryIndexes() {
     try {
@@ -159,12 +207,10 @@ export class GraphQlService implements OnDestroy {
   }
 
   queryUser(address: string) {
-
     const variables = { address: address.toLowerCase() };
     return this.apollo.watchQuery<any>({
-        query: gql(GET_USER),
-        variables,
-      }).valueChanges
-
+      query: gql(GET_USER),
+      variables,
+    }).valueChanges;
   }
 }

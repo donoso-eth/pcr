@@ -18,7 +18,7 @@ dataSources:
         - Proposal
         - RewardTargetHitory
         - RewardIndexHistory
-        - UserSubscription
+        - UserMembership
       abis:
         - name: PcrHost
           file: PcrHost\abis\host.json
@@ -42,7 +42,7 @@ templates:
         - Proposal
         - RewardTargetHitory
         - RewardIndexHistory
-        - UserSubscription
+        - UserMembership
       abis:
         - name: PcrOptimisticOracle
           file: PcrOptimisticOracle\abis\pcr_optimistic_oracle.json
@@ -74,7 +74,7 @@ templates:
         - Proposal
         - RewardTargetHitory
         - RewardIndexHistory
-        - UserSubscription
+        - UserMembership
       abis:
         - name: PcrToken
           file: PcrToken\abis\pcr_token.json

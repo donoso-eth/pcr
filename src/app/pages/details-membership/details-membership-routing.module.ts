@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { DetailsPcrComponent } from './details-pcr.component';
+import { DetailsMembershipComponent } from './details-membership.component';
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
-  { path: ':id', component: DetailsPcrComponent }
+  { path: ':id', component: DetailsMembershipComponent }
   
 ];
 
@@ -11,4 +11,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class DetailsPcrRoutingModule{ }
+export class DetailsMembershipRoutingModule{ }

@@ -45,7 +45,6 @@ export class DappBaseComponent implements OnDestroy, AfterViewInit {
       .pipe(takeUntil(this.destroyHooks))
       .subscribe(async (value) => {
         this.blockchain_status = value;
-        console.log(value);
       });
 
     //////  CHAIN START LOADING
@@ -83,7 +82,6 @@ export class DappBaseComponent implements OnDestroy, AfterViewInit {
     .pipe(web3Selectors.hookWalletNotConnected)
     .pipe(takeUntil(this.destroyHooks))
     .subscribe(() => {
-      console.log('pur que')
       this.hookWalletNotConnected();
     });
 
@@ -101,7 +99,7 @@ export class DappBaseComponent implements OnDestroy, AfterViewInit {
       .pipe(web3Selectors.hookForceDisconnect)
       .pipe(takeUntil(this.destroyHooks))
       .subscribe(() => {
-        console.log('force discoonetc')
+     
         this.hookForceDisconnect;
       });
 

@@ -18,13 +18,12 @@ dataSources:
         - Proposal
         - RewardTargetHitory
         - RewardIndexHistory
-        - UserSubscription
+        - UserMembership
       abis:
         - name: PcrHost
           file: ./abis/host.json
       eventHandlers:
-        - event: >-
-            RewardCreated((address,int256,uint8,address,string,uint256,uint256,(address,int256,uint8,uint256,uint256,uint256,bytes32,bytes),address,address,string,string))
+        - event: RewardCreated((address,int256,uint8,address,string,uint256,uint256,(address,int256,uint8,uint256,uint256,uint256,bytes32,bytes),address,address,string,string))
           handler: handleRewardCreated
       file: ./src/mapping.ts
 templates:
@@ -43,7 +42,7 @@ templates:
         - Proposal
         - RewardTargetHitory
         - RewardIndexHistory
-        - UserSubscription
+        - UserMembership
       abis:
         - name: PcrOptimisticOracle
           file: ./abis/pcr_optimistic_oracle.json
@@ -75,7 +74,7 @@ templates:
         - Proposal
         - RewardTargetHitory
         - RewardIndexHistory
-        - UserSubscription
+        - UserMembership
       abis:
         - name: PcrToken
           file: ./abis/pcr_token.json

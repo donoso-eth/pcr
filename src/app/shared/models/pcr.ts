@@ -10,6 +10,8 @@ export enum REWARD_STEP {
 export interface IPCR_REWARD {
   id: string;
   admin: string;
+  tokenImpl:string;
+  optimisticOracleImpl:string;
   currentdeposit: string;
   customAncillaryData: string;
   earliestNextAction: number;
@@ -39,5 +41,6 @@ export interface IPCR_REWARD {
   displayStep: number;
   displayCustomAncillaryData: string;
   displayTime: { started:number, finish:number, percentage:number}
+  displayDate: string
  
 }

@@ -16,8 +16,8 @@
  margin-right: 30px;" class="layout-topbar-menu" >
     <a>{{ address_to_show}}</a>
     <a  (click)="doDisconnect()" class="p-link layout-topbar-button">
-        <i class="pi pi-cog"></i>
-        <span>Settings</span>
+        <i style="color:var(--primary-color)"  class="pi pi-cog"></i>
+       
     </a>
     <p-dropdown [options]="users"  [formControl]="localUserCtrl"  placeholder="Select a RewardType">
         <ng-template pTemplate="selectedItem">

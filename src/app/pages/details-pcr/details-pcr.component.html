@@ -37,9 +37,7 @@
                             {{toUpdateReward!.unitsIssued}}</span>
                         </div>
                       </div>
-                      <button pButton pRipple style="position: relative;width:fit-content"
-                        (click)="showAddMembers(toUpdateReward!)" type="button" label="Add"
-                        class="p-button-rounded mr-2 mb-2"></button>
+              
 
 
                     </div>
@@ -69,7 +67,9 @@
                       </div>
                     </div>
                     <!-- #endtrgion INDEX////  -->
-
+                    <button pButton pRipple style="position: relative;width:fit-content"
+                    (click)="showAddMembers(toUpdateReward!)" type="button" label="Add"
+                    class="p-button-rounded mr-2 mb-2"></button>
                   </div>
                 </div>
               </div>
@@ -95,13 +95,14 @@
                     </div>
                   </div>
                   <span class="font-medium">{{toUpdateReward!.rewardAmount}} </span>
-                  <span class="text-500">Required toUpdateReward! Amount, please fund the toUpdateReward! </span>
-                  <button pButton pRipple style="position: absolute; bottom: 8px; right: 20px; width:fit-content"
-                    (click)="showFunding(toUpdateReward!)" type="button" label="Fund"
-                    class="p-button-rounded mr-2 mb-2"></button>
+                  <span class="text-500">Required Amount, please fund the Reward </span>
+                  <br>
+                  <button pButton pRipple style=" width:fit-content"
+                  (click)="showFunding(toUpdateReward!)" type="button" label="Fund"
+                  class="p-button-rounded mr-2 mb-2"></button>
                 </div>
-
-              </div>
+                </div>
+       
             </div>
 
             <!-- ////// STATUS PROPOSAL -->
@@ -109,10 +110,11 @@
             <div style="position:relative;background-color: var(--surface-ground);"
               class="card mt-3 flex align-items-center flex-column justify-content-center">
               <h4 class="mb-1">Current Status</h4>
-              <div style="width:100%;" class="grid p-fluid">
+              <!-- <div style="width:100%;" class="grid p-fluid">
                 <p-steps class="col-12" [model]="routeItems" (activeIndexChange)="activeStep = 0"
                   [(activeIndex)]="activeStep" styleClass="mt-5" [readonly]="false"></p-steps>
-              </div>
+              </div> -->
+              <proposal-detail style="width:100%;" *ngIf="currentProposal !== undefined" [proposal]="currentProposal"></proposal-detail>
             </div>
 
             <!-- ////// CHARTSSS  -->

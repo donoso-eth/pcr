@@ -15,6 +15,7 @@ import { DialogModule } from 'primeng/dialog';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { StepsModule } from 'primeng/steps';
 import { ChartModule } from 'primeng/chart';
+import { ProposalDetailModule } from 'src/app/shared/components/proposal-detail/proposal-detail.module';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,8 @@ import { ChartModule } from 'primeng/chart';
     DetailsPcrRoutingModule,
     FormsModule,
     ReactiveFormsModule,
+
+    ProposalDetailModule,
 
     TabViewModule,
     ButtonModule,

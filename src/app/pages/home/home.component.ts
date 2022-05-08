@@ -8,6 +8,7 @@ import { takeUntil } from 'rxjs';
 import { doSignerTransaction } from 'src/app/dapp-injector/classes/transactor';
 
 import { GraphQlService } from 'src/app/dapp-injector/services/graph-ql/graph-ql.service';
+import { calculateStep } from 'src/app/shared/helpers/helpers';
 import { IPCR_REWARD } from 'src/app/shared/models/pcr';
 
 import { abi_ERC20 } from './abis/erc20';
@@ -56,22 +57,7 @@ export class HomeComponent extends DappBaseComponent {
 
 
 
-  calculateStep(reward: IPCR_REWARD): REWARD_STEP {
-    let rewardStep = +reward.rewardStep.toString();
-    let timeStamp = +(new Date().getTime() / 1000).toFixed(0);
-    let earliestNextAction = +reward.earliestNextAction.toString();
-    let step: REWARD_STEP = REWARD_STEP.QUALIFYING;
-    if (rewardStep == 0 && timeStamp < earliestNextAction) {
-      step = REWARD_STEP.QUALIFYING;
-    } else if (rewardStep == 0 && timeStamp >= earliestNextAction) {
-      step = REWARD_STEP.AWAITING_PROPOSAL;
-    } else if (rewardStep == 1 && timeStamp < earliestNextAction) {
-      step = REWARD_STEP.LIVENESS_PERIOD;
-    } else if (rewardStep == 1 && timeStamp >= earliestNextAction) {
-      step = REWARD_STEP.AWAITING_EXECUTION;
-    }
-    return step;
-  }
+
 
   transformRewardObject(reward: IPCR_REWARD) {
     console.log();
@@ -80,7 +66,7 @@ export class HomeComponent extends DappBaseComponent {
     reward.displayDate = new Date(+reward.earliestNextAction * 1000).toLocaleString()
     const displayReward = global_tokens.filter((fil) => fil.superToken == reward.rewardToken)[0];
     reward.fundToken = displayReward;
-    reward.displayStep = this.calculateStep(reward);
+    reward.displayStep = calculateStep(+reward.rewardStep,+reward.earliestNextAction);
     return reward;
   }
 
@@ -101,7 +87,7 @@ export class HomeComponent extends DappBaseComponent {
             if (availableTokenIndex == -1) {
               this.pcrTokens.push(this.transformRewardObject(each));
             } else {
-              this.pcrTokens[availableTokenIndex] = { ...this.pcrTokens[availableTokenIndex], ...each, ...{ step: this.calculateStep(each) } };
+              this.pcrTokens[availableTokenIndex] = { ...this.pcrTokens[availableTokenIndex], ...each, ...{ step: calculateStep(+each.rewardStep,+each.earliestNextAction) } };
             }
           });
         } else {
@@ -118,7 +104,7 @@ export class HomeComponent extends DappBaseComponent {
               this.pcrMemberships.push(this.transformRewardObject(membership));
             } else {
               let membership = {... each.reward, ...{ units:each.units, id:each.id}}
-              this.pcrMemberships[availableSubscriptionIndex] = { ...this.pcrMemberships[availableSubscriptionIndex], ...membership, ...{ step: this.calculateStep(membership) }};
+              this.pcrMemberships[availableSubscriptionIndex] = { ...this.pcrMemberships[availableSubscriptionIndex], ...membership, ...{ step: calculateStep(+membership.rewardStep, + membership.earliestNextAction) }};
             }
           });
         } else {

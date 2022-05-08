@@ -1,0 +1,9 @@
+<div style="width:100%;" class="grid p-fluid">
+    <p-steps class="col-12" [model]="stepItems" (activeIndexChange)="activeStep = 0"
+      [(activeIndex)]="activeStep" styleClass="mt-5" [readonly]="false"></p-steps>
+    <div *ngIf="activeStep == 0">
+        <p [ngStyle]="{ lineHeight: '2.5rem' }">Period Qualifying. Rewals proposals {{'proposal.displayDate'}}</p>
+
+    </div>
+
+  </div>

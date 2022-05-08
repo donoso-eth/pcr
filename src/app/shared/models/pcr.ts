@@ -1,4 +1,3 @@
-import { string } from "hardhat/internal/core/params/argumentTypes";
 
 export enum REWARD_STEP {
   QUALIFYING,
@@ -30,6 +29,16 @@ export interface IPCR_REWARD {
   unitsIssued:string;
 
 
+  currentProposal: {
+    id:string;
+    startQualifying: number
+    startProposePeriod: number
+    startLivenessPeriod: number
+    startExecutionPeriod: number
+    status:string
+  };
+
+
   fundToken: { 
     name: string; 
     id: number; 
@@ -43,4 +52,25 @@ export interface IPCR_REWARD {
   displayTime: { started:number, finish:number, percentage:number}
   displayDate: string
  
+}
+
+
+export interface IPROPOSAL {
+  id: string
+  startQualifying: number
+  startProposePeriod: number
+  startLivenessPeriod: number
+  startExecutionPeriod: number
+  earliestNextAction: number
+  title:string,
+  step:string,
+  rewardId:string
+  status: string
+
+  display_startQualifying?: string
+  display_startProposePeriod?: string
+  display_startLivenessPeriod?: string
+  display_startExecutionPeriod?: string
+  display_earliestNextAction?: string
+
 }

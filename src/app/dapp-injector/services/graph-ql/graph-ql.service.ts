@@ -103,6 +103,14 @@ query($id: String!)
       totalDistributed
       currentIndex
       unitsIssued
+      currentProposal {
+        id
+        startQualifying
+        startProposePeriod
+        startLivenessPeriod
+        startExecutionPeriod
+        status
+      }
     }
   }
 `;

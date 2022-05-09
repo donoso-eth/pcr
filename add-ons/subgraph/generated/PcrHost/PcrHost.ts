@@ -111,8 +111,12 @@ export class RewardCreatedRewardOptimisticOracleInputStruct extends ethereum.Tup
     return this[6].toBytes();
   }
 
+  get priceType(): i32 {
+    return this[7].toI32();
+  }
+
   get customAncillaryData(): Bytes {
-    return this[7].toBytes();
+    return this[8].toBytes();
   }
 }
 

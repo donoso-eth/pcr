@@ -21,7 +21,7 @@ library Events {
 
     event RewardSwitchStatus(DataTypes.RewardStatus rewardStatus);
     
-    event ProposalCreated(address proposer, uint256 proposalId, uint256 pcrId);
+    event ProposalCreated(address proposer, uint256 proposalId, uint256 pcrId,int256 priceProposed);
 
     event ProposalRejected(uint256 pcrId, uint256 proposalId, uint256 newProposalId);
 

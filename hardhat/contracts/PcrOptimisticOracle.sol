@@ -114,7 +114,8 @@ contract PcrOptimisticOracle is IPcrOptimisticOracle, Initializable, MultiCaller
             optimisticOracleinitializer.optimisticOracleInput.interval,
             optimisticOracleinitializer.optimisticOracleInput.optimisticOracleLivenessTime,
             optimisticOracleinitializer.optimisticOracleInput.priceIdentifier,
-            optimisticOracleinitializer.optimisticOracleInput.customAncillaryData
+            optimisticOracleinitializer.optimisticOracleInput.customAncillaryData,
+            optimisticOracleinitializer.optimisticOracleInput.priceType
         );
 
             // Generate hash for proposalId.
@@ -177,7 +178,7 @@ contract PcrOptimisticOracle is IPcrOptimisticOracle, Initializable, MultiCaller
 
         // Store and log proposed distribution.
         proposal = DataTypes.Proposal({pcrId: pcrId, proposalId: id, timestamp: timestamp});
-        emit Events.ProposalCreated(msg.sender, id, pcrId);
+        emit Events.ProposalCreated(msg.sender, id, pcrId,_proposedPrice);
     }
 
     /**
@@ -309,7 +310,8 @@ contract PcrOptimisticOracle is IPcrOptimisticOracle, Initializable, MultiCaller
         uint256 interval,
         uint256 optimisticOracleLivenessTime,
         bytes32 priceIdentifier,
-        bytes memory customAncillaryData
+        bytes memory customAncillaryData,
+         DataTypes.PriceType priceType
     ) internal {
         require(_getIdentifierWhitelist().isIdentifierSupported(priceIdentifier), "Identifier not registered");
         require(_ancillaryDataWithinLimits(customAncillaryData), "Ancillary data too long");
@@ -328,6 +330,7 @@ contract PcrOptimisticOracle is IPcrOptimisticOracle, Initializable, MultiCaller
             admin: msg.sender,
             target: target,
             targetCondition: targetCondition,
+            priceType: priceType,
             rewardToken: rewardToken,
             rewardAmount: rewardAmount,
             interval: interval,

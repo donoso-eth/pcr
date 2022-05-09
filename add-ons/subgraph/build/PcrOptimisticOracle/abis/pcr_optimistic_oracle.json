@@ -44,6 +44,12 @@
         "internalType": "uint256",
         "name": "pcrId",
         "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "int256",
+        "name": "priceProposed",
+        "type": "int256"
       }
     ],
     "name": "ProposalCreated",

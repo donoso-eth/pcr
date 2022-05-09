@@ -28,6 +28,7 @@ export class Reward extends Entity {
     this.set("interval", Value.fromBigInt(BigInt.zero()));
     this.set("target", Value.fromBigInt(BigInt.zero()));
     this.set("targetCondition", Value.fromBigInt(BigInt.zero()));
+    this.set("priceType", Value.fromBigInt(BigInt.zero()));
     this.set("optimisticOracleLivenessTime", Value.fromBigInt(BigInt.zero()));
     this.set("totalDistributed", Value.fromBigInt(BigInt.zero()));
     this.set("currentIndex", Value.fromBigInt(BigInt.zero()));
@@ -226,6 +227,15 @@ export class Reward extends Entity {
 
   set targetCondition(value: BigInt) {
     this.set("targetCondition", Value.fromBigInt(value));
+  }
+
+  get priceType(): BigInt {
+    let value = this.get("priceType");
+    return value!.toBigInt();
+  }
+
+  set priceType(value: BigInt) {
+    this.set("priceType", Value.fromBigInt(value));
   }
 
   get rewardTargetHitory(): Array<string> {
@@ -668,6 +678,7 @@ export class Proposal extends Entity {
     this.set("proposer", Value.fromString(""));
     this.set("startQualifying", Value.fromBigInt(BigInt.zero()));
     this.set("startLivenessPeriod", Value.fromBigInt(BigInt.zero()));
+    this.set("priceProposed", Value.fromBigInt(BigInt.zero()));
     this.set("reward", Value.fromString(""));
   }
 
@@ -722,6 +733,15 @@ export class Proposal extends Entity {
 
   set startLivenessPeriod(value: BigInt) {
     this.set("startLivenessPeriod", Value.fromBigInt(value));
+  }
+
+  get priceProposed(): BigInt {
+    let value = this.get("priceProposed");
+    return value!.toBigInt();
+  }
+
+  set priceProposed(value: BigInt) {
+    this.set("priceProposed", Value.fromBigInt(value));
   }
 
   get reward(): string {

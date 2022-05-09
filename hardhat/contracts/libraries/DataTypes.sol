@@ -63,6 +63,7 @@ library DataTypes {
         uint256 interval;
         uint256 optimisticOracleLivenessTime;
         bytes32 priceIdentifier;
+        DataTypes.PriceType priceType;
         bytes customAncillaryData;
     }
     // #endregion Exteral Input
@@ -134,6 +135,7 @@ library DataTypes {
         address admin;
         int256 target;
         TargetCondition targetCondition;
+        DataTypes.PriceType priceType;
         address rewardToken;
         uint256 rewardAmount;
         uint256 interval;
@@ -167,7 +169,6 @@ library DataTypes {
         Removed // .
     }
 
-
      enum TargetCondition{
         GT, // 
         GTE, // 
@@ -176,6 +177,10 @@ library DataTypes {
         LT 
     }
 
+    enum PriceType {
+        BOOLEAN,
+        NUMBER
+    }
 
 
     // endregion  Enums

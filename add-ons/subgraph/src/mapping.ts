@@ -19,6 +19,7 @@ function createNewProposal(id: string, reward: Reward): void {
 
   proposal.startLivenessPeriod = BigInt.fromI32(0);
   proposal.reward = reward.id;
+  proposal.priceProposed = BigInt.fromI32(0);
   proposal.status = 'Pending';
   proposal.save();
 }
@@ -59,8 +60,10 @@ export function handleRewardCreated(event: RewardCreated): void {
 
     reward.interval = event.params.reward.optimisticOracleInput.interval;
     reward.target = event.params.reward.target;
-    reward.targetCondition = new BigInt(event.params.reward.targetCondition);
+    reward.targetCondition = BigInt.fromI32(event.params.reward.targetCondition);
 
+
+    reward.priceType =   BigInt.fromI32(event.params.reward.optimisticOracleInput.priceType);
     reward.optimisticOracleLivenessTime = event.params.reward.optimisticOracleInput.optimisticOracleLivenessTime;
     reward.priceIdentifier = event.params.reward.optimisticOracleInput.priceIdentifier;
     reward.customAncillaryData = event.params.reward.optimisticOracleInput.customAncillaryData;

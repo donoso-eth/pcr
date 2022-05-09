@@ -24,6 +24,7 @@ type Reward @entity {
   interval: BigInt!
   target: BigInt!
   targetCondition: BigInt!
+  priceType:BigInt!
   rewardTargetHitory: [RewardTargetHitory!]! @derivedFrom(field: "reward")
 
   optimisticOracleLivenessTime: BigInt!
@@ -76,6 +77,7 @@ type Proposal @entity {
   proposer: User!
   startQualifying: BigInt!
   startLivenessPeriod: BigInt!
+  priceProposed:BigInt!
   reward: Reward!
   status: ProposalStatus
 }

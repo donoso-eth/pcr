@@ -15,6 +15,7 @@ export interface IPCR_REWARD {
   customAncillaryData: string;
   earliestNextAction: number;
   interval: string;
+  optimisticOracleLivenessTime:string;
   rewardAmount: string;
   rewardStatus: string;
   rewardStep: string;
@@ -58,19 +59,14 @@ export interface IPCR_REWARD {
 export interface IPROPOSAL {
   id: string
   startQualifying: number
-  startProposePeriod: number
   startLivenessPeriod: number
   startExecutionPeriod: number
   earliestNextAction: number
+  interval:number;
+  optimisticOracleLivenessTime:number;
   title:string,
   step:string,
   rewardId:string
   status: string
-
-  display_startQualifying?: string
-  display_startProposePeriod?: string
-  display_startLivenessPeriod?: string
-  display_startExecutionPeriod?: string
-  display_earliestNextAction?: string
 
 }

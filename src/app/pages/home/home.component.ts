@@ -77,9 +77,9 @@ export class HomeComponent extends DappBaseComponent {
     this.pcrMemberships = [];
     const  users = this.graphqlService.queryUser(this.dapp.signerAddress!).pipe(takeUntil(this.destroyHooks)).subscribe((val=> {
       console.log(val)
-      const user = val.data.user;
-      if (!!user) {
-
+     
+      if (!!val && !!val.data && !!val.data.user) {
+        const user = val.data.user;
         const localTokens = user.rewardsCreated;
         if (localTokens !== undefined) {
           localTokens.forEach((each: any) => {

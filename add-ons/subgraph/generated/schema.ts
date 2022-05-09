@@ -667,9 +667,7 @@ export class Proposal extends Entity {
 
     this.set("proposer", Value.fromString(""));
     this.set("startQualifying", Value.fromBigInt(BigInt.zero()));
-    this.set("startProposePeriod", Value.fromBigInt(BigInt.zero()));
     this.set("startLivenessPeriod", Value.fromBigInt(BigInt.zero()));
-    this.set("startExecutionPeriod", Value.fromBigInt(BigInt.zero()));
     this.set("reward", Value.fromString(""));
   }
 
@@ -717,15 +715,6 @@ export class Proposal extends Entity {
     this.set("startQualifying", Value.fromBigInt(value));
   }
 
-  get startProposePeriod(): BigInt {
-    let value = this.get("startProposePeriod");
-    return value!.toBigInt();
-  }
-
-  set startProposePeriod(value: BigInt) {
-    this.set("startProposePeriod", Value.fromBigInt(value));
-  }
-
   get startLivenessPeriod(): BigInt {
     let value = this.get("startLivenessPeriod");
     return value!.toBigInt();
@@ -733,15 +722,6 @@ export class Proposal extends Entity {
 
   set startLivenessPeriod(value: BigInt) {
     this.set("startLivenessPeriod", Value.fromBigInt(value));
-  }
-
-  get startExecutionPeriod(): BigInt {
-    let value = this.get("startExecutionPeriod");
-    return value!.toBigInt();
-  }
-
-  set startExecutionPeriod(value: BigInt) {
-    this.set("startExecutionPeriod", Value.fromBigInt(value));
   }
 
   get reward(): string {

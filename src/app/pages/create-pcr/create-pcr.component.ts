@@ -166,7 +166,8 @@ export class CreatePcrComponent extends DappBaseComponent implements OnInit {
       interval:
         this.rewardForm.controls.intervalAmountCtrl.value *
         this.rewardForm.controls.intervalCtrl.value.factor,
-      optimisticOracleLivenessTime: 36000,
+      optimisticOracleLivenessTime:  this.rewardForm.controls.livelinessCtrl.value *
+      this.rewardForm.controls.livelinessCtrl.value.factor,
       customAncillaryData,
       priceIdentifier,
     };

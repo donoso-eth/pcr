@@ -12,7 +12,11 @@ export class ProposalDetailComponent implements OnChanges {
   stepItems: { label: string }[];
   activeStep = 0;
   display_step!: REWARD_STEP;
-  
+  startProposePeriod:any;
+  startLivenessPeriod!: string;
+  startExecutionPeriod!: string;
+
+
   constructor() { 
     this.stepItems = [
       {label: 'Qualifying'},
@@ -25,6 +29,17 @@ export class ProposalDetailComponent implements OnChanges {
      this.display_step = calculateStep(+this.proposal.step,this.proposal.earliestNextAction)
       console.log(this.proposal)
     
+    if (this.display_step == 0) {
+      this.startProposePeriod = new Date (this.proposal.earliestNextAction * 1000).toLocaleString();
+    } else {
+      this.startProposePeriod = new Date ((+this.proposal.startQualifying + +this.proposal.interval ) * 1000).toLocaleString();
+
+  
+      this.startLivenessPeriod = new Date( + this.proposal.startLivenessPeriod! * 1000).toLocaleString();
+      this.startExecutionPeriod = new Date( (+this.proposal.startLivenessPeriod + +this.proposal.optimisticOracleLivenessTime)*1000).toLocaleString()
+    }
+
+
 
 
     this.activeStep = this.display_step;

@@ -149,7 +149,7 @@ export class DetailsPcrComponent extends DappBaseComponent {
   }
 
   transformRewardObject(reward: IPCR_REWARD) {
-    reward.displayCustomAncillaryData = utils.toUtf8String(reward.customAncillaryData);
+    reward.displayCustomAncillaryData = (utils.toUtf8String(reward.customAncillaryData)).replace(`q: title: `,'').replace(', p1: 0, p2: 1, p3: 0.5. Where p2 corresponds to YES, p1 to a NO, p3 to unknown','');
     console.log(new Date(+reward.earliestNextAction * 1000).toLocaleString());
     // reward.status = true;
     // reward.step = 0);

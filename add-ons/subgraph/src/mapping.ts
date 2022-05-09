@@ -16,9 +16,8 @@ import { store } from '@graphprotocol/graph-ts'
 function createNewProposal(id: string, reward: Reward): void {
   let proposal = new Proposal(id);
   proposal.startQualifying = reward.earliestNextAction.minus(reward.interval);
-  proposal.startProposePeriod = new BigInt(0);
-  proposal.startLivenessPeriod = new BigInt(0);
-  proposal.startExecutionPeriod = new BigInt(0);
+
+  proposal.startLivenessPeriod = BigInt.fromI32(0);
   proposal.reward = reward.id;
   proposal.status = 'Pending';
   proposal.save();
@@ -53,9 +52,9 @@ export function handleRewardCreated(event: RewardCreated): void {
     reward.rewardAmount = event.params.reward.optimisticOracleInput.rewardAmount;
     reward.token = event.params.reward.token;
 
-    reward.currentdeposit = new BigInt(0);
-    reward.rewardStatus = new BigInt(0);
-    reward.rewardStep = new BigInt(0);
+    reward.currentdeposit = BigInt.fromI32(0);
+    reward.rewardStatus = BigInt.fromI32(0);
+    reward.rewardStep = BigInt.fromI32(0);
     reward.earliestNextAction = event.params.reward.earliestNextAction;
 
     reward.interval = event.params.reward.optimisticOracleInput.interval;
@@ -66,9 +65,9 @@ export function handleRewardCreated(event: RewardCreated): void {
     reward.priceIdentifier = event.params.reward.optimisticOracleInput.priceIdentifier;
     reward.customAncillaryData = event.params.reward.optimisticOracleInput.customAncillaryData;
 
-    reward.unitsIssued = new BigInt(0);
-    reward.totalDistributed = new BigInt(0);
-    reward.currentIndex = new BigInt(0);
+    reward.unitsIssued = BigInt.fromI32(0);
+    reward.totalDistributed = BigInt.fromI32(0);
+    reward.currentIndex = BigInt.fromI32(0);
     reward.currentProposal = '1';
 
     let propossalId = '1';
@@ -112,7 +111,7 @@ export function handleProposalCreated(event: ProposalCreated): void {
       proposal.save();
     }
 
-    reward.rewardStep = new BigInt(2);
+    reward.rewardStep = BigInt.fromI32(2);
     reward.earliestNextAction = event.block.timestamp.plus(reward.optimisticOracleLivenessTime);
     reward.save();
   }
@@ -126,7 +125,7 @@ export function handleProposalRejected(event: ProposalRejected): void {
   let newProposalId = event.params.newProposalId.toString();
 
   if (reward !== null) {
-    reward.rewardStep = new BigInt(0);
+    reward.rewardStep = BigInt.fromI32(0);
     reward.earliestNextAction = event.block.timestamp.plus(reward.optimisticOracleLivenessTime);
     reward.currentProposal = newProposalId;
     reward.save();
@@ -155,8 +154,8 @@ export function handleProposalAcceptedAndDistribuition(event: ProposalAcceptedAn
   if (reward !== null) {
     reward.totalDistributed = reward.totalDistributed.plus(reward.rewardAmount);
     reward.currentdeposit = reward.currentdeposit.minus(reward.rewardAmount);
-    reward.rewardStatus = new BigInt(0);
-    reward.rewardStep = new BigInt(0);
+    reward.rewardStatus = BigInt.fromI32(0);
+    reward.rewardStep = BigInt.fromI32(0);
     reward.earliestNextAction = event.block.timestamp.plus(reward.optimisticOracleLivenessTime);
     reward.currentProposal = newProposalId;
     reward.save();
@@ -244,7 +243,7 @@ export function handleRewardUnitsDeleted(event: RewardUnitsDeleted): void {
   let subscription = UserMembership.load(subscriptionId);
   if (subscription !== null) {
     subscription.units = subscription.units.minus(event.params.amount);
-    if (subscription.units.gt( new BigInt(0))) {
+    if (subscription.units.gt( BigInt.fromI32(0))) {
       subscription.save();
     } else {
       store.remove('UserMembership',subscriptionId )

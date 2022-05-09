@@ -24,6 +24,8 @@ export const prepareDisplayProposal = (reward:IPCR_REWARD):IPROPOSAL => {
         ...reward.currentProposal, 
         ...{
             earliestNextAction:reward.earliestNextAction,
+            interval:+reward.interval,
+            optimisticOracleLivenessTime: + reward.optimisticOracleLivenessTime,
             title:reward.title, 
             step:reward.rewardStep, 
             rewardId:reward.id 

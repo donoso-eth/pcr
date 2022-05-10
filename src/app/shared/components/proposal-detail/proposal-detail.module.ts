@@ -4,6 +4,7 @@ import { ProposalDetailComponent } from './proposal-detail/proposal-detail.compo
 import { StepsModule } from 'primeng/steps';
 import { ButtonModule } from 'primeng/button';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -14,7 +15,9 @@ import { InputNumberModule } from 'primeng/inputnumber';
     CommonModule,
     StepsModule,
     ButtonModule,
-    InputNumberModule
+    InputNumberModule,
+    FormsModule,
+    ReactiveFormsModule
   ],
   exports: [
     ProposalDetailComponent

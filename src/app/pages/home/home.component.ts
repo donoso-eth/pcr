@@ -95,7 +95,8 @@ export class HomeComponent extends DappBaseComponent {
         }
 
 
-        const localSubscriptions = user.rewardsSubscriptions;
+        const localSubscriptions = user.rewardsMembership;
+        console.log(localSubscriptions)
         if (localSubscriptions !== undefined) {
           localSubscriptions.forEach((each: any) => {
             const availableSubscriptionIndex = this.pcrMemberships.map((fil) => fil.id).indexOf(each.id);

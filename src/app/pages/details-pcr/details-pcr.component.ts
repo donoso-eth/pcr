@@ -37,6 +37,8 @@ export class DetailsPcrComponent extends DappBaseComponent {
 
   //// FormControls
   toFundAmountCtrl = new FormControl(0, Validators.required);
+  toUpgradeAmountCtrl = new FormControl(0, Validators.required);
+  toDowngradeAmountCtrl = new FormControl(0, Validators.required);
   adressesCtrl = new FormControl('', [Validators.required, Validators.minLength(32), Validators.maxLength(32)]);
   routeItems: { label: string }[];
   activeStep = 0;
@@ -109,9 +111,27 @@ export class DetailsPcrComponent extends DappBaseComponent {
 
     this.toUpdateReward!.fundToken.superTokenBalance = balanceSupertoken[0].toString();
 
+    const rewardToken = this._createERC20Instance(this.toUpdateReward!.fundToken.rewardToken);
+    const balanceRewardToken = await rewardToken.balanceOf(this.dapp.signerAddress);
+
+    this.toUpdateReward!.fundToken.rewardTokenBalance = balanceRewardToken;
+
     this.store.dispatch(Web3Actions.chainBusy({ status: false }));
     this.showFundingState = true;
   }
+
+  async doUpgrade(){
+    if (this.toDowngradeAmountCtrl.value <= 0) {
+      alert('please add Aount to Upgrade');
+    }
+  }
+
+  async doDowngrade(){
+    if (this.toUpgradeAmountCtrl.value <= 0) {
+      alert('please add Aount to Upgrade');
+    }
+  }
+
 
   async doFunding() {
     if (this.toFundAmountCtrl.value <= 0) {
@@ -145,8 +165,59 @@ export class DetailsPcrComponent extends DappBaseComponent {
 
   async proposeValue(value:number) {
     this.store.dispatch(Web3Actions.chainBusy({ status: true }));
-    await doSignerTransaction(this.dapp.DAPP_STATE.contracts[+this.toUpdateReward!.id]?.pcrOptimisticOracle.instance.proposeDistribution(value)!);
+
+    const answer = utils.parseEther(value.toString())
+
+    await doSignerTransaction(this.dapp.DAPP_STATE.contracts[+this.toUpdateReward!.id]?.pcrOptimisticOracle.instance.proposeDistribution(answer)!);
   }
+
+async executeProposal(){
+    /// TO dO CHAEK IF CURRENT DEPOSIT and ISSUER MEMBERs
+  if (+this.toUpdateReward!.rewardAmount > +this.toUpdateReward!.currentdeposit) {
+    alert("Please Fund The Deposit")
+    return;
+  }
+
+  if (+this.toUpdateReward!.unitsIssued <= 0) {
+    alert("No members yet")
+    return;
+  }
+  this.store.dispatch(Web3Actions.chainBusy({ status: true }));
+
+  
+
+  this.dapp.DAPP_STATE.contracts[+this.toUpdateReward!.id]?.pcrOptimisticOracle.instance.on("ProposalRejected", (pcrId, proposalId, newProposalId) => {
+    console.log(pcrId.toString(),proposalId.toString(),"NOOP")
+    if (proposalId.toString() == this.currentProposal.id && pcrId.toString() == this.currentProposal.rewardId) {
+      console.log(pcrId,proposalId,"NOOP")
+      this.store.dispatch(Web3Actions.chainBusy({ status: false }));
+    }
+
+   
+  })
+
+  this.dapp.DAPP_STATE.contracts[+this.toUpdateReward!.id]?.pcrOptimisticOracle.instance.on("ProposalAcceptedAndDistribuition", (pcrId, proposalId, newProposalId) => {
+
+    if (proposalId.toString() == this.currentProposal.id && pcrId.toString() == this.currentProposal.rewardId) {
+      console.log(pcrId.toString(),proposalId.toString(),"YES")
+      this.store.dispatch(Web3Actions.chainBusy({ status: false }));
+    }
+    this.store.dispatch(Web3Actions.chainBusy({ status: false }));
+  })
+
+
+  try {
+    const tx = await doSignerTransaction(this.dapp.DAPP_STATE.contracts[+this.toUpdateReward!.id]?.pcrOptimisticOracle.instance.executeDistribution());
+
+  } catch (error) {
+    console.log(error)
+    this.store.dispatch(Web3Actions.chainBusy({ status: false }));
+  }
+
+ 
+
+}
+
 
   transformRewardObject(reward: IPCR_REWARD) {
     reward.displayCustomAncillaryData = (utils.toUtf8String(reward.customAncillaryData)).replace(`q: title: `,'').replace(', p1: 0, p2: 1, p3: 0.5. Where p2 corresponds to YES, p1 to a NO, p3 to unknown','');

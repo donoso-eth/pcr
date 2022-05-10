@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { FormControl, Validators } from '@angular/forms';
 import { calculateStep } from 'src/app/shared/helpers/helpers';
 import { IPROPOSAL, REWARD_STEP } from 'src/app/shared/models/pcr';
 
@@ -15,7 +16,9 @@ export class ProposalDetailComponent implements OnChanges {
   startProposePeriod:any;
   startLivenessPeriod!: string;
   startExecutionPeriod!: string;
+  priceProposed!: string;
 
+  toProposeKpiAmountCtrl = new FormControl(0,Validators.required);
 
   constructor() { 
     this.stepItems = [
@@ -25,17 +28,33 @@ export class ProposalDetailComponent implements OnChanges {
       {label: 'Execution Period'},
   ];
   }
+
+  @Input()  public proposal!: IPROPOSAL;
+  @Output() private proposeValue = new EventEmitter<number>();
+  @Output() private executeProposal = new EventEmitter();
+
   ngOnChanges(changes: SimpleChanges): void {
      this.display_step = calculateStep(+this.proposal.step,this.proposal.earliestNextAction)
       console.log(this.proposal)
     
+
     if (this.display_step == 0) {
       this.startProposePeriod = new Date (this.proposal.earliestNextAction * 1000).toLocaleString();
     } else {
+      //// DISPLAY PROPOSAL VALUES
       this.startProposePeriod = new Date ((+this.proposal.startQualifying + +this.proposal.interval ) * 1000).toLocaleString();
+      
+      if (this.proposal.priceType == 0){
+        this.priceProposed = this.proposal.priceProposed == 1 ? "Yes" :"No";
+      } else {
+        this.priceProposed = this.proposal.priceProposed.toString();
+      }
+      
 
-  
+
       this.startLivenessPeriod = new Date( + this.proposal.startLivenessPeriod! * 1000).toLocaleString();
+
+
       this.startExecutionPeriod = new Date( (+this.proposal.startLivenessPeriod + +this.proposal.optimisticOracleLivenessTime)*1000).toLocaleString()
     }
 
@@ -48,17 +67,18 @@ export class ProposalDetailComponent implements OnChanges {
 
   }
 
-  @Input()  public proposal!: IPROPOSAL;
+  doProposeValue() {
 
-  @Output() private proposeValue = new EventEmitter<number>();
-  @Output() private executeProposal = new EventEmitter();
+    const value = this.toProposeKpiAmountCtrl.value;
+    this.proposeValue.emit(value)
+  }
 
-  doProseValue(value:number){
+  doProposeAnswer(value:number){
     this.proposeValue.emit(value)
   }
 
   doExecuteProposal(){
-
+    this.executeProposal.emit()
   }
 
 

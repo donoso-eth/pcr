@@ -109,6 +109,7 @@ export function handleProposalCreated(event: ProposalCreated): void {
 
     if (proposal !== null) {
       proposal.proposer = proposerId;
+      proposal.priceProposed = event.params.priceProposed;
       proposal.startLivenessPeriod = event.block.timestamp;
       proposal.status = 'Pending';
       proposal.save();

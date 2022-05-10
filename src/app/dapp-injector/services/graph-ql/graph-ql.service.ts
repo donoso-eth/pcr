@@ -98,6 +98,7 @@ query($id: String!)
       optimisticOracleImpl
       earliestNextAction
       interval
+      priceType
       optimisticOracleLivenessTime
       rewardStep
       rewardStatus
@@ -109,6 +110,7 @@ query($id: String!)
         startQualifying
         startLivenessPeriod
         status
+        priceProposed
       }
     }
   }

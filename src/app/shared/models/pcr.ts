@@ -24,6 +24,7 @@ export interface IPCR_REWARD {
   url: string | null;
   token: string;
   
+  priceType: number;
 
   totalDistributed: string;
   currentIndex: string;
@@ -33,6 +34,7 @@ export interface IPCR_REWARD {
   currentProposal: {
     id:string;
     startQualifying: number
+    priceProposed:number,
     startProposePeriod: number
     startLivenessPeriod: number
     startExecutionPeriod: number
@@ -44,7 +46,8 @@ export interface IPCR_REWARD {
     name: string; 
     id: number; 
     image: string; 
-    rewardToken: string; 
+    rewardToken: string;
+    rewardTokenBalance?:string; 
     superToken: string;
     superTokenBalance?:string };
   
@@ -62,6 +65,8 @@ export interface IPROPOSAL {
   startLivenessPeriod: number
   startExecutionPeriod: number
   earliestNextAction: number
+  priceType:number
+  priceProposed:number,
   interval:number;
   optimisticOracleLivenessTime:number;
   title:string,

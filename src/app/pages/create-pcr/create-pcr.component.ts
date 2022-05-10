@@ -106,15 +106,15 @@ export class CreatePcrComponent extends DappBaseComponent implements OnInit {
       ],
       tokenAmountCtrl: [10, [Validators.required, Validators.min(1)]],
       intervalCtrl: [
-        { name: 'hours', id: 1, factor: 3600 },
+        { name: 'minutes', id: 0, factor: 60 },
         [Validators.required],
       ],
-      intervalAmountCtrl: [1, [Validators.required, Validators.min(1)]],
+      intervalAmountCtrl: [10, [Validators.required, Validators.min(1)]],
       livelinessCtrl: [
-        { name: 'hours', id: 1, factor: 3600 },
+        { name: 'minutes', id: 0, factor: 60 },
         [Validators.required],
       ],
-      livelinessAmountCtrl: [1, [Validators.required, Validators.min(1)]],
+      livelinessAmountCtrl: [10, [Validators.required, Validators.min(1)]],
     });
   }
 
@@ -147,13 +147,14 @@ export class CreatePcrComponent extends DappBaseComponent implements OnInit {
     const priceIdentifier = utils.formatBytes32String('YES_OR_NO_QUERY');
 
     let condition = this.rewardForm.controls.conditionTypeCtrl.value.id
-
+    let priceType= 0;
     let target;
     if (this.rewardForm.controls.rewardTypeCtrl.value.id == 0) {
-        target = utils.parseEther("1");
+        target = utils.parseEther("1")
         condition = 2;
     } else {
       target = utils.parseEther(this.rewardForm.controls.targetAmountCtrl.value.toString())
+      priceType = 1;
     }
 
    
@@ -162,11 +163,12 @@ export class CreatePcrComponent extends DappBaseComponent implements OnInit {
       finder: global_address.kovan.finder,
       rewardAmount: this.rewardForm.controls.tokenAmountCtrl.value,
       target: target,
+      priceType,
       targetCondition: condition,
       interval:
         this.rewardForm.controls.intervalAmountCtrl.value *
         this.rewardForm.controls.intervalCtrl.value.factor,
-      optimisticOracleLivenessTime:  this.rewardForm.controls.livelinessCtrl.value *
+      optimisticOracleLivenessTime:  this.rewardForm.controls.livelinessAmountCtrl.value *
       this.rewardForm.controls.livelinessCtrl.value.factor,
       customAncillaryData,
       priceIdentifier,
@@ -178,6 +180,7 @@ export class CreatePcrComponent extends DappBaseComponent implements OnInit {
       rewardToken: this.rewardForm.controls.tokenCtrl.value.superToken,
     };
 
+    console.log(OptimisticOracle)
  
 
     this.store.dispatch(Web3Actions.chainBusy({ status: true }));

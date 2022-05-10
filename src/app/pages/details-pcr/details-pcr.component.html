@@ -19,7 +19,7 @@
                           <p-steps class="col-12" [model]="routeItems" (activeIndexChange)="activeStep = 0"
                             [(activeIndex)]="activeStep" styleClass="mt-5" [readonly]="false"></p-steps>
                         </div> -->
-            <proposal-detail (proposeValue)="proposeValue($event)" style="width: 100%" *ngIf="currentProposal !== undefined" [proposal]="currentProposal"></proposal-detail>
+            <proposal-detail (proposeValue)="proposeValue($event)"  (executeProposal)="executeProposal()" style="width: 100%" *ngIf="currentProposal !== undefined" [proposal]="currentProposal"></proposal-detail>
           </div>
 
           <!-- ////// blocks -->
@@ -27,7 +27,7 @@
           <div style="margin-top: 20px" class="grid">
             <div class="col-12 lg:col-6 xl:col-6">
               <div style="background-color: var(--surface-ground)" class="card mb-0">
-                <div class="grid p-fluid">
+                <div class="grid p-fluid justify-content-center">
                   <div class="col-12 flex align-items-center">
                     <div
                       [style.background]="+toUpdateReward!.unitsIssued > 0 ? 'var(--green-500)' : 'var(--orange-500)'"
@@ -45,7 +45,7 @@
                     </div>
                   </div>
 
-                  <!-- #endtrgion ISSUERS  ////  -->
+                  <!-- #endregion ISSUERS  ////  -->
 
                   <!-- #region INDEX ////  -->
                   <div class="col-4 text-center">
@@ -56,7 +56,7 @@
                       </div>
                     </div>
                   </div>
-                  <!-- #endtrgion INDEX////  -->
+                  <!-- #endregion INDEX////  -->
 
                   <!-- #region TOTAL  ////  -->
                   <div class="col-4 text-center">
@@ -67,42 +67,58 @@
                       </div>
                     </div>
                   </div>
-                  <!-- #endtrgion INDEX////  -->
+                  <!-- #endregion INDEX////  -->
                   <button
                     pButton
                     pRipple
                     style="position: relative; width: fit-content"
                     (click)="showAddMembers(toUpdateReward!)"
                     type="button"
-                    label="Add"
+                    label="Add Member"
                     class="p-button-rounded mr-2 mb-2"
                   ></button>
                 </div>
               </div>
             </div>
             <div class="col-12 lg:col-6 xl:col-6">
-              <div style="background-color: var(--surface-ground); position: relative" class="card mb-0">
-                <div class="flex justify-content-between mb-3">
-                  <div>
-                    <div class="flex mb-3 align-items-center">
-                      <div
-                        [style.background]="+toUpdateReward!.rewardAmount <= +toUpdateReward!.currentdeposit ? 'var(--green-500)' : 'var(--orange-500)'"
-                        style="width: 25px; height: 25px; border-radius: 13px; background: lightgreen"
-                      ></div>
-                      <span class="block text-500 font-medium ml-2"> Deposit</span>
-                    </div>
-                    <div [class]="+toUpdateReward!.rewardAmount <= +toUpdateReward!.currentdeposit ? 'text-green-500' : 'text-orange-500'" class="text-900 font-medium text-xl">
-                      ${{ toUpdateReward!.currentdeposit }}
+              <div style="background-color: var(--surface-ground)" class="card mb-0">
+                <div class="grid p-fluid justify-content-center">
+                  <div style="position:relative;" class="col-12 flex align-items-center">
+                    <div
+                    [style.background]="+toUpdateReward!.rewardAmount <= +toUpdateReward!.currentdeposit ? 'var(--green-500)' : 'var(--orange-500)'"
+                      style="width: 25px; height: 25px; border-radius: 13px; background: lightgreen"
+                    ></div>
+                    <span class="block text-500 font-medium ml-2"> Deposit</span>
+                    <img src="assets/images/tokens/{{ toUpdateReward!?.fundToken?.image }}_icon.svg" style="position: absolute; width: 40px;right: 20px;" />
+            
+                  </div>
+                  <!-- #region CURRENT DEPOSIT ////  -->
+                  <div class="col-6 text-center">
+                    <div class="flex justify-content-between flex-column mb-3">
+                      <div class="text-900 font-medium text-xl">
+                        Current<br />
+                        <span [class]="+toUpdateReward!.rewardAmount <= +toUpdateReward!.currentdeposit ? 'text-green-500' : 'text-orange-500'" >  ${{ toUpdateReward!.currentdeposit }}</span>
+                      </div>
                     </div>
                   </div>
-                  <div class="flex align-items-center justify-content-center" [ngStyle]="{ width: '2.5rem', height: '2.5rem' }">
-                    <img src="assets/images/tokens/{{ toUpdateReward!?.fundToken?.image }}_icon.svg" style="margin-right: 5px" />
+
+                  <!-- #endregion CURRENT DEPOSIT ////  -->
+
+                  <!-- #region REQUIRED DEPOSIT ////  -->
+                  <div class="col-6 text-center">
+                    <div class="flex justify-content-between flex-column mb-3">
+                      <div class="text-900 font-medium text-xl">
+                        Required<br />
+                        <span> ${{ toUpdateReward!.rewardAmount }}</span>
+                      </div>
+                    </div>
                   </div>
+                  <!-- #endregion REQUIRED DEPOSIT ////  -->
+
+       
+                  <button pButton pRipple style="width: fit-content" (click)="showFunding(toUpdateReward!)" type="button" label="Fund" class="p-button-rounded mr-2 mb-2"></button>
+        
                 </div>
-                <span class="font-medium">{{ toUpdateReward!.rewardAmount }} </span>
-                <span class="text-500">Required Amount, please fund the Reward </span>
-                <br />
-                <button pButton pRipple style="width: fit-content" (click)="showFunding(toUpdateReward!)" type="button" label="Fund" class="p-button-rounded mr-2 mb-2"></button>
               </div>
             </div>
           </div>
@@ -140,29 +156,41 @@
 <p-dialog header="Let's Add People!" [(visible)]="showIssuingState" [modal]="true" showEffect="fade" [style]="{ width: '40vw' }" [breakpoints]="{ '960px': '75vw' }">
   <p class="line-height-3 m-0">
     Please add the addresess <span style="color: green">"{{ toUpdateReward?.title }}"</span> <br />
-    It requires the {{ toUpdateReward?.fundToken?.name }} superToken, your current balance is: {{ toUpdateReward!?.fundToken?.superTokenBalance! }}. You may wamt to:
+    <!-- It requires the {{ toUpdateReward?.fundToken?.name }} superToken, your current balance is: {{ toUpdateReward!?.fundToken?.superTokenBalance!}}. You may wamt to: -->
   </p>
   <h6>Members</h6>
   <p class="flex justify-content-between">
-    <input [formControl]="adressesCtrl" pInputText type="text" placeholder="toUpdateReward! Name" />
+    <input [formControl]="adressesCtrl" pInputText type="text" placeholder="Member to Add" />
     <button pButton icon="pi pi-check" label="Fund" (click)="doAddMember(toUpdateReward!)" class="p-button-outlined"></button>
   </p>
-  <ng-template pTemplate="footer">
+  <!-- <ng-template pTemplate="footer">
     <button pButton icon="pi pi-check" label="Fund" class="p-button-outlined"></button>
-  </ng-template>
+  </ng-template> -->
 </p-dialog>
 
 <p-dialog header="Let's fund!" [(visible)]="showFundingState" [modal]="true" showEffect="fade" [style]="{ width: '40vw' }" [breakpoints]="{ '960px': '75vw' }">
   <p class="line-height-3 m-0">
-    You are about to fund the PCR Token <span style="color: green">"{{ toUpdateReward!?.title }}"</span> <br />
-    It requires the {{ toUpdateReward!?.fundToken?.name }} superToken, your current balance is: {{ toUpdateReward!?.fundToken?.superTokenBalance! }}. You may wamt to:
+    You are about to fund the PCR Token <span style="color: green">"{{ toUpdateReward!?.title }}"</span> Your current balalnce is {{toUpdateReward!?.fundToken?.rewardTokenBalance!}} DAIx   <br />
+    It requires the {{ toUpdateReward!?.fundToken?.name }} superToken, your current balance is: {{toUpdateReward!?.fundToken?.superTokenBalance!}} DAIx . You may want to:
   </p>
   <h6>Fund The PCR Token</h6>
   <p class="flex justify-content-between" *ngIf="+toUpdateReward!?.fundToken?.superTokenBalance! > +toUpdateReward!?.rewardAmount!">
     <p-inputNumber [formControl]="toFundAmountCtrl" placeholder="Amount" mode="decimal" [showButtons]="true" [min]="0"> </p-inputNumber>
     <button pButton icon="pi pi-check" label="Fund" (click)="doFunding()" class="p-button-outlined"></button>
   </p>
+  <h6>Upgrade from DAI to DAIX</h6>
+  <p class="flex justify-content-between" *ngIf="+toUpdateReward!?.fundToken?.superTokenBalance! > +toUpdateReward!?.rewardAmount!">
+    Converting to supertoken
+    <p-inputNumber [formControl]="toUpgradeAmountCtrl" placeholder="Amount" mode="decimal" [showButtons]="true" [min]="0"> </p-inputNumber>
+    <button pButton icon="pi pi-check" label="Fund" (click)="doUpgrade()" class="p-button-outlined"></button>
+  </p>
+  <h6>Downgrade from DAIx to DAIx</h6>
+  <p class="flex justify-content-between" *ngIf="+toUpdateReward!?.fundToken?.superTokenBalance! > +toUpdateReward!?.rewardAmount!">
+    Converting to supertoken
+    <p-inputNumber [formControl]="toUpgradeAmountCtrl" placeholder="Amount" mode="decimal" [showButtons]="true" [min]="0"> </p-inputNumber>
+    <button pButton icon="pi pi-check" label="Fund" (click)="doDowngrade()" class="p-button-outlined"></button>
+  </p>
   <ng-template pTemplate="footer">
-    <button pButton icon="pi pi-check" label="Fund" class="p-button-outlined"></button>
+    <!-- <button pButton icon="pi pi-check" label="Fund" class="p-button-outlined"></button> -->
   </ng-template>
 </p-dialog>

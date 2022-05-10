@@ -8,7 +8,8 @@ import { takeUntil } from 'rxjs';
 import { doSignerTransaction } from 'src/app/dapp-injector/classes/transactor';
 
 import { GraphQlService } from 'src/app/dapp-injector/services/graph-ql/graph-ql.service';
-import { IPCR_REWARD } from 'src/app/shared/models/pcr';
+import { prepareDisplayProposal } from 'src/app/shared/helpers/helpers';
+import { IPCR_REWARD, IPROPOSAL } from 'src/app/shared/models/pcr';
 
 import { abi_ERC20 } from './abis/erc20';
 import { abi_SuperToken } from './abis/superToken';
@@ -42,6 +43,7 @@ export class DetailsMembershipComponent extends DappBaseComponent {
   activeStep = 0;
   chartData: { labels: string[]; datasets: { label: string; data: number[]; fill: boolean; backgroundColor: string; borderColor: string; tension: number; }[]; };
   chartOptions:any;
+  currentProposal!: IPROPOSAL;
   constructor(private router: Router, private route:ActivatedRoute, dapp: DappInjector, store: Store, private graphqlService: GraphQlService) {
     super(dapp, store);
     this.routeItems = [
@@ -100,10 +102,33 @@ export class DetailsMembershipComponent extends DappBaseComponent {
 };
   }
 
-  changeStatus(value: boolean) {
-    console.log(value);
+  async proposeValue(value:number) {
+    this.store.dispatch(Web3Actions.chainBusy({ status: true }));
+    await doSignerTransaction(this.dapp.DAPP_STATE.contracts[+this.toUpdateMembership!.id]?.pcrOptimisticOracle.instance.proposeDistribution(value)!);
   }
 
+async executeProposal(){
+    /// TO dO CHAEK IF CURRENT DEPOSIT and ISSUER MEMBERs
+  if (+this.toUpdateMembership!.rewardAmount <= +this.toUpdateMembership!.currentdeposit) {
+    alert("Please Fund The Deposit")
+    return;
+  }
+
+  if (+this.toUpdateMembership!.unitsIssued <= 0) {
+    alert("No members yet")
+    return;
+  }
+   
+  try {
+    const tx = await doSignerTransaction(this.dapp.DAPP_STATE.contracts[+this.toUpdateMembership!.id]?.pcrOptimisticOracle.instance.executeDistribution());
+
+  } catch (error) {
+    console.log(error)
+  }
+
+ 
+
+}
   async showFunding(reward:IPCR_REWARD) {
     this.store.dispatch(Web3Actions.chainBusy({ status: true }));
     
@@ -216,6 +241,7 @@ export class DetailsMembershipComponent extends DappBaseComponent {
             } else {
               this.toUpdateMembership = { ...this.toUpdateMembership, ...membership, ...{ step: this.calculateStep(membership) } };
             }
+            this.currentProposal = prepareDisplayProposal(this.toUpdateMembership!)
         
         } else {
           this.toUpdateMembership = undefined;

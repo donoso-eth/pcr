@@ -26,6 +26,7 @@ export type OPTIMISTICORACLEINPUTStruct = {
   interval: BigNumberish;
   optimisticOracleLivenessTime: BigNumberish;
   priceIdentifier: BytesLike;
+  priceType: BigNumberish;
   customAncillaryData: BytesLike;
 };
 
@@ -37,6 +38,7 @@ export type OPTIMISTICORACLEINPUTStructOutput = [
   BigNumber,
   BigNumber,
   string,
+  number,
   string
 ] & {
   finder: string;
@@ -46,6 +48,7 @@ export type OPTIMISTICORACLEINPUTStructOutput = [
   interval: BigNumber;
   optimisticOracleLivenessTime: BigNumber;
   priceIdentifier: string;
+  priceType: number;
   customAncillaryData: string;
 };
 
@@ -83,7 +86,7 @@ export interface PcrOptimisticOracleInterface extends utils.Interface {
     "depositReward(uint256)": FunctionFragment;
     "executeDistribution()": FunctionFragment;
     "finder()": FunctionFragment;
-    "initialize((address,uint256,address,address,(address,int256,uint8,uint256,uint256,uint256,bytes32,bytes)))": FunctionFragment;
+    "initialize((address,uint256,address,address,(address,int256,uint8,uint256,uint256,uint256,bytes32,uint8,bytes)))": FunctionFragment;
     "multicall(bytes[])": FunctionFragment;
     "optimisticOracle()": FunctionFragment;
     "pcrId()": FunctionFragment;
@@ -346,6 +349,7 @@ export interface PcrOptimisticOracle extends BaseContract {
         string,
         BigNumber,
         number,
+        number,
         string,
         BigNumber,
         BigNumber,
@@ -359,6 +363,7 @@ export interface PcrOptimisticOracle extends BaseContract {
         admin: string;
         target: BigNumber;
         targetCondition: number;
+        priceType: number;
         rewardToken: string;
         rewardAmount: BigNumber;
         interval: BigNumber;
@@ -457,6 +462,7 @@ export interface PcrOptimisticOracle extends BaseContract {
       string,
       BigNumber,
       number,
+      number,
       string,
       BigNumber,
       BigNumber,
@@ -470,6 +476,7 @@ export interface PcrOptimisticOracle extends BaseContract {
       admin: string;
       target: BigNumber;
       targetCondition: number;
+      priceType: number;
       rewardToken: string;
       rewardAmount: BigNumber;
       interval: BigNumber;
@@ -563,6 +570,7 @@ export interface PcrOptimisticOracle extends BaseContract {
         string,
         BigNumber,
         number,
+        number,
         string,
         BigNumber,
         BigNumber,
@@ -576,6 +584,7 @@ export interface PcrOptimisticOracle extends BaseContract {
         admin: string;
         target: BigNumber;
         targetCondition: number;
+        priceType: number;
         rewardToken: string;
         rewardAmount: BigNumber;
         interval: BigNumber;

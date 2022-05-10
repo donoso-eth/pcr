@@ -12,102 +12,15 @@
             <br />
             <textarea pInputTextarea placeholder="Your Message" [autoResize]="true"
               cols="30">{{ toUpdateMembership!.displayCustomAncillaryData }}</textarea>
-            <div style="margin-top: 20px" class="grid">
-              <div class="col-12 lg:col-6 xl:col-6">
-                <div style="background-color: var(--surface-ground);" class="card mb-0">
-                  <div class="grid p-fluid">
-
-                    <div class="col-12 flex align-items-center">
-                      <div [style.background]="+toUpdateMembership!.unitsIssued > 0? 'var(--green-500)':'var(--orange-500)'"
-                        style="width:25px;height:25px;border-radius: 13px;background: lightgreen;"></div> <span
-                        class="block text-500 font-medium ml-2"> Summary</span>
-                    </div>
-                    <!-- #region ISSUERS  ////  -->
-                    <div class="col-4 text-center">
-
-                      <div class="flex justify-content-between  flex-column mb-3">
-
-                        <div class="text-900 font-medium text-xl">Members <br>
-                          <span [class]="+toUpdateMembership!.unitsIssued > 0? 'text-green-500' : 'text-orange-500' ">
-                            {{toUpdateMembership!.unitsIssued}}</span>
-                        </div>
-                      </div>
-                      <button pButton pRipple style="position: relative;width:fit-content"
-                        (click)="showAddMembers(toUpdateMembership!)" type="button" label="Add"
-                        class="p-button-rounded mr-2 mb-2"></button>
-
-
-                    </div>
-
-                    <!-- #endtrgion ISSUERS  ////  -->
-
-                    <!-- #region INDEX ////  -->
-                    <div class="col-4 text-center">
-                      <div class="flex justify-content-between  flex-column mb-3">
-
-                        <div class="text-900 font-medium text-xl">Index <br>
-                          <span>
-                            {{toUpdateMembership!.currentIndex}}$/unit</span>
-                        </div>
-                      </div>
-                    </div>
-                    <!-- #endtrgion INDEX////  -->
-
-                    <!-- #region TOTAL  ////  -->
-                    <div class="col-4 text-center">
-                      <div class="flex justify-content-between  flex-column mb-3">
-
-                        <div class="text-900 font-medium text-xl">Distributed<br>
-                          <span>
-                            {{toUpdateMembership!.totalDistributed}}</span>
-                        </div>
-                      </div>
-                    </div>
-                    <!-- #endtrgion INDEX////  -->
-
-                  </div>
-                </div>
-              </div>
-              <div class="col-12 lg:col-6 xl:col-6">
-                <div style="background-color: var(--surface-ground);position:relative" class="card mb-0">
-                  <div class="flex justify-content-between mb-3">
-                    <div>
-                      <div class="flex mb-3 align-items-center">
-                        <div
-                          [style.background]="+toUpdateMembership!.rewardAmount<= +toUpdateMembership!.currentdeposit ? 'var(--green-500)':'var(--orange-500)'"
-                          style="width:25px;height:25px;border-radius: 13px;background: lightgreen;"></div> <span
-                          class="block text-500 font-medium ml-2"> Deposit</span>
-                      </div>
-                      <div
-                        [class]="+toUpdateMembership!.rewardAmount<= +toUpdateMembership!.currentdeposit ? 'text-green-500' : 'text-orange-500' "
-                        class="text-900 font-medium text-xl">${{toUpdateMembership!.currentdeposit}}</div>
-                    </div>
-                    <div class="flex align-items-center justify-content-center"
-                      [ngStyle]="{ width: '2.5rem', height: '2.5rem' }">
-                      <img src="assets/images/tokens/{{toUpdateMembership!?.fundToken?.image}}_icon.svg"
-                        style="margin-right: 5px;" />
-
-                    </div>
-                  </div>
-                  <span class="font-medium">{{toUpdateMembership!.rewardAmount}} </span>
-                  <span class="text-500">Required toUpdateMembership! Amount, please fund the toUpdateMembership! </span>
-                  <button pButton pRipple style="position: absolute; bottom: 8px; right: 20px; width:fit-content"
-                    (click)="showFunding(toUpdateMembership!)" type="button" label="Fund"
-                    class="p-button-rounded mr-2 mb-2"></button>
-                </div>
-
-              </div>
-            </div>
-
+       
             <!-- ////// STATUS PROPOSAL -->
 
             <div style="position:relative;background-color: var(--surface-ground);"
               class="card mt-3 flex align-items-center flex-column justify-content-center">
               <h4 class="mb-1">Current Status</h4>
               <div style="width:100%;" class="grid p-fluid">
-                <p-steps class="col-12" [model]="routeItems" (activeIndexChange)="activeStep = 0"
-                  [(activeIndex)]="activeStep" styleClass="mt-5" [readonly]="false"></p-steps>
-              </div>
+                <proposal-detail (proposeValue)="proposeValue($event)"  (executeProposal)="executeProposal()" style="width: 100%" *ngIf="currentProposal !== undefined" [proposal]="currentProposal"></proposal-detail>
+    
             </div>
 
             <!-- ////// CHARTSSS  -->

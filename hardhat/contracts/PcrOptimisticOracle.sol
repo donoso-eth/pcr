@@ -208,19 +208,14 @@ contract PcrOptimisticOracle is IPcrOptimisticOracle, Initializable, MultiCaller
         _proposalId.increment();
         uint256 new_proposal_id = _proposalId.current();
         
+            reward.earliestNextAction = block.timestamp + reward.interval;
+            reward.rewardStep = DataTypes.RewardStep.Funding;
+
         if (isConditionMet == true) {
             SuperToken(rewardToken).approve(TOKEN_INDEX_PUBLISHER_ADDRESS, reward.rewardAmount);
             SuperToken(rewardToken).send(TOKEN_INDEX_PUBLISHER_ADDRESS, reward.rewardAmount, "0x");
 
             ////
-
-            reward.earliestNextAction = block.timestamp + reward.interval;
-
-            reward.rewardStep = DataTypes.RewardStep.Funding;
-
-             
-         
-
              emit Events.ProposalAcceptedAndDistribuition(proposal.pcrId, proposal.proposalId,new_proposal_id);
 
         }

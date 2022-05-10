@@ -103,6 +103,7 @@ export class HomeComponent extends DappBaseComponent {
             if (availableSubscriptionIndex == -1) {
               let membership = {... each.reward, ...{ units:each.units, id:each.id}}
               this.pcrMemberships.push(this.transformRewardObject(membership));
+              
             } else {
               let membership = {... each.reward, ...{ units:each.units, id:each.id}}
               this.pcrMemberships[availableSubscriptionIndex] = { ...this.pcrMemberships[availableSubscriptionIndex], ...membership, ...{ step: calculateStep(+membership.rewardStep, + membership.earliestNextAction) }};

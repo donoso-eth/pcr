@@ -16,6 +16,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { StepsModule } from 'primeng/steps';
 import { ChartModule } from 'primeng/chart';
 import { ProposalDetailModule } from 'src/app/shared/components/proposal-detail/proposal-detail.module';
+import { SuperFluidServiceModule } from 'src/app/dapp-injector/services/super-fluid/super-fluid-service.module';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { ProposalDetailModule } from 'src/app/shared/components/proposal-detail/
     FormsModule,
     ReactiveFormsModule,
 
+    SuperFluidServiceModule,
     ProposalDetailModule,
 
     TabViewModule,

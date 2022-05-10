@@ -8,6 +8,7 @@ import { takeUntil } from 'rxjs';
 import { doSignerTransaction } from 'src/app/dapp-injector/classes/transactor';
 
 import { GraphQlService } from 'src/app/dapp-injector/services/graph-ql/graph-ql.service';
+import { SuperFluidServiceService } from 'src/app/dapp-injector/services/super-fluid/super-fluid-service.service';
 import { prepareDisplayProposal } from 'src/app/shared/helpers/helpers';
 import { IPCR_REWARD, IPROPOSAL } from 'src/app/shared/models/pcr';
 
@@ -44,7 +45,10 @@ export class DetailsMembershipComponent extends DappBaseComponent {
   chartData: { labels: string[]; datasets: { label: string; data: number[]; fill: boolean; backgroundColor: string; borderColor: string; tension: number; }[]; };
   chartOptions:any;
   currentProposal!: IPROPOSAL;
-  constructor(private router: Router, private route:ActivatedRoute, dapp: DappInjector, store: Store, private graphqlService: GraphQlService) {
+  constructor(
+    private router: Router, 
+    private superFluidService: SuperFluidServiceService,
+    private route:ActivatedRoute, dapp: DappInjector, store: Store, private graphqlService: GraphQlService) {
     super(dapp, store);
     this.routeItems = [
       {label: 'Qualifying'},
@@ -100,6 +104,8 @@ export class DetailsMembershipComponent extends DappBaseComponent {
         }
     ]
 };
+ 
+
   }
 
   async proposeValue(value:number) {
@@ -202,6 +208,7 @@ async executeProposal(){
     return step;
   }
 
+  
   transformRewardObject(reward: IPCR_REWARD) {
     reward.displayCustomAncillaryData = utils.toUtf8String(reward.customAncillaryData);
     console.log(new Date(+reward.earliestNextAction * 1000).toLocaleString());
@@ -211,6 +218,7 @@ async executeProposal(){
     const displayReward = global_tokens.filter((fil) => fil.superToken == reward.rewardToken)[0];
     reward.fundToken = displayReward;
     reward.displayStep = this.calculateStep(reward);
+
     return reward;
   }
 
@@ -231,7 +239,7 @@ async executeProposal(){
 
         if (localmembership !== undefined) {
       
-          let membership = {... localmembership.reward, ...{ units:localmembership.units, id:localmembership.id}}
+          let membership = {... localmembership.reward, ...{ units:localmembership.units}}
 
 
             if ( this.toUpdateMembership == undefined) {
@@ -249,6 +257,8 @@ async executeProposal(){
       }
 
       await this.dapp.launchClones(this.toUpdateMembership!.tokenImpl, this.toUpdateMembership!.optimisticOracleImpl, +this.toUpdateMembership!.id)
+
+      await this.superFluidService.getSubscription(this.toUpdateMembership.fundToken.superToken)
 
       this.store.dispatch(Web3Actions.chainBusy({ status: false}));
       console.log(this.toUpdateMembership)

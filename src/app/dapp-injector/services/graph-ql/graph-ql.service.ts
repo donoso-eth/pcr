@@ -121,9 +121,9 @@ const GET_MEMBERSHIP = `
 query($id: String!)
   {
     userMembership(id:$id) {
-      id
       units
       reward {
+      id
       rewardAmount
       rewardToken
       currentdeposit
@@ -134,6 +134,8 @@ query($id: String!)
       tokenImpl
       optimisticOracleImpl
       earliestNextAction
+      priceType
+      optimisticOracleLivenessTime
       interval
       rewardStep
       rewardStatus

@@ -8,6 +8,7 @@ import {
 } from '@superfluid-finance/sdk-core';
 import Operation from '@superfluid-finance/sdk-core/dist/module/Operation';
 import { ethers, Signer, utils } from 'ethers';
+import { global_address } from '../../constants';
 import { DappInjector } from '../../dapp-injector.service';
 
 @Injectable({
@@ -16,19 +17,25 @@ import { DappInjector } from '../../dapp-injector.service';
 export class SuperFluidServiceService {
   sf!: Framework;
   flow!: ConstantFlowAgreementV1;
+  ida!:InstantDistributionAgreementV1;
   operations: Array<Operation> = [];
   constructor(private dapp: DappInjector) {}
 
   async getContracts() {}
 
   async initializeFramework() {
+
+
     this.sf = await Framework.create({
-      networkName: this.dapp.DAPP_STATE.connectedNetwork!,
+      networkName: 'local',//this.dapp.DAPP_STATE.connectedNetwork!,
       provider: this.dapp.DAPP_STATE.defaultProvider!,
+      customSubgraphQueriesEndpoint:
+      'https://api.thegraph.com/subgraphs/name/superfluid-finance/protocol-v1-kovan',
+      resolverAddress: global_address.kovan.resolver,
     });
 
     this.flow = this.sf.cfaV1;
-
+    this.ida = this.sf.idaV1;
     console.log(this.sf.settings);
     //675833120
   }
@@ -131,6 +138,9 @@ export class SuperFluidServiceService {
 
  // #endregion Money Streaming  
 
+///// ---------  ---------  Indexes ---------  ---------  ////
+// #region INDEX
+
   async createIndex() {
     try {
       let id = '';
@@ -162,6 +172,30 @@ export class SuperFluidServiceService {
       });
     } catch (error) {}
   }
+
+
+  async getSubscription(rewardToken:string){
+
+    if (this.sf == undefined){
+      await this.initializeFramework()
+    }
+
+    console.log(this.dapp.DAPP_STATE.contracts)
+
+    let subsc = await this.ida.getSubscription({
+      superToken: rewardToken,
+      indexId: '0',
+      subscriber: this.dapp.signerAddress!,
+      providerOrSigner: this.dapp.signer!,
+      publisher: this.dapp.DAPP_STATE.contracts[1].pcrToken.address,
+    });
+    console.log(subsc)
+    return subsc
+  
+
+  }
+
+// #endregion INDEX
 
   async bathcall() {
     const DAI = new ethers.Contract(

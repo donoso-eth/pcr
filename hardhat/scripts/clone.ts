@@ -82,6 +82,7 @@ return
     target: utils.parseEther("1"),
     targetCondition:0,
     rewardAmount: 50,
+    priceType:0,
     interval: 600,
     optimisticOracleLivenessTime: 36000,
     customAncillaryData,
@@ -162,7 +163,7 @@ return
     publisher: pcrAddress.tokenContract,
   });
 
-  console.log(subsc);
+
 
   await waitForTx(pcrTokenUser2.claim());
 

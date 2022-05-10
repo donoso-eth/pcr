@@ -1,55 +1,55 @@
 {
   "abi": [
     {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "pcrId",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "proposalId",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "newProposalId",
-          "type": "uint256"
-        }
-      ],
-      "name": "ProposalAcceptedAndDistribuition",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "pcrId",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "proposalId",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "newProposalId",
-          "type": "uint256"
-        }
-      ],
-      "name": "ProposalRejected",
-      "type": "event"
-    }, 
+        "anonymous": false,
+        "inputs": [
+          {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "pcrId",
+            "type": "uint256"
+          },
+          {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "proposalId",
+            "type": "uint256"
+          },
+          {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "newProposalId",
+            "type": "uint256"
+          }
+        ],
+        "name": "ProposalAcceptedAndDistribuition",
+        "type": "event"
+      },
+      {
+        "anonymous": false,
+        "inputs": [
+          {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "pcrId",
+            "type": "uint256"
+          },
+          {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "proposalId",
+            "type": "uint256"
+          },
+          {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "newProposalId",
+            "type": "uint256"
+          }
+        ],
+        "name": "ProposalRejected",
+        "type": "event"
+      },  
     { "inputs": [], "stateMutability": "nonpayable", "type": "constructor" },
     { "inputs": [], "name": "ANCILLARY_BYTES_RESERVE", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" },
     { "inputs": [], "name": "MAXIMUM_LIVENESS", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" },
@@ -189,6 +189,6 @@
     { "inputs": [], "name": "syncUmaEcosystemParams", "outputs": [], "stateMutability": "nonpayable", "type": "function" }
   ],
   "name": "PcrOptimisticOracle",
-  "address": "0x79b3f34855c3478Fa45f65344a3f5E3c7b94405c",
+  "address": "0x737b13202150ad597B72f77553B0ae30bB0C69E8",
   "network": "localhost"
 }

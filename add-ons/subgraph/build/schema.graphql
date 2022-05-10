@@ -35,7 +35,7 @@ type Reward @entity {
   currentIndex: BigInt!
   unitsIssued: BigInt!
   userMemberships:BigInt!
-  rewardIndexHistory: [RewardIndexHistory!]! @derivedFrom(field: "reward")
+
 
 
   currentProposal: Proposal
@@ -67,7 +67,7 @@ type RewardTargetHitory @entity {
 
 type RewardIndexHistory @entity {
   id: ID!
-  reward: Reward!
+  reward: String!
   index: BigInt!
   timeStamp: BigInt!
 }

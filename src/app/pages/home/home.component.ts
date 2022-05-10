@@ -73,6 +73,9 @@ export class HomeComponent extends DappBaseComponent {
 
 
   async getTokens() {
+
+    const b = await this.graphqlService.queryIndexes()
+    console.log(b);
     this.pcrTokens = [];
     this.pcrMemberships = [];
     const  users = this.graphqlService.queryUser(this.dapp.signerAddress!).pipe(takeUntil(this.destroyHooks)).subscribe((val=> {

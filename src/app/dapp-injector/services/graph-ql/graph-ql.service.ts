@@ -58,12 +58,12 @@ const userMemberships = gql`
   }
 `;
 
-const indexes = gql`
+const GET_INDEXES =`
   {
     rewardIndexHistories(first: 5) {
       index
-      reward
       timeStamp
+      reward 
     }
   }
 `;
@@ -198,9 +198,11 @@ export class GraphQlService implements OnDestroy {
 
   async queryIndexes() {
     try {
+      const variables = { where: { reward: {id:"1"}} };
       const posts = await this.apollo
         .query<any>({
-          query: indexes,
+          query: gql(GET_INDEXES),
+          variables,
         })
         .toPromise();
 

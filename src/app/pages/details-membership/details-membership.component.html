@@ -3,24 +3,33 @@
     <div style="position: relative; border-color: transparent" class="card">
       <h5>Pcr's Memberships</h5>
 
-
       <div style="margin-top: 20px" class="grid p-fluid">
-        <div *ngIf="toUpdateMembership!== undefined" class="col-12">
-      
-    
-            <h6>{{ toUpdateMembership!.title }}</h6>
-            <br />
-            <textarea pInputTextarea placeholder="Your Message" [autoResize]="true"
-              cols="30">{{ toUpdateMembership!.displayCustomAncillaryData }}</textarea>
-       
-            <!-- ////// STATUS PROPOSAL -->
+        <div *ngIf="toUpdateMembership !== undefined" class="col-12">
+          <h6>{{ toUpdateMembership!.title }}</h6>
+          <br />
+          <textarea pInputTextarea placeholder="Your Message" [autoResize]="true" cols="30">{{ toUpdateMembership!.displayCustomAncillaryData }}</textarea>
 
-            <div style="position:relative;background-color: var(--surface-ground);"
-              class="card mt-3 flex align-items-center flex-column justify-content-center">
-              <h4 class="mb-1">Current Status</h4>
-              <div style="width:100%;" class="grid p-fluid">
-                <proposal-detail (proposeValue)="proposeValue($event)"  (executeProposal)="executeProposal()" style="width: 100%" *ngIf="currentProposal !== undefined" [proposal]="currentProposal"></proposal-detail>
-    
+          <div style="position: relative; background-color: var(--surface-ground)" class="card mt-3 flex align-items-center flex-column justify-content-center">
+            <h4 class="mb-1">Membership</h4>
+
+            <p-progressSpinner></p-progressSpinner>
+            <div>
+              
+            </div>
+          </div>
+
+          <!-- ////// STATUS PROPOSAL -->
+
+          <div style="position: relative; background-color: var(--surface-ground)" class="card mt-3 flex align-items-center flex-column justify-content-center">
+            <h4 class="mb-1">Current Status</h4>
+            <div style="width: 100%" class="grid p-fluid">
+              <proposal-detail
+                (proposeValue)="proposeValue($event)"
+                (executeProposal)="executeProposal()"
+                style="width: 100%"
+                *ngIf="currentProposal !== undefined"
+                [proposal]="currentProposal"
+              ></proposal-detail>
             </div>
 
             <!-- ////// CHARTSSS  -->
@@ -37,66 +46,49 @@
                   <p-chart type="line" [data]="chartData" [options]="chartOptions"></p-chart>
                 </div>
               </div>
-
             </div>
 
-       
-          <div *ngIf="toUpdateMembership! == undefined" class="card">
-            <div class="grid flex flex-column align-items-center">
-              <div class="flex justify-content-center align-items-center bg-pink-500 border-circle"
-                style="height: 3.2rem; width: 3.2rem">
-                <i class="pi pi-fw pi-exclamation-circle text-2xl text-white"></i>
-
+            <div *ngIf="toUpdateMembership! == undefined" class="card">
+              <div class="grid flex flex-column align-items-center">
+                <div class="flex justify-content-center align-items-center bg-pink-500 border-circle" style="height: 3.2rem; width: 3.2rem">
+                  <i class="pi pi-fw pi-exclamation-circle text-2xl text-white"></i>
+                </div>
+                <h1 class="text-900 font-bold text-5xl mb-2">Nothing Found</h1>
+                <span class="text-600">Please create a new Perpetual Conditional toUpdateMembership!</span>
               </div>
-              <h1 class="text-900 font-bold text-5xl mb-2">Nothing Found</h1>
-              <span class="text-600">Please create a new Perpetual Conditional toUpdateMembership!</span>
             </div>
-
           </div>
-
         </div>
       </div>
     </div>
-
   </div>
+  <p-dialog header="Let's Add People!" [(visible)]="showIssuingState" [modal]="true" showEffect="fade" [style]="{ width: '40vw' }" [breakpoints]="{ '960px': '75vw' }">
+    <p class="line-height-3 m-0">
+      Please add the addresess <span style="color: green">"{{ toUpdateMembership?.title }}"</span> <br />
+      It requires the {{ toUpdateMembership?.fundToken?.name }} superToken, your current balance is: {{ toUpdateMembership!?.fundToken?.superTokenBalance! }}. You may wamt to:
+    </p>
+    <h6>Members</h6>
+    <p class="flex justify-content-between">
+      <input [formControl]="adressesCtrl" pInputText type="text" placeholder="toUpdateMembership! Name" />
+      <button pButton icon="pi pi-check" label="Fund" (click)="doAddMember(toUpdateMembership!)" class="p-button-outlined"></button>
+    </p>
+    <ng-template pTemplate="footer">
+      <button pButton icon="pi pi-check" label="Fund" class="p-button-outlined"></button>
+    </ng-template>
+  </p-dialog>
+
+  <p-dialog header="Let's fund!" [(visible)]="showFundingState" [modal]="true" showEffect="fade" [style]="{ width: '40vw' }" [breakpoints]="{ '960px': '75vw' }">
+    <p class="line-height-3 m-0">
+      You are about to fund the PCR Token <span style="color: green">"{{ toUpdateMembership!?.title }}"</span> <br />
+      It requires the {{ toUpdateMembership!?.fundToken?.name }} superToken, your current balance is: {{ toUpdateMembership!?.fundToken?.superTokenBalance! }}. You may wamt to:
+    </p>
+    <h6>Fund The PCR Token</h6>
+    <p class="flex justify-content-between" *ngIf="+toUpdateMembership!?.fundToken?.superTokenBalance! > +toUpdateMembership!?.rewardAmount!">
+      <p-inputNumber [formControl]="toFundAmountCtrl" placeholder="Amount" mode="decimal" [showButtons]="true" [min]="0"> </p-inputNumber>
+      <button pButton icon="pi pi-check" label="Fund" (click)="doFunding()" class="p-button-outlined"></button>
+    </p>
+    <ng-template pTemplate="footer">
+      <button pButton icon="pi pi-check" label="Fund" class="p-button-outlined"></button>
+    </ng-template>
+  </p-dialog>
 </div>
-<p-dialog header="Let's Add People!" [(visible)]="showIssuingState" [modal]="true" showEffect="fade"
-  [style]="{width: '40vw'}" [breakpoints]="{'960px': '75vw'}">
-  <p class="line-height-3 m-0">
-    Please add the addresess <span style="color:green">"{{toUpdateMembership?.title}}"</span> <br>
-    It requires the {{toUpdateMembership?.fundToken?.name}} superToken, your current balance is:
-    {{toUpdateMembership!?.fundToken?.superTokenBalance!}}. You may wamt to:
-  </p>
-  <h6>Members</h6>
-  <p class="flex justify-content-between">
-    <input [formControl]="adressesCtrl" pInputText type="text" placeholder="toUpdateMembership! Name" />
-    <button pButton icon="pi pi-check" label="Fund" (click)="doAddMember(toUpdateMembership!)"
-      class="p-button-outlined"></button>
-
-  </p>
-  <ng-template pTemplate="footer">
-    <button pButton icon="pi pi-check" label="Fund" class="p-button-outlined"></button>
-  </ng-template>
-</p-dialog>
-
-
-<p-dialog header="Let's fund!" [(visible)]="showFundingState" [modal]="true" showEffect="fade" [style]="{width: '40vw'}"
-  [breakpoints]="{'960px': '75vw'}">
-  <p class="line-height-3 m-0">
-    You are about to fund the PCR Token <span style="color:green">"{{toUpdateMembership!?.title}}"</span> <br>
-    It requires the {{toUpdateMembership!?.fundToken?.name}} superToken, your current balance is:
-    {{toUpdateMembership!?.fundToken?.superTokenBalance!}}. You may wamt to:
-  </p>
-  <h6>Fund The PCR Token</h6>
-  <p class="flex justify-content-between"
-    *ngIf="+toUpdateMembership!?.fundToken?.superTokenBalance! > +toUpdateMembership!?.rewardAmount!">
-
-    <p-inputNumber [formControl]="toFundAmountCtrl" placeholder="Amount" mode="decimal" [showButtons]="true" [min]="0">
-    </p-inputNumber>
-    <button pButton icon="pi pi-check" label="Fund" (click)="doFunding()" class="p-button-outlined"></button>
-
-  </p>
-  <ng-template pTemplate="footer">
-    <button pButton icon="pi pi-check" label="Fund" class="p-button-outlined"></button>
-  </ng-template>
-</p-dialog>

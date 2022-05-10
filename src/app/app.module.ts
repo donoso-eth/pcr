@@ -28,6 +28,7 @@ import { ICONTRACT_METADATA } from 'angular-web3';
 import { LoadingComponent } from './shared/components/loading/loading.component';
 import { DropdownModule } from 'primeng/dropdown';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 export const contractMetadata = new InjectionToken<ICONTRACT_METADATA>('contractMetadata')
 
 export const contractProvider= {provide: 'contractMetadata', useValue:PcrHostMetadata };
@@ -54,8 +55,8 @@ export const contractProvider= {provide: 'contractMetadata', useValue:PcrHostMet
     StoreModule.forRoot({web3: we3ReducerFunction}),
     GraphQlModule.forRoot({uri:"http://localhost:8000/subgraphs/name/angular-web3/pcr"}),
 
-    DropdownModule
-
+    DropdownModule,
+    ProgressSpinnerModule
   ],
   providers: [ConfigService, MenuService, ProductService,contractProvider],
   bootstrap: [AppComponent]

@@ -45,6 +45,10 @@ export class DetailsMembershipComponent extends DappBaseComponent {
   chartData: { labels: string[]; datasets: { label: string; data: number[]; fill: boolean; backgroundColor: string; borderColor: string; tension: number; }[]; };
   chartOptions:any;
   currentProposal!: IPROPOSAL;
+
+
+  membershipSttatus = { approved:false, exists:false, units:0, pendindDistribution:0};
+
   constructor(
     private router: Router, 
     private superFluidService: SuperFluidServiceService,

@@ -17,6 +17,7 @@ import { StepsModule } from 'primeng/steps';
 import { ChartModule } from 'primeng/chart';
 import { ProposalDetailModule } from 'src/app/shared/components/proposal-detail/proposal-detail.module';
 import { SuperFluidServiceModule } from 'src/app/dapp-injector/services/super-fluid/super-fluid-service.module';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { SuperFluidServiceModule } from 'src/app/dapp-injector/services/super-fl
     InputSwitchModule,
     DialogModule,
     StepsModule,
-    ChartModule
+    ChartModule,
+    ProgressSpinnerModule
   ]
 })
 export class DetailsMembershipModule{ }

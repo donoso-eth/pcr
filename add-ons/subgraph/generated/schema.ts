@@ -326,15 +326,6 @@ export class Reward extends Entity {
     this.set("userMemberships", Value.fromBigInt(value));
   }
 
-  get rewardIndexHistory(): Array<string> {
-    let value = this.get("rewardIndexHistory");
-    return value!.toStringArray();
-  }
-
-  set rewardIndexHistory(value: Array<string>) {
-    this.set("rewardIndexHistory", Value.fromStringArray(value));
-  }
-
   get currentProposal(): string | null {
     let value = this.get("currentProposal");
     if (!value || value.kind == ValueKind.NULL) {
@@ -610,6 +601,7 @@ export class RewardIndexHistory extends Entity {
     this.set("id", Value.fromString(id));
 
     this.set("reward", Value.fromString(""));
+    this.set("rewardAmount", Value.fromBigInt(BigInt.zero()));
     this.set("index", Value.fromBigInt(BigInt.zero()));
     this.set("timeStamp", Value.fromBigInt(BigInt.zero()));
   }
@@ -651,6 +643,15 @@ export class RewardIndexHistory extends Entity {
     this.set("reward", Value.fromString(value));
   }
 
+  get rewardAmount(): BigInt {
+    let value = this.get("rewardAmount");
+    return value!.toBigInt();
+  }
+
+  set rewardAmount(value: BigInt) {
+    this.set("rewardAmount", Value.fromBigInt(value));
+  }
+
   get index(): BigInt {
     let value = this.get("index");
     return value!.toBigInt();
@@ -679,6 +680,7 @@ export class Proposal extends Entity {
     this.set("startQualifying", Value.fromBigInt(BigInt.zero()));
     this.set("startLivenessPeriod", Value.fromBigInt(BigInt.zero()));
     this.set("priceProposed", Value.fromBigInt(BigInt.zero()));
+    this.set("priceResolved", Value.fromBigInt(BigInt.zero()));
     this.set("reward", Value.fromString(""));
   }
 
@@ -742,6 +744,15 @@ export class Proposal extends Entity {
 
   set priceProposed(value: BigInt) {
     this.set("priceProposed", Value.fromBigInt(value));
+  }
+
+  get priceResolved(): BigInt {
+    let value = this.get("priceResolved");
+    return value!.toBigInt();
+  }
+
+  set priceResolved(value: BigInt) {
+    this.set("priceResolved", Value.fromBigInt(value));
   }
 
   get reward(): string {

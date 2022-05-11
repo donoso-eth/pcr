@@ -25,7 +25,6 @@ type Reward @entity {
   target: BigInt!
   targetCondition: BigInt!
   priceType:BigInt!
-  rewardTargetHitory: [RewardTargetHitory!]! @derivedFrom(field: "reward")
 
   optimisticOracleLivenessTime: BigInt!
   priceIdentifier: Bytes
@@ -68,6 +67,7 @@ type RewardTargetHitory @entity {
 type RewardIndexHistory @entity {
   id: ID!
   reward: String!
+  rewardAmount: BigInt!
   index: BigInt!
   timeStamp: BigInt!
 }
@@ -78,7 +78,8 @@ type Proposal @entity {
   startQualifying: BigInt!
   startLivenessPeriod: BigInt!
   priceProposed:BigInt!
-  reward: Reward!
+  priceResolved:BigInt!
+  reward: String!
   status: ProposalStatus
 }
 

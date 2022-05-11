@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -34,19 +34,21 @@ export class DetailsPcrComponent extends DappBaseComponent {
   valSwitch = true;
   showFundingState = false;
   showIssuingState = false;
-
+  showingUpdateAmount = false;
   //// FormControls
   toFundAmountCtrl = new FormControl(0, Validators.required);
+  toUpdateAmountCtrl = new FormControl(0, Validators.required);
   toUpgradeAmountCtrl = new FormControl(0, Validators.required);
   toDowngradeAmountCtrl = new FormControl(0, Validators.required);
   adressesCtrl = new FormControl('', [Validators.required, Validators.minLength(32), Validators.maxLength(32)]);
   routeItems: { label: string }[];
   activeStep = 0;
 
-  chartData: { labels: string[]; datasets: { label: string; data: number[]; fill: boolean; backgroundColor: string; borderColor: string; tension: number }[] };
+  chartData!: any;
   chartOptions: any;
   currentProposal!: IPROPOSAL;
-  constructor(private router: Router, private route: ActivatedRoute, dapp: DappInjector, store: Store, private graphqlService: GraphQlService) {
+
+  constructor(private cd: ChangeDetectorRef, private router: Router, private route: ActivatedRoute, dapp: DappInjector, store: Store, private graphqlService: GraphQlService) {
     super(dapp, store);
     this.routeItems = [{ label: 'Qualifying' }, { label: 'Propose Period' }, { label: 'Liveness Period' }, { label: 'Execution Period' }];
     this.chartOptions = {
@@ -66,36 +68,32 @@ export class DetailsPcrComponent extends DappBaseComponent {
             color: 'rgba(160, 167, 181, .3)',
           },
         },
-        y: {
-          ticks: {
-            color: '#ebedef',
+        yAxes: [
+          {
+            id: 'A',
+            type: 'linear',
+            position: 'left',
           },
-          grid: {
-            color: 'rgba(160, 167, 181, .3)',
+          {
+            id: 'B',
+            type: 'linear',
+            position: 'right',
+            display: true,
+            ticks: {
+              color: '#ebedef',
+              
+            },
           },
-        },
+        ],
+        // y: {
+        //   ticks: {
+        //     color: '#ebedef',
+        //   },
+        //   grid: {
+        //     color: 'rgba(160, 167, 181, .3)',
+        //   },
+        // },
       },
-    };
-    this.chartData = {
-      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-      datasets: [
-        {
-          label: 'First Dataset',
-          data: [65, 59, 80, 81, 56, 55, 40],
-          fill: false,
-          backgroundColor: '#2f4860',
-          borderColor: '#2f4860',
-          tension: 0.4,
-        },
-        {
-          label: 'Second Dataset',
-          data: [28, 48, 40, 19, 86, 27, 90],
-          fill: false,
-          backgroundColor: '#00bb7e',
-          borderColor: '#00bb7e',
-          tension: 0.4,
-        },
-      ],
     };
   }
 
@@ -120,18 +118,17 @@ export class DetailsPcrComponent extends DappBaseComponent {
     this.showFundingState = true;
   }
 
-  async doUpgrade(){
+  async doUpgrade() {
     if (this.toDowngradeAmountCtrl.value <= 0) {
       alert('please add Aount to Upgrade');
     }
   }
 
-  async doDowngrade(){
+  async doDowngrade() {
     if (this.toUpgradeAmountCtrl.value <= 0) {
       alert('please add Aount to Upgrade');
     }
   }
-
 
   async doFunding() {
     if (this.toFundAmountCtrl.value <= 0) {
@@ -149,6 +146,21 @@ export class DetailsPcrComponent extends DappBaseComponent {
     this.showFundingState = false;
   }
 
+  showUpdateRewardAmount() {
+    this.showingUpdateAmount = true;
+  }
+
+  async doUpdateRewardAmount() {
+    const newAmount = this.toUpdateAmountCtrl.value;
+    if (newAmount <= 0) {
+      alert('please onput a positive value');
+      return;
+    }
+    console.log(this.toUpdateReward);
+    this.showingUpdateAmount = false;
+    await doSignerTransaction(this.dapp.DAPP_STATE.contracts[+this.toUpdateReward!.id]?.pcrOptimisticOracle.instance.updateRewardAmount(newAmount));
+  }
+
   showAddMembers(reward: IPCR_REWARD) {
     this.showIssuingState = true;
   }
@@ -163,64 +175,56 @@ export class DetailsPcrComponent extends DappBaseComponent {
     this.showIssuingState = true;
   }
 
-  async proposeValue(value:number) {
+  async proposeValue(value: number) {
     this.store.dispatch(Web3Actions.chainBusy({ status: true }));
 
-    const answer = utils.parseEther(value.toString())
+    const answer = utils.parseEther(value.toString());
 
     await doSignerTransaction(this.dapp.DAPP_STATE.contracts[+this.toUpdateReward!.id]?.pcrOptimisticOracle.instance.proposeDistribution(answer)!);
   }
 
-async executeProposal(){
+  async executeProposal() {
     /// TO dO CHAEK IF CURRENT DEPOSIT and ISSUER MEMBERs
-  if (+this.toUpdateReward!.rewardAmount > +this.toUpdateReward!.currentdeposit) {
-    alert("Please Fund The Deposit")
-    return;
-  }
-
-  if (+this.toUpdateReward!.unitsIssued <= 0) {
-    alert("No members yet")
-    return;
-  }
-  this.store.dispatch(Web3Actions.chainBusy({ status: true }));
-
-  
-
-  this.dapp.DAPP_STATE.contracts[+this.toUpdateReward!.id]?.pcrOptimisticOracle.instance.on("ProposalRejected", (pcrId, proposalId, newProposalId) => {
-    console.log(pcrId.toString(),proposalId.toString(),"NOOP")
-    if (proposalId.toString() == this.currentProposal.id && pcrId.toString() == this.currentProposal.rewardId) {
-      console.log(pcrId,proposalId,"NOOP")
-      this.store.dispatch(Web3Actions.chainBusy({ status: false }));
+    if (+this.toUpdateReward!.rewardAmount > +this.toUpdateReward!.currentdeposit) {
+      alert('Please Fund The Deposit');
+      return;
     }
 
-   
-  })
+    if (+this.toUpdateReward!.unitsIssued <= 0) {
+      alert('No members yet');
+      return;
+    }
+    this.store.dispatch(Web3Actions.chainBusy({ status: true }));
 
-  this.dapp.DAPP_STATE.contracts[+this.toUpdateReward!.id]?.pcrOptimisticOracle.instance.on("ProposalAcceptedAndDistribuition", (pcrId, proposalId, newProposalId) => {
+    this.dapp.DAPP_STATE.contracts[+this.toUpdateReward!.id]?.pcrOptimisticOracle.instance.on('ProposalRejected', (pcrId, proposalId, newProposalId) => {
+      console.log(pcrId.toString(), proposalId.toString(), 'NOOP');
+      if (proposalId.toString() == this.currentProposal.id && pcrId.toString() == this.currentProposal.rewardId) {
+        console.log(pcrId, proposalId, 'NOOP');
+        this.store.dispatch(Web3Actions.chainBusy({ status: false }));
+      }
+    });
 
-    if (proposalId.toString() == this.currentProposal.id && pcrId.toString() == this.currentProposal.rewardId) {
-      console.log(pcrId.toString(),proposalId.toString(),"YES")
+    this.dapp.DAPP_STATE.contracts[+this.toUpdateReward!.id]?.pcrOptimisticOracle.instance.on('ProposalAcceptedAndDistribuition', (pcrId, proposalId, newProposalId) => {
+      if (proposalId.toString() == this.currentProposal.id && pcrId.toString() == this.currentProposal.rewardId) {
+        console.log(pcrId.toString(), proposalId.toString(), 'YES');
+        this.store.dispatch(Web3Actions.chainBusy({ status: false }));
+      }
+      this.store.dispatch(Web3Actions.chainBusy({ status: false }));
+    });
+
+    try {
+      const tx = await doSignerTransaction(this.dapp.DAPP_STATE.contracts[+this.toUpdateReward!.id]?.pcrOptimisticOracle.instance.executeDistribution());
+    } catch (error) {
+      console.log(error);
       this.store.dispatch(Web3Actions.chainBusy({ status: false }));
     }
-    this.store.dispatch(Web3Actions.chainBusy({ status: false }));
-  })
-
-
-  try {
-    const tx = await doSignerTransaction(this.dapp.DAPP_STATE.contracts[+this.toUpdateReward!.id]?.pcrOptimisticOracle.instance.executeDistribution());
-
-  } catch (error) {
-    console.log(error)
-    this.store.dispatch(Web3Actions.chainBusy({ status: false }));
   }
-
- 
-
-}
-
 
   transformRewardObject(reward: IPCR_REWARD) {
-    reward.displayCustomAncillaryData = (utils.toUtf8String(reward.customAncillaryData)).replace(`q: title: `,'').replace(', p1: 0, p2: 1, p3: 0.5. Where p2 corresponds to YES, p1 to a NO, p3 to unknown','');
+    reward.displayCustomAncillaryData = utils
+      .toUtf8String(reward.customAncillaryData)
+      .replace(`q: title: `, '')
+      .replace(', p1: 0, p2: 1, p3: 0.5. Where p2 corresponds to YES, p1 to a NO, p3 to unknown', '');
     console.log(new Date(+reward.earliestNextAction * 1000).toLocaleString());
     // reward.status = true;
     // reward.step = 0);
@@ -253,18 +257,21 @@ async executeProposal(){
               this.toUpdateReward = this.transformRewardObject(localReward);
             } else {
               this.toUpdateReward = {
-                 ...this.toUpdateReward, ...localReward, 
-                ...{ 
-                  step: calculateStep(localReward.rewardStep, localReward.earliestNextAction) }
-               };
+                ...this.toUpdateReward,
+                ...localReward,
+                ...{
+                  step: calculateStep(localReward.rewardStep, localReward.earliestNextAction),
+                },
+              };
             }
           } else {
             this.toUpdateReward = undefined;
           }
 
-          this.currentProposal = prepareDisplayProposal(this.toUpdateReward!)
-
+          this.currentProposal = prepareDisplayProposal(this.toUpdateReward!);
         }
+
+        await this.prepareCharts();
 
         await this.dapp.launchClones(this.toUpdateReward!.tokenImpl, this.toUpdateReward!.optimisticOracleImpl, +this.toUpdateReward!.id);
 
@@ -273,6 +280,52 @@ async executeProposal(){
       });
 
     this.store.dispatch(Web3Actions.chainBusy({ status: false }));
+  }
+
+  async prepareCharts() {
+    this.chartData = {
+      labels: [],
+      datasets: [
+        {
+          label: 'Index Evolution tokens/unit',
+          data: [],
+          fill: false,
+          backgroundColor: '#2f4860',
+          borderColor: '#2f4860',
+          tension: 0.4,
+          yAxisID: 'A',
+        },
+        {
+          label: 'Reward Total Amount',
+          data: [],
+          fill: false,
+          backgroundColor: '#00bb7e',
+          borderColor: '#00bb7e',
+          tension: 0.4,
+          yAxisID: 'B',
+        },
+      ],
+    };
+    const data = await this.graphqlService.queryIndexes();
+    console.log(data);
+    if (data) {
+      const dataChart = [];
+      const amountChart = [];
+      const localIndexes = data.data['rewardIndexHistories'] as Array<any>;
+      for (let item of localIndexes) {
+        this.chartData.labels.push(new Date(item.timeStamp * 1000).toLocaleDateString());
+        dataChart.push(+item.index);
+        console.log(item);
+        amountChart.push(+item.rewardAmount);
+      }
+
+      this.chartData.datasets[0].data = dataChart;
+      this.chartData.datasets[1].data = amountChart;
+      this.chartData = Object.assign({}, this.chartData);
+      console.log(this.chartData);
+
+      this.cd.detectChanges();
+    }
   }
 
   createPcr() {

@@ -17,15 +17,17 @@ library Events {
      //// OPTIMISTIC ORACLE CONTRACT
     event RewardDeposit(uint256 pcrId, uint256 depositAmount);
 
+    event RewardAmountUpdated(uint256 pcrId, uint256 newRewardAmount);
+
     event RewardTargetAndConditionChanged(uint256 pcrId, int256 target, DataTypes.TargetCondition targetCondition);
 
     event RewardSwitchStatus(DataTypes.RewardStatus rewardStatus);
     
     event ProposalCreated(address proposer, uint256 proposalId, uint256 pcrId,int256 priceProposed);
 
-    event ProposalRejected(uint256 pcrId, uint256 proposalId, uint256 newProposalId);
+    event ProposalRejected(uint256 pcrId, uint256 proposalId, uint256 newProposalId,int256 resolvedPrice);
 
-    event ProposalAcceptedAndDistribuition(uint256 pcrId, uint256 proposalId, uint256 newProposalId);
+    event ProposalAcceptedAndDistribuition(uint256 pcrId, uint256 proposalId, uint256 newProposalId,int256 resolvedPrice);
 
     //// TOKEN CONTRACT
     event RewardUnitsIssued(uint256 pcrId, address beneficiary, uint256 amount);

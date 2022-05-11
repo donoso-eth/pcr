@@ -49,11 +49,13 @@ templates:
       eventHandlers:
         - event: RewardDeposit(uint256,uint256)
           handler: handleRewardDeposit
+        - event: RewardAmountUpdated(uint256,uint256)
+          handler: handleRewardAmountUpdated
         - event: ProposalCreated(address,uint256,uint256,int256)
           handler: handleProposalCreated
-        - event: ProposalRejected(uint256,uint256,uint256)
+        - event: ProposalRejected(uint256,uint256,uint256,int256)
           handler: handleProposalRejected
-        - event: ProposalAcceptedAndDistribuition(uint256,uint256,uint256)
+        - event: ProposalAcceptedAndDistribuition(uint256,uint256,uint256,int256)
           handler: handleProposalAcceptedAndDistribuition
         - event: RewardTargetAndConditionChanged(uint256,int256,uint8)
           handler: handleRewardTargetAndConditionChanged

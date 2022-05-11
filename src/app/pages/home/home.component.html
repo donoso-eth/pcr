@@ -8,12 +8,12 @@
 
       <div style="margin-top: 20px" class="grid p-fluid">
         <div class="col-12">
-          <div style="position:relative" class="card flex justify-content-between"
+          <div (click)="goDetailsToken(reward)"  style="position:relative;cursor:pointer" class="card flex justify-content-between"
             *ngFor="let reward of pcrTokens;index as i">
 
             <h6 [ngStyle]="{ lineHeight: '2.5rem' }">
-              <a (click)="goDetailsToken(reward)" class="p-link layout-topbar-button">
-                <i style="color:var(--primary-color)" class="pi pi-eye"></i>
+              <a class="p-link layout-topbar-button">
+                <i style="color:var(--primary-color)" style="font-size:22px" class="pi pi-eye"></i>
               </a> {{ reward.title }}
             </h6>
             <div>

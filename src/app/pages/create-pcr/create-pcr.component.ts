@@ -180,9 +180,7 @@ export class CreatePcrComponent extends DappBaseComponent implements OnInit {
       rewardToken: this.rewardForm.controls.tokenCtrl.value.superToken,
     };
 
-    console.log(OptimisticOracle)
  
-
     this.store.dispatch(Web3Actions.chainBusy({ status: true }));
 
     await doSignerTransaction(

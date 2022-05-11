@@ -34,6 +34,40 @@ export class ProposalAcceptedAndDistribuition__Params {
   get newProposalId(): BigInt {
     return this._event.parameters[2].value.toBigInt();
   }
+
+  get resolvedPrice(): BigInt {
+    return this._event.parameters[3].value.toBigInt();
+  }
+}
+
+export class ProposalRejected extends ethereum.Event {
+  get params(): ProposalRejected__Params {
+    return new ProposalRejected__Params(this);
+  }
+}
+
+export class ProposalRejected__Params {
+  _event: ProposalRejected;
+
+  constructor(event: ProposalRejected) {
+    this._event = event;
+  }
+
+  get pcrId(): BigInt {
+    return this._event.parameters[0].value.toBigInt();
+  }
+
+  get proposalId(): BigInt {
+    return this._event.parameters[1].value.toBigInt();
+  }
+
+  get newProposalId(): BigInt {
+    return this._event.parameters[2].value.toBigInt();
+  }
+
+  get resolvedPrice(): BigInt {
+    return this._event.parameters[3].value.toBigInt();
+  }
 }
 
 export class ProposalCreated extends ethereum.Event {
@@ -66,32 +100,6 @@ export class ProposalCreated__Params {
   }
 }
 
-export class ProposalRejected extends ethereum.Event {
-  get params(): ProposalRejected__Params {
-    return new ProposalRejected__Params(this);
-  }
-}
-
-export class ProposalRejected__Params {
-  _event: ProposalRejected;
-
-  constructor(event: ProposalRejected) {
-    this._event = event;
-  }
-
-  get pcrId(): BigInt {
-    return this._event.parameters[0].value.toBigInt();
-  }
-
-  get proposalId(): BigInt {
-    return this._event.parameters[1].value.toBigInt();
-  }
-
-  get newProposalId(): BigInt {
-    return this._event.parameters[2].value.toBigInt();
-  }
-}
-
 export class RewardDeposit extends ethereum.Event {
   get params(): RewardDeposit__Params {
     return new RewardDeposit__Params(this);
@@ -110,6 +118,28 @@ export class RewardDeposit__Params {
   }
 
   get depositAmount(): BigInt {
+    return this._event.parameters[1].value.toBigInt();
+  }
+}
+
+export class RewardAmountUpdated extends ethereum.Event {
+  get params(): RewardAmountUpdated__Params {
+    return new RewardAmountUpdated__Params(this);
+  }
+}
+
+export class RewardAmountUpdated__Params {
+  _event: RewardAmountUpdated;
+
+  constructor(event: RewardAmountUpdated) {
+    this._event = event;
+  }
+
+  get pcrId(): BigInt {
+    return this._event.parameters[0].value.toBigInt();
+  }
+
+  get newRewardAmount(): BigInt {
     return this._event.parameters[1].value.toBigInt();
   }
 }

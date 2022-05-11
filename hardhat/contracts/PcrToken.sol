@@ -109,6 +109,8 @@ contract PcrToken is
   }
 
 
+
+
   /// @dev Issue new `amount` of giths to `beneficiary`
   function issue(address beneficiary, uint256 amount)
     external
@@ -174,7 +176,7 @@ contract PcrToken is
       _host.getNow()
     );
 
-    console.log(Strings.toString(uint256(availableBalance)));
+ 
     console.log('juppy jey key token');
     //  _rewardToken.transferFrom(owner(), address(this), actualCashAmount);
 

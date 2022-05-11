@@ -27,11 +27,7 @@ export class LandingComponent extends DappBaseComponent {
     
   }
 
-  async query(){
-   const result = await  this.graphqlService.query();
-    console.log(result)
 
-  }
 
   override async hookContractConnected(): Promise<void> {
     // this.pcrOptimisticOracleContract = this.dapp.DAPP_STATE.pcrOptimisticOracleContract!;

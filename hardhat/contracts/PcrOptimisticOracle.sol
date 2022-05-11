@@ -108,6 +108,7 @@ contract PcrOptimisticOracle is IPcrOptimisticOracle, Initializable, MultiCaller
         TOKEN_INDEX_PUBLISHER_ADDRESS = optimisticOracleinitializer.tokenContract;
         syncUmaEcosystemParams();
         _createReward(
+            optimisticOracleinitializer.admin,
             optimisticOracleinitializer.optimisticOracleInput.rewardAmount,
             optimisticOracleinitializer.optimisticOracleInput.target,
             optimisticOracleinitializer.optimisticOracleInput.targetCondition,
@@ -141,6 +142,24 @@ contract PcrOptimisticOracle is IPcrOptimisticOracle, Initializable, MultiCaller
 
         console.log("event reward");
     }
+
+
+    /**
+     * @notice Allows anyone to deposit additional rewards for distribution before `earliestNextAction`.
+     * @dev The caller must approve this contract to transfer `additionalRewardAmount` amount of `rewardToken`.
+     * @param newRewardAmount Additional reward amount that the admin is posting for distribution.
+     */
+    function updateRewardAmount(uint256 newRewardAmount) onlyAdmin() external {
+        // Pull additional rewards from the admin.
+        reward.rewardAmount = newRewardAmount;
+        // Update rewardAmount and log new amount.
+        emit Events.RewardAmountUpdated(pcrId, newRewardAmount);
+
+        console.log("event REWARD AMOUNT CHANGED");
+    }
+
+
+
 
     /********************************************
      *          DISTRIBUTION FUNCTIONS          *
@@ -216,12 +235,12 @@ contract PcrOptimisticOracle is IPcrOptimisticOracle, Initializable, MultiCaller
             SuperToken(rewardToken).send(TOKEN_INDEX_PUBLISHER_ADDRESS, reward.rewardAmount, "0x");
 
             ////
-             emit Events.ProposalAcceptedAndDistribuition(proposal.pcrId, proposal.proposalId,new_proposal_id);
+             emit Events.ProposalAcceptedAndDistribuition(proposal.pcrId, proposal.proposalId,new_proposal_id,resolvedPrice);
 
         }
         // ProposalRejected can be emitted multiple times whenever someone tries to execute the same rejected proposal.
         else {
-            emit Events.ProposalRejected(proposal.pcrId, proposal.proposalId,new_proposal_id);
+            emit Events.ProposalRejected(proposal.pcrId, proposal.proposalId,new_proposal_id,resolvedPrice);
         }
     }
 
@@ -299,6 +318,7 @@ contract PcrOptimisticOracle is IPcrOptimisticOracle, Initializable, MultiCaller
      * disputed through Optimistic Oracle.
      */
     function _createReward(
+        address admin,
         uint256 rewardAmount,
         int256 target,
         DataTypes.TargetCondition targetCondition,
@@ -322,7 +342,7 @@ contract PcrOptimisticOracle is IPcrOptimisticOracle, Initializable, MultiCaller
         reward = DataTypes.Reward({
             rewardStep: DataTypes.RewardStep.Funding,
             rewardStatus: DataTypes.RewardStatus.Active,
-            admin: msg.sender,
+            admin: admin,
             target: target,
             targetCondition: targetCondition,
             priceType: priceType,

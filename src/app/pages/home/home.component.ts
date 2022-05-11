@@ -26,7 +26,7 @@ export enum REWARD_STEP {
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
 })
-export class HomeComponent extends DappBaseComponent {
+export class HomeComponent extends DappBaseComponent implements OnInit {
   pcrTokens: Array<IPCR_REWARD> = [];
   pcrMemberships:Array<any> = [];
 
@@ -38,6 +38,11 @@ export class HomeComponent extends DappBaseComponent {
 
 
 
+  }
+  ngOnInit(): void {
+    if (this.blockchain_status == 'wallet-connected'){
+      this.getTokens()
+    }
   }
 
   changeStatus(value: boolean, i: number) {
@@ -74,8 +79,7 @@ export class HomeComponent extends DappBaseComponent {
 
   async getTokens() {
 
-    const b = await this.graphqlService.queryIndexes()
-    console.log(b);
+
     this.pcrTokens = [];
     this.pcrMemberships = [];
     const  users = this.graphqlService.queryUser(this.dapp.signerAddress!).pipe(takeUntil(this.destroyHooks)).subscribe((val=> {
@@ -138,7 +142,6 @@ export class HomeComponent extends DappBaseComponent {
   override async hookContractConnected(): Promise<void> {
     console.log(' I am down 127')
     this.getTokens();
-
 
   }
 }

@@ -98,6 +98,7 @@ export interface PcrOptimisticOracleInterface extends utils.Interface {
     "store()": FunctionFragment;
     "switchRewardStatus()": FunctionFragment;
     "syncUmaEcosystemParams()": FunctionFragment;
+    "updateRewardAmount(uint256)": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -173,6 +174,10 @@ export interface PcrOptimisticOracleInterface extends utils.Interface {
     functionFragment: "syncUmaEcosystemParams",
     values?: undefined
   ): string;
+  encodeFunctionData(
+    functionFragment: "updateRewardAmount",
+    values: [BigNumberish]
+  ): string;
 
   decodeFunctionResult(
     functionFragment: "ANCILLARY_BYTES_RESERVE",
@@ -239,6 +244,10 @@ export interface PcrOptimisticOracleInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "syncUmaEcosystemParams",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "updateRewardAmount",
     data: BytesLike
   ): Result;
 
@@ -385,6 +394,11 @@ export interface PcrOptimisticOracle extends BaseContract {
     syncUmaEcosystemParams(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    updateRewardAmount(
+      newRewardAmount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
   };
 
   ANCILLARY_BYTES_RESERVE(overrides?: CallOverrides): Promise<BigNumber>;
@@ -499,6 +513,11 @@ export interface PcrOptimisticOracle extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  updateRewardAmount(
+    newRewardAmount: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   callStatic: {
     ANCILLARY_BYTES_RESERVE(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -602,6 +621,11 @@ export interface PcrOptimisticOracle extends BaseContract {
     switchRewardStatus(overrides?: CallOverrides): Promise<void>;
 
     syncUmaEcosystemParams(overrides?: CallOverrides): Promise<void>;
+
+    updateRewardAmount(
+      newRewardAmount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
   };
 
   filters: {};
@@ -678,6 +702,11 @@ export interface PcrOptimisticOracle extends BaseContract {
     ): Promise<BigNumber>;
 
     syncUmaEcosystemParams(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    updateRewardAmount(
+      newRewardAmount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
   };
@@ -758,6 +787,11 @@ export interface PcrOptimisticOracle extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     syncUmaEcosystemParams(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    updateRewardAmount(
+      newRewardAmount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };

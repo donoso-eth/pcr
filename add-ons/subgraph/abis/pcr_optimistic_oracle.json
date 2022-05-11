@@ -1,4 +1,4 @@
-[
+[ 
   {
     "anonymous": false,
     "inputs": [
@@ -19,11 +19,18 @@
         "internalType": "uint256",
         "name": "newProposalId",
         "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "int256",
+        "name": "resolvedPrice",
+        "type": "int256"
       }
     ],
     "name": "ProposalAcceptedAndDistribuition",
     "type": "event"
   },
+
   {
     "anonymous": false,
     "inputs": [
@@ -44,12 +51,18 @@
         "internalType": "uint256",
         "name": "newProposalId",
         "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "int256",
+        "name": "resolvedPrice",
+        "type": "int256"
       }
     ],
     "name": "ProposalRejected",
     "type": "event"
-  },  
-  
+  },
+
   {
     "anonymous": false,
     "inputs": [
@@ -98,6 +111,25 @@
       }
     ],
     "name": "RewardDeposit",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "pcrId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "newRewardAmount",
+        "type": "uint256"
+      }
+    ],
+    "name": "RewardAmountUpdated",
     "type": "event"
   },
   {

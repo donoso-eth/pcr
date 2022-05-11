@@ -62,6 +62,7 @@ const GET_INDEXES =`
   {
     rewardIndexHistories(first: 5) {
       index
+      rewardAmount
       timeStamp
       reward 
     }
@@ -175,7 +176,7 @@ export class GraphQlService implements OnDestroy {
 
 
 
-  async query() {
+  async queryO() {
     try {
       const posts = await this.apollo
         .query<any>({
@@ -196,7 +197,7 @@ export class GraphQlService implements OnDestroy {
     // });
   }
 
-  async queryIndexes() {
+  async queryIndexes():Promise<any> {
     try {
       const variables = { where: { reward: {id:"1"}} };
       const posts = await this.apollo
@@ -207,7 +208,7 @@ export class GraphQlService implements OnDestroy {
         .toPromise();
 
       console.log(posts);
-      return posts;
+      return posts!;
     } catch (error) {
       console.log(error);
       return {};

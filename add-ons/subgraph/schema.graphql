@@ -80,5 +80,6 @@ type Proposal @entity {
   priceProposed:BigInt!
   priceResolved:BigInt!
   reward: String!
+  timeStamp: BigInt
   status: ProposalStatus
 }

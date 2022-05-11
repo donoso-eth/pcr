@@ -124,6 +124,7 @@ export class DetailsPcrComponent extends DappBaseComponent {
         x: {
           reverse:true,
           offset: true,
+          display:true,
           ticks: {
             color: '#ebedef',
           },
@@ -134,6 +135,7 @@ export class DetailsPcrComponent extends DappBaseComponent {
         y:
           {
             id: 'A',
+            display:false,
             type: 'linear',
             position: 'left',
             min:0,
@@ -343,7 +345,7 @@ export class DetailsPcrComponent extends DappBaseComponent {
   async prepareCharts() {
   
     this.distributionsChartData = {
-      labels: ["x","xa","we"],
+      labels: [],
       datasets: [
         {
           label: 'Reward distribution',

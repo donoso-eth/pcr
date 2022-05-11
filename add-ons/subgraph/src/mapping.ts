@@ -160,6 +160,8 @@ export function handleProposalRejected(event: ProposalRejected): void {
 
     if (proposal !== null) {
       proposal.status = 'Rejected';
+
+      proposal.timeStamp = event.block.timestamp;
       proposal.priceResolved = event.params.resolvedPrice;
       proposal.save();
     }
@@ -190,6 +192,7 @@ export function handleProposalAcceptedAndDistribuition(event: ProposalAcceptedAn
     let proposal = Proposal.load(id);
     if (proposal !== null) {
       proposal.status = 'Accepted';
+      proposal.timeStamp = event.block.timestamp;
       proposal.priceResolved = event.params.resolvedPrice;
       proposal.save();
     }

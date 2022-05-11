@@ -1,152 +1,8 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { Apollo, QueryRef, gql } from 'apollo-angular';
 import { BehaviorSubject, firstValueFrom, Subject, Subscription } from 'rxjs';
+import { GET_REWARD, GET_MEMBERSHIP, GET_PROPOSALS, GET_INDEXES, GET_USER } from './queryDefinitions';
 
-const GET_QUERY = `
-  query($receiver: String!){
-    streams(where:{
-          receiver: $receiver
-        }
-       ) {
-    	token {
-        id
-        symbol
-      }
-      createdAtTimestamp
-	    updatedAtTimestamp
-	    currentFlowRate
-	    streamedUntilUpdatedAt
-        }
-  }
-`;
-
-const GET_USER = `
-query($address: String!){
-    user(id:$address) {
-      id
-      rewardsCreated {  
-      id
-      title
-      rewardStep 
-      earliestNextAction
-      rewardToken
-      rewardAmount
-      }
-      rewardsMembership {
-      id
-      units
-      reward  {  
-        id
-        title
-        rewardStep 
-        earliestNextAction
-        rewardToken
-        currentIndex
-        rewardAmount
-        }
-      }
-      proposaslsSubmitted
-    }
-  }
-`;
-
-const userMemberships = gql`
-  {
-    userMemberships(first: 5) {
-      units
-    }
-  }
-`;
-
-const GET_INDEXES =`
-  {
-    rewardIndexHistories(first: 5) {
-      index
-      rewardAmount
-      timeStamp
-      reward 
-    }
-  }
-`;
-
-const proposals = gql`
-  {
-    proposals(first: 5) {
-      id
-      proposer
-      reward
-      status
-    }
-  }
-`;
-
-const GET_REWARD = `
-query($id: String!)
-  {
-    reward(id:$id) {
-      id
-      admin {
-        id
-      }
-      rewardAmount
-      rewardToken
-      currentdeposit
-      customAncillaryData
-      token
-      title
-      url
-      tokenImpl
-      optimisticOracleImpl
-      earliestNextAction
-      interval
-      priceType
-      optimisticOracleLivenessTime
-      rewardStep
-      rewardStatus
-      totalDistributed
-      currentIndex
-      unitsIssued
-      currentProposal {
-        id
-        startQualifying
-        startLivenessPeriod
-        status
-        priceProposed
-      }
-    }
-  }
-`;
-
-
-const GET_MEMBERSHIP = `
-query($id: String!)
-  {
-    userMembership(id:$id) {
-      units
-      reward {
-      id
-      rewardAmount
-      rewardToken
-      currentdeposit
-      customAncillaryData
-      token
-      title
-      url
-      tokenImpl
-      optimisticOracleImpl
-      earliestNextAction
-      priceType
-      optimisticOracleLivenessTime
-      interval
-      rewardStep
-      rewardStatus
-      totalDistributed
-      currentIndex
-      unitsIssued
-      }
-    }
-  }
-`;
 
 
 @Injectable({
@@ -176,30 +32,28 @@ export class GraphQlService implements OnDestroy {
 
 
 
-  async queryO() {
+  async queryProposals(id:string):Promise<any> {
     try {
+      const variables = { id };
       const posts = await this.apollo
-        .query<any>({
-          query: proposals,
-        })
+      .query<any>({
+        query: gql(GET_PROPOSALS),
+        variables,
+      })
         .toPromise();
 
-      console.log(posts);
+     
       return posts;
     } catch (error) {
       console.log(error);
       return {};
     }
 
-    // this.querySubscription = this.postsQuery.valueChanges.subscribe(({ data, loading }) => {
-    //   this.loading = loading;
-    //   this.posts = data.posts;
-    // });
   }
 
-  async queryIndexes():Promise<any> {
+  async queryIndexes(id:string):Promise<any> {
     try {
-      const variables = { where: { reward: {id:"1"}} };
+      const variables = { id };
       const posts = await this.apollo
         .query<any>({
           query: gql(GET_INDEXES),
@@ -207,7 +61,7 @@ export class GraphQlService implements OnDestroy {
         })
         .toPromise();
 
-      console.log(posts);
+     
       return posts!;
     } catch (error) {
       console.log(error);

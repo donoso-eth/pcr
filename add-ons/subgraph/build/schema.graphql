@@ -82,10 +82,3 @@ type Proposal @entity {
   reward: String!
   status: ProposalStatus
 }
-
-type ProposalSummary @entity {
-  id: ID!
-  reward: Reward!
-  timeStamp: BigInt
-  result: BigInt
-}

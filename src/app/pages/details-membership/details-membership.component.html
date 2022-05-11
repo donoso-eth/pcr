@@ -9,10 +9,36 @@
           <br />
           <textarea pInputTextarea placeholder="Your Message" [autoResize]="true" cols="30">{{ toUpdateMembership!.displayCustomAncillaryData }}</textarea>
 
-          <div style="position: relative; background-color: var(--surface-ground)" class="card mt-3 flex align-items-center flex-column justify-content-center">
+          <div style="position: relative; background-color: var(--surface-ground);text-align:center" class="card mt-3 flex align-items-center flex-column justify-content-center">
             <h4 class="mb-1">Membership</h4>
-
-            <p-progressSpinner></p-progressSpinner>
+            <div *ngIf="idaMembership?.approved == true">
+              <p>Your membership already approved</p>
+            </div>
+            <div *ngIf="idaMembership?.approved == false">
+              <p>Your Membership not yet approved</p>
+              <button
+              pButton
+              pRipple
+              style="position: relative; width: fit-content"
+              (click)="approveMembership()"
+              type="button"
+              label="Approve"
+              class="p-button-rounded mr-2 mb-2"
+            ></button>
+            </div>
+            <div style="margin-top:20px" *ngIf="+idaMembership?.pendingDistribution!>0">
+              <p>There are already distributed rewards <span style="color:var(--primary-color)">{{idaMembership?.pendingDistribution!}} tokens</span> , if you prefer you can only claim this reward and subscribe later</p>
+              <button
+              pButton
+              pRipple
+              style="position: relative; width: fit-content"
+              (click)="claim()"
+              type="button"
+              label="Claim Units"
+              class="p-button-rounded mr-2 mb-2"
+            ></button>
+            </div>
+            <!-- <p-progressSpinner></p-progressSpinner> -->
             <div>
               
             </div>
@@ -62,33 +88,6 @@
       </div>
     </div>
   </div>
-  <p-dialog header="Let's Add People!" [(visible)]="showIssuingState" [modal]="true" showEffect="fade" [style]="{ width: '40vw' }" [breakpoints]="{ '960px': '75vw' }">
-    <p class="line-height-3 m-0">
-      Please add the addresess <span style="color: green">"{{ toUpdateMembership?.title }}"</span> <br />
-      It requires the {{ toUpdateMembership?.fundToken?.name }} superToken, your current balance is: {{ toUpdateMembership!?.fundToken?.superTokenBalance! }}. You may wamt to:
-    </p>
-    <h6>Members</h6>
-    <p class="flex justify-content-between">
-      <input [formControl]="adressesCtrl" pInputText type="text" placeholder="toUpdateMembership! Name" />
-      <button pButton icon="pi pi-check" label="Fund" (click)="doAddMember(toUpdateMembership!)" class="p-button-outlined"></button>
-    </p>
-    <ng-template pTemplate="footer">
-      <button pButton icon="pi pi-check" label="Fund" class="p-button-outlined"></button>
-    </ng-template>
-  </p-dialog>
 
-  <p-dialog header="Let's fund!" [(visible)]="showFundingState" [modal]="true" showEffect="fade" [style]="{ width: '40vw' }" [breakpoints]="{ '960px': '75vw' }">
-    <p class="line-height-3 m-0">
-      You are about to fund the PCR Token <span style="color: green">"{{ toUpdateMembership!?.title }}"</span> <br />
-      It requires the {{ toUpdateMembership!?.fundToken?.name }} superToken, your current balance is: {{ toUpdateMembership!?.fundToken?.superTokenBalance! }}. You may wamt to:
-    </p>
-    <h6>Fund The PCR Token</h6>
-    <p class="flex justify-content-between" *ngIf="+toUpdateMembership!?.fundToken?.superTokenBalance! > +toUpdateMembership!?.rewardAmount!">
-      <p-inputNumber [formControl]="toFundAmountCtrl" placeholder="Amount" mode="decimal" [showButtons]="true" [min]="0"> </p-inputNumber>
-      <button pButton icon="pi pi-check" label="Fund" (click)="doFunding()" class="p-button-outlined"></button>
-    </p>
-    <ng-template pTemplate="footer">
-      <button pButton icon="pi pi-check" label="Fund" class="p-button-outlined"></button>
-    </ng-template>
-  </p-dialog>
+
 </div>

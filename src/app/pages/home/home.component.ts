@@ -65,9 +65,8 @@ export class HomeComponent extends DappBaseComponent implements OnInit {
 
 
   transformRewardObject(reward: IPCR_REWARD) {
-    console.log();
-    // reward.status = true;
-    // reward.step = 0);
+
+
     reward.displayDate = new Date(+reward.earliestNextAction * 1000).toLocaleString()
     const displayReward = global_tokens.filter((fil) => fil.superToken == reward.rewardToken)[0];
     reward.fundToken = displayReward;
@@ -103,7 +102,7 @@ export class HomeComponent extends DappBaseComponent implements OnInit {
 
 
         const localSubscriptions = user.rewardsMembership;
-        console.log(localSubscriptions)
+ 
         if (localSubscriptions !== undefined) {
           localSubscriptions.forEach((each: any) => {
             const availableSubscriptionIndex = this.pcrMemberships.map((fil) => fil.id).indexOf(each.id);
@@ -140,7 +139,7 @@ export class HomeComponent extends DappBaseComponent implements OnInit {
 
 
   override async hookContractConnected(): Promise<void> {
-    console.log(' I am down 127')
+
     this.getTokens();
 
   }

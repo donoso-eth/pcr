@@ -180,7 +180,7 @@ export class SuperFluidServiceService {
       await this.initializeFramework()
     }
 
-    console.log(this.dapp.DAPP_STATE.contracts)
+
 
     let subsc = await this.ida.getSubscription({
       superToken: rewardToken,
@@ -189,11 +189,43 @@ export class SuperFluidServiceService {
       providerOrSigner: this.dapp.signer!,
       publisher: this.dapp.DAPP_STATE.contracts[1].pcrToken.address,
     });
-    console.log(subsc)
+
     return subsc
-  
 
   }
+
+  async approveSubscription(rewardToken:string){
+
+    if (this.sf == undefined){
+      await this.initializeFramework()
+    }
+    const approveOperation = await this.ida.approveSubscription({
+      superToken: rewardToken,
+      indexId: '0',
+      publisher: this.dapp.DAPP_STATE.contracts[1].pcrToken.address,
+    });
+
+    await approveOperation.exec(this.dapp.signer!)
+
+  }
+
+
+  async claimSubscription(rewardToken:string){
+
+    if (this.sf == undefined){
+      await this.initializeFramework()
+    }
+    const claimOperation = await this.ida.claim({
+      superToken: rewardToken,
+      indexId: '0',
+      subscriber: this.dapp.signerAddress!,
+      publisher: this.dapp.DAPP_STATE.contracts[1].pcrToken.address,
+    });
+
+    await claimOperation.exec(this.dapp.signer!)
+
+  }
+
 
 // #endregion INDEX
 

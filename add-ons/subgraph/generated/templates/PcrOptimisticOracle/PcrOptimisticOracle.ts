@@ -157,8 +157,12 @@ export class RewardSwitchStatus__Params {
     this._event = event;
   }
 
+  get pcrId(): BigInt {
+    return this._event.parameters[0].value.toBigInt();
+  }
+
   get rewardStatus(): i32 {
-    return this._event.parameters[0].value.toI32();
+    return this._event.parameters[1].value.toI32();
   }
 }
 

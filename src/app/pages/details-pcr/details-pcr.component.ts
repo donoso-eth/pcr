@@ -35,6 +35,8 @@ export class DetailsPcrComponent extends DappBaseComponent {
   showFundingState = false;
   showIssuingState = false;
   showingUpdateAmount = false;
+  showIndexChart = false;
+  showDistributionChart = false;
   //// FormControls
   toFundAmountCtrl = new FormControl(0, Validators.required);
   toUpdateAmountCtrl = new FormControl(0, Validators.required);
@@ -43,12 +45,13 @@ export class DetailsPcrComponent extends DappBaseComponent {
   adressesCtrl = new FormControl('', [Validators.required, Validators.minLength(32), Validators.maxLength(32)]);
   routeItems: { label: string }[];
   activeStep = 0;
+  rewardStatus!:boolean;
 
   chartData!: any;
   chartOptions: any;
   currentProposal!: IPROPOSAL;
   distributionsChartOptions: any;
-  distributionsChartData:any;
+  distributionsChartData: any;
 
   constructor(private cd: ChangeDetectorRef, private router: Router, private route: ActivatedRoute, dapp: DappInjector, store: Store, private graphqlService: GraphQlService) {
     super(dapp, store);
@@ -63,7 +66,8 @@ export class DetailsPcrComponent extends DappBaseComponent {
       },
       scales: {
         x: {
-          reverse:true,
+          reverse: true,
+          offset: true,
           ticks: {
             color: '#ebedef',
           },
@@ -71,36 +75,31 @@ export class DetailsPcrComponent extends DappBaseComponent {
             color: 'rgba(160, 167, 181, .3)',
           },
         },
-        A:
-          {
-            id: 'A',
-            type: 'linear',
-            position: 'left',
-            min:0,
-            ticks: {
-              beginAtZero: true,
-              color: '#ebedef',
-              suggestedMin: 0,
-              min:0
-            },
-          
+        A: {
+          id: 'A',
+          type: 'linear',
+          position: 'left',
+          min: 0,
+          ticks: {
+            beginAtZero: true,
+            color: '#ebedef',
+            suggestedMin: 0,
+            min: 0,
           },
-          B:
-          {
-         
-            type: 'linear',
-            position: 'right',
-            display: true,
-            min:0,
-            ticks: {
-              min:0,
-              beginAtZero: true,
-              color: '#00bb7e',
-              suggestedMin: 0,
-         
-            },
+        },
+        B: {
+          type: 'linear',
+          position: 'right',
+          display: true,
+          min: 0,
+          ticks: {
+            min: 0,
+            beginAtZero: true,
+            color: '#00bb7e',
+            suggestedMin: 0,
           },
-  
+        },
+
         // y: {
         //   ticks: {
         //     color: '#ebedef',
@@ -122,9 +121,9 @@ export class DetailsPcrComponent extends DappBaseComponent {
       },
       scales: {
         x: {
-          reverse:true,
+          reverse: true,
           offset: true,
-          display:true,
+          display: true,
           ticks: {
             color: '#ebedef',
           },
@@ -132,22 +131,20 @@ export class DetailsPcrComponent extends DappBaseComponent {
             color: 'rgba(160, 167, 181, .3)',
           },
         },
-        y:
-          {
-            id: 'A',
-            display:false,
-            type: 'linear',
-            position: 'left',
-            min:0,
-            ticks: {
-              beginAtZero: true,
-              color: '#ebedef',
-              suggestedMin: 0,
-              min:0
-            },
-          
-          }
-  
+        y: {
+          id: 'A',
+          display: false,
+          type: 'linear',
+          position: 'left',
+          min: 0,
+          ticks: {
+            beginAtZero: true,
+            color: '#ebedef',
+            suggestedMin: 0,
+            min: 0,
+          },
+        },
+
         // y: {
         //   ticks: {
         //     color: '#ebedef',
@@ -160,52 +157,91 @@ export class DetailsPcrComponent extends DappBaseComponent {
     };
   }
 
-  changeStatus(value: boolean) {
-    console.log(value);
+  async changeStatus(value: boolean) {
+    this.store.dispatch(Web3Actions.chainBusy({ status: true }));
+    await doSignerTransaction(this.dapp.DAPP_STATE.contracts[+this.toUpdateReward!.id]?.pcrOptimisticOracle.instance.switchRewardStatus());
+   // this.store.dispatch(Web3Actions.chainBusy({ status: false }));
+   
+
   }
 
-  async showFunding(reward: IPCR_REWARD) {
-    this.store.dispatch(Web3Actions.chainBusy({ status: true }));
 
+  async refreshBalance(){
     const superToken = this._createSuperTokenInstance(this.toUpdateReward!.fundToken.superToken);
     const balanceSupertoken = await superToken.realtimeBalanceOfNow(this.dapp.signerAddress);
 
-    this.toUpdateReward!.fundToken.superTokenBalance = balanceSupertoken[0].toString();
+    this.toUpdateReward!.fundToken.superTokenBalance = (+utils.formatEther(balanceSupertoken[0])).toFixed(4);
 
     const rewardToken = this._createERC20Instance(this.toUpdateReward!.fundToken.rewardToken);
     const balanceRewardToken = await rewardToken.balanceOf(this.dapp.signerAddress);
 
-    this.toUpdateReward!.fundToken.rewardTokenBalance = balanceRewardToken;
+    this.toUpdateReward!.fundToken.rewardTokenBalance = (+utils.formatEther(balanceRewardToken)).toFixed(4);
 
+  }
+
+  async showFunding() {
+    this.store.dispatch(Web3Actions.chainBusy({ status: true }));
+    await this.refreshBalance()
     this.store.dispatch(Web3Actions.chainBusy({ status: false }));
     this.showFundingState = true;
   }
 
   async doUpgrade() {
-    if (this.toDowngradeAmountCtrl.value <= 0) {
-      alert('please add Aount to Upgrade');
+    if (this.toUpgradeAmountCtrl.value <= 0) {
+      alert('please add Amount to Upgrade');
+      return
     }
+    this.store.dispatch(Web3Actions.chainBusy({ status: true }));
+    const value = utils.parseEther(this.toUpgradeAmountCtrl.value.toString())
+
+    await doSignerTransaction(
+      this._createERC20Instance(this.toUpdateReward!.fundToken.rewardToken).approve(
+        this.toUpdateReward!.fundToken.superToken
+        ,
+        value
+      )
+    );
+
+    const superToken = this._createSuperTokenInstance(this.toUpdateReward!.fundToken.superToken);
+    await doSignerTransaction(superToken.upgrade(value));
+
+    await this.refreshBalance()
+    this.store.dispatch(Web3Actions.chainBusy({ status: false }));
+
   }
 
   async doDowngrade() {
-    if (this.toUpgradeAmountCtrl.value <= 0) {
+    if (this.toDowngradeAmountCtrl.value <= 0) {
       alert('please add Aount to Upgrade');
+      return
     }
+    this.store.dispatch(Web3Actions.chainBusy({ status: true }));
+    const value = utils.parseEther(this.toDowngradeAmountCtrl.value.toString())
+
+    const superToken = this._createSuperTokenInstance(this.toUpdateReward!.fundToken.superToken);
+    await doSignerTransaction(superToken.downgrade(value));
+
+    await this.refreshBalance()
+    this.store.dispatch(Web3Actions.chainBusy({ status: false }));
   }
 
   async doFunding() {
     if (this.toFundAmountCtrl.value <= 0) {
       alert('please add a numer');
+      return
     }
     this.store.dispatch(Web3Actions.chainBusy({ status: true }));
     await doSignerTransaction(
-      this._createERC20Instance(this.toUpdateReward!.fundToken.superToken).approve(this.dapp.DAPP_STATE.contracts[+this.toUpdateReward!.id]?.pcrOptimisticOracle.address, this.toFundAmountCtrl.value)
+      this._createERC20Instance(this.toUpdateReward!.fundToken.superToken).approve(
+        this.dapp.DAPP_STATE.contracts[+this.toUpdateReward!.id]?.pcrOptimisticOracle.address,
+        this.toFundAmountCtrl.value
+      )
     );
     await doSignerTransaction(this.dapp.DAPP_STATE.contracts[+this.toUpdateReward!.id]?.pcrOptimisticOracle.instance.depositReward(this.toFundAmountCtrl.value)!);
 
     //this.toUpdateReward!.currentdeposit = +this.toUpdateReward!.currentdeposit + this.toFundAmountCtrl.value;
 
-   // this.store.dispatch(Web3Actions.chainBusy({ status: false }));
+    // this.store.dispatch(Web3Actions.chainBusy({ status: false }));
     this.showFundingState = false;
   }
 
@@ -219,9 +255,12 @@ export class DetailsPcrComponent extends DappBaseComponent {
       alert('please onput a positive value');
       return;
     }
-
     this.showingUpdateAmount = false;
+ 
+    this.store.dispatch(Web3Actions.chainBusy({ status: true }));
     await doSignerTransaction(this.dapp.DAPP_STATE.contracts[+this.toUpdateReward!.id]?.pcrOptimisticOracle.instance.updateRewardAmount(newAmount));
+    this.store.dispatch(Web3Actions.chainBusy({ status: false }));
+   
   }
 
   showAddMembers(reward: IPCR_REWARD) {
@@ -260,19 +299,16 @@ export class DetailsPcrComponent extends DappBaseComponent {
     this.store.dispatch(Web3Actions.chainBusy({ status: true }));
 
     this.dapp.DAPP_STATE.contracts[+this.toUpdateReward!.id]?.pcrOptimisticOracle.instance.on('ProposalRejected', (pcrId, proposalId, newProposalId) => {
-   
       if (proposalId.toString() == this.currentProposal.id && pcrId.toString() == this.currentProposal.rewardId) {
-      
         this.store.dispatch(Web3Actions.chainBusy({ status: false }));
       }
     });
 
     this.dapp.DAPP_STATE.contracts[+this.toUpdateReward!.id]?.pcrOptimisticOracle.instance.on('ProposalAcceptedAndDistribuition', (pcrId, proposalId, newProposalId) => {
       if (proposalId.toString() == this.currentProposal.id && pcrId.toString() == this.currentProposal.rewardId) {
-     
         this.store.dispatch(Web3Actions.chainBusy({ status: false }));
       }
-      this.store.dispatch(Web3Actions.chainBusy({ status: false }));
+   
     });
 
     try {
@@ -292,23 +328,16 @@ export class DetailsPcrComponent extends DappBaseComponent {
     const displayReward = global_tokens.filter((fil) => fil.superToken == reward.rewardToken)[0];
     reward.fundToken = displayReward;
     reward.displayStep = calculateStep(+reward.rewardStep, reward.earliestNextAction);
+    reward.displayTargetCondition = utils.formatEther(reward.target)
     return reward;
   }
 
-  private _createERC20Instance(ERC: string): Contract {
-    return new Contract(ERC, abi_ERC20, this.dapp.signer!);
-  }
-
-  private _createSuperTokenInstance(SuperToken: string): Contract {
-    return new Contract(SuperToken, abi_SuperToken, this.dapp.signer!);
-  }
 
   async getTokens(id: string) {
     this.graphqlService
       .watchTokens(id)
       .pipe(takeUntil(this.destroyHooks))
       .subscribe(async (data: any) => {
-    
         if (data) {
           const localReward = data.data['reward'];
 
@@ -320,6 +349,7 @@ export class DetailsPcrComponent extends DappBaseComponent {
                 ...this.toUpdateReward,
                 ...localReward,
                 ...{
+                  displayTargetCondition :utils.formatEther(localReward.target),
                   step: calculateStep(localReward.rewardStep, localReward.earliestNextAction),
                 },
               };
@@ -331,84 +361,98 @@ export class DetailsPcrComponent extends DappBaseComponent {
           this.currentProposal = prepareDisplayProposal(this.toUpdateReward!);
         }
 
+     
+        this.rewardStatus = this.toUpdateReward?.rewardStatus == '0' ? true : false
+
+
         await this.prepareCharts();
 
         await this.dapp.launchClones(this.toUpdateReward!.tokenImpl, this.toUpdateReward!.optimisticOracleImpl, +this.toUpdateReward!.id);
 
         this.store.dispatch(Web3Actions.chainBusy({ status: false }));
-        
       });
 
     this.store.dispatch(Web3Actions.chainBusy({ status: false }));
   }
 
   async prepareCharts() {
-  
     this.distributionsChartData = {
       labels: [],
       datasets: [
         {
-          label: 'Reward distribution',
-          data: [1,0,3],
-          fill: true,
-          backgroundColor: 'green',
+          label: 'KPI evaluation',
+          data: [],
+          fill: false,
+          backgroundColor: '#2f4860',
           borderColor: '#2f4860',
+          tension: 0.4,
+        },
+        {
+          label: 'Target',
+          data: [],
+          fill: false,
+          backgroundColor: 'green',
+          borderColor: 'green',
           tension: 0.4,
         },
       ],
     };
 
-
-
     ///////// DISTRIBUTIONS SUMMARY
     const dataProposal = await this.graphqlService.queryProposals(this.toUpdateReward!.id);
     console.log(dataProposal);
-    if (dataProposal) {
+    if (dataProposal && dataProposal.data) {
       const proposalChart = [];
- 
+      const targetChart = [];
+
       const localProposals = dataProposal.data['proposals'] as Array<any>;
-      for (let item of localProposals.filter(fil=> fil.status !== 'Pending') ) {
-
-        // this.chartData.labels.push(new Date(item.timeStamp * 1000).toLocaleDateString());
-        // dataChart.push(+item.index);
-        // console.log(item);
-       // amountChart.push(+item.rewardAmount);
+      for (let item of localProposals.filter((fil) => fil.status !== 'Pending')) {
+        this.distributionsChartData.labels.push(new Date(item.timeStamp * 1000).toLocaleDateString());
+        if (this.toUpdateReward!.priceType == 0) {
+          let value = item.status == 'Accepted' ? 1 : 0;
+          proposalChart.push(value);
+        } else if (this.toUpdateReward!.priceType == 1) {
+          proposalChart.push(utils.formatEther(item.priceProposed));
+          targetChart.push(utils.formatEther(this.toUpdateReward!.target))
+        }
       }
-
-      // this.chartData.datasets[0].data = dataChart;
+    
+     
+      if (proposalChart.length > 0){
+        this.showDistributionChart = true;
+      }
+      this.distributionsChartData.datasets[0].data = proposalChart;
+      this.distributionsChartData.datasets[1].data =targetChart;
       // this.chartData.datasets[1].data = amountChart;
-      // this.chartData = Object.assign({}, this.chartData);
+      this.distributionsChartData = Object.assign({}, this.distributionsChartData);
       // console.log(this.chartData);
-
     }
 
-       ///////// INDEX SUMMARY
+    ///////// INDEX SUMMARY
 
-       this.chartData = {
-        labels: [],
-        datasets: [
-          {
-            label: 'Index Evolution tokens/unit',
-            data: [],
-            fill: false,
-            backgroundColor: '#2f4860',
-            borderColor: '#2f4860',
-            tension: 0.4,
-            yAxisID: 'A',
-          },
-          {
-            label: 'Reward Total Amount',
-            data: [],
-            fill: false,
-            backgroundColor: '#00bb7e',
-            borderColor: '#00bb7e',
-            tension: 0.4,
-            yAxisID: 'B',
-          },
-        ],
-      };
-  
-
+    this.chartData = {
+      labels: [],
+      datasets: [
+        {
+          label: 'Index Evolution tokens/unit',
+          data: [],
+          fill: false,
+          backgroundColor: '#2f4860',
+          borderColor: '#2f4860',
+          tension: 0.4,
+          yAxisID: 'A',
+        },
+        {
+          label: 'Reward Total Amount',
+          data: [],
+          fill: false,
+          backgroundColor: '#00bb7e',
+          borderColor: '#00bb7e',
+          tension: 0.4,
+          yAxisID: 'B',
+        },
+      ],
+    };
 
     const data = await this.graphqlService.queryIndexes(this.toUpdateReward!.id);
     console.log(data);
@@ -419,20 +463,20 @@ export class DetailsPcrComponent extends DappBaseComponent {
       for (let item of localIndexes) {
         this.chartData.labels.push(new Date(item.timeStamp * 1000).toLocaleDateString());
         dataChart.push(+item.index);
-   
+
         amountChart.push(+item.rewardAmount);
       }
-
+ 
+     
+      if (dataChart.length > 0){
+        this.showIndexChart = true;
+      }
       this.chartData.datasets[0].data = dataChart;
       this.chartData.datasets[1].data = amountChart;
       this.chartData = Object.assign({}, this.chartData);
       console.log(this.chartData);
-
-   
     }
     this.cd.detectChanges();
-
-
   }
 
   createPcr() {
@@ -443,7 +487,7 @@ export class DetailsPcrComponent extends DappBaseComponent {
     //this.getTokens();
     this.store.dispatch(Web3Actions.chainBusy({ status: true }));
     const params = this.route.snapshot.params;
- 
+
     if (params['id'] !== undefined) {
       this.getTokens(params['id']);
     }
@@ -454,4 +498,15 @@ export class DetailsPcrComponent extends DappBaseComponent {
     //   await this.dapp.launchClones(pcrAddress!.tokenContract, pcrAddress!.optimisticOracleContract,1);
     // }
   }
+
+  ////////PRIVATE 
+
+  private _createERC20Instance(ERC: string): Contract {
+    return new Contract(ERC, abi_ERC20, this.dapp.signer!);
+  }
+
+  private _createSuperTokenInstance(SuperToken: string): Contract {
+    return new Contract(SuperToken, abi_SuperToken, this.dapp.signer!);
+  }
+
 }

@@ -66,7 +66,7 @@ type RewardTargetHitory @entity {
 
 type RewardIndexHistory @entity {
   id: ID!
-  reward: String!
+  rewardId: String!
   rewardAmount: BigInt!
   index: BigInt!
   timeStamp: BigInt!
@@ -79,6 +79,8 @@ type Proposal @entity {
   startLivenessPeriod: BigInt!
   priceProposed:BigInt!
   priceResolved:BigInt!
-  reward: String!
+  rewardId: String!
+  proposalId:String!
+  timeStamp: BigInt
   status: ProposalStatus
 }

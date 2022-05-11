@@ -25,9 +25,12 @@
         <div *ngIf="proposal.priceType == 1"> 
         
           <p [ngStyle]="{ lineHeight: '2.5rem' }">What is the current Value of the KPI?</p>
-          <p-inputNumber  style="width:fit-content" [formControl]="toProposeKpiAmountCtrl" placeholder="KPI Value" mode="decimal" [showButtons]="true" > </p-inputNumber>
-           <button style="width:fit-content" (click)="doProposeValue()" label="Propose" pButton pRipple type="button" 
-            class="p-button-rounded ml-2"></button>
+          <div style="width:250px;margin:auto;">
+          <p-inputNumber  [formControl]="toProposeKpiAmountCtrl" placeholder="KPI Value" mode="decimal" [showButtons]="true" > </p-inputNumber>
+          <button style="width:fit-content;margin-top:20px" (click)="doProposeValue()" label="Propose" pButton pRipple type="button" 
+          class="p-button-rounded ml-2"></button>
+        </div>
+   
      
           </div>
 

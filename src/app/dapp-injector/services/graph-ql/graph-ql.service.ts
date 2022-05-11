@@ -34,6 +34,7 @@ export class GraphQlService implements OnDestroy {
 
   async queryProposals(id:string):Promise<any> {
     try {
+      console.log(id)
       const variables = { id };
       const posts = await this.apollo
       .query<any>({

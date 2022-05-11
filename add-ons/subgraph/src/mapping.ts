@@ -7,6 +7,7 @@ import {
   RewardDeposit,
   RewardAmountUpdated,
   RewardTargetAndConditionChanged,
+  RewardSwitchStatus,
 } from '../generated/templates/PcrOptimisticOracle/PcrOptimisticOracle';
 import { RewardUnitsDeleted, RewardUnitsIssued } from '../generated/templates/PcrToken/PcrToken';
 
@@ -14,12 +15,15 @@ import { PcrOptimisticOracle, PcrToken } from '../generated/templates';
 import { BigDecimal, BigInt } from '@graphprotocol/graph-ts';
 import { store } from '@graphprotocol/graph-ts';
 
-function createNewProposal(id: string, reward: Reward): void {
+function createNewProposal(proposalId: string,  rewardId:string,reward: Reward): void {
+  let id = rewardId.concat('-').concat(proposalId)
+
   let proposal = new Proposal(id);
   proposal.startQualifying = reward.earliestNextAction.minus(reward.interval);
 
   proposal.startLivenessPeriod = BigInt.fromI32(0);
-  proposal.reward = reward.id;
+  proposal.rewardId = rewardId;
+  proposal.proposalId = proposalId;
   proposal.priceProposed = BigInt.fromI32(0);
   proposal.priceResolved = BigInt.fromI32(0);
   proposal.status = 'Pending';
@@ -70,14 +74,18 @@ export function handleRewardCreated(event: RewardCreated): void {
     reward.unitsIssued = BigInt.fromI32(0);
     reward.totalDistributed = BigInt.fromI32(0);
     reward.currentIndex = BigInt.fromI32(0);
-    reward.currentProposal = '1';
+   
 
-    let propossalId = '1';
-    let proposal = Proposal.load(propossalId);
+    let proposalId = '1';
+    let uidProposal = id.concat('-').concat(proposalId)
+    let proposal = Proposal.load(uidProposal);
 
     if (proposal === null) {
-      createNewProposal(propossalId, reward);
+      createNewProposal(proposalId, id,reward);
     }
+
+    reward.currentProposal = uidProposal;
+
   }
 
   reward.save();
@@ -111,22 +119,37 @@ export function handleRewardAmountUpdated(event: RewardAmountUpdated): void {
       rewardIndexHistory.timeStamp = event.block.timestamp;
       rewardIndexHistory.index = reward.currentIndex;
       rewardIndexHistory.rewardAmount = reward.rewardAmount;
-      rewardIndexHistory.reward = prId;
+      rewardIndexHistory.rewardId = prId;
       rewardIndexHistory.save();
     }
     reward.save();
   }
 }
 
+
+export function handleRewardSwitchStatus(event:RewardSwitchStatus): void {
+  let id = event.params.pcrId.toString();
+
+  let reward = Reward.load(id);
+  if (reward !== null) {
+    reward.rewardStatus = event.params.rewardStatus;
+    reward.save();
+  }
+}
+
+
+
 export function handleProposalCreated(event: ProposalCreated): void {
   let proposerId = event.params.proposer.toHexString();
   createUser(proposerId);
-
-  let id = event.params.proposalId.toString();
+ 
+  let proposalId = event.params.proposalId.toString();
   let prId = event.params.pcrId.toString();
+  
+  let uidProposal = prId.concat('-').concat(proposalId)
   let reward = Reward.load(prId);
   if (reward !== null) {
-    let proposal = Proposal.load(id);
+    let proposal = Proposal.load(uidProposal);
 
     if (proposal !== null) {
       proposal.proposer = proposerId;
@@ -151,12 +174,12 @@ export function handleProposalRejected(event: ProposalRejected): void {
 
   if (reward !== null) {
     reward.rewardStep = BigInt.fromI32(0);
-    reward.earliestNextAction = event.block.timestamp.plus(reward.optimisticOracleLivenessTime);
-    reward.currentProposal = newProposalId;
+    reward.earliestNextAction = event.block.timestamp.plus(reward.interval);
+    reward.currentProposal = prId.concat("-").concat(newProposalId);
     reward.save();
 
     let id = event.params.proposalId.toString();
-    let proposal = Proposal.load(id);
+    let proposal = Proposal.load(prId.concat("-").concat(id));
 
     if (proposal !== null) {
       proposal.status = 'Rejected';
@@ -166,9 +189,9 @@ export function handleProposalRejected(event: ProposalRejected): void {
       proposal.save();
     }
 
-    let newProposal = Proposal.load(newProposalId);
+    let newProposal = Proposal.load(prId.concat("-").concat(newProposalId));
     if (newProposal === null) {
-      createNewProposal(newProposalId, reward);
+      createNewProposal(newProposalId, prId,reward);
     }
   }
 }
@@ -184,21 +207,21 @@ export function handleProposalAcceptedAndDistribuition(event: ProposalAcceptedAn
     reward.currentdeposit = reward.currentdeposit.minus(reward.rewardAmount);
     reward.rewardStatus = BigInt.fromI32(0);
     reward.rewardStep = BigInt.fromI32(0);
-    reward.earliestNextAction = event.block.timestamp.plus(reward.optimisticOracleLivenessTime);
-    reward.currentProposal = newProposalId;
+    reward.earliestNextAction = event.block.timestamp.plus(reward.interval);
+    reward.currentProposal = prId.concat("-").concat(newProposalId);
     reward.save();
 
     let id = event.params.proposalId.toString();
-    let proposal = Proposal.load(id);
+    let proposal = Proposal.load( prId.concat("-").concat(id));
     if (proposal !== null) {
       proposal.status = 'Accepted';
       proposal.timeStamp = event.block.timestamp;
       proposal.priceResolved = event.params.resolvedPrice;
       proposal.save();
     }
-    let newProposal = Proposal.load(newProposalId);
+    let newProposal = Proposal.load(prId.concat("-").concat(newProposalId));
     if (newProposal === null) {
-      createNewProposal(newProposalId, reward);
+      createNewProposal(newProposalId, prId,reward);
     }
   }
 }
@@ -234,7 +257,7 @@ export function handleRewardUnitsIssued(event: RewardUnitsIssued): void {
     rewardIndexHistory.timeStamp = event.block.timestamp;
     rewardIndexHistory.index = reward.currentIndex;
     rewardIndexHistory.rewardAmount = reward.rewardAmount;
-    rewardIndexHistory.reward = prId;
+    rewardIndexHistory.rewardId = prId;
     rewardIndexHistory.save();
   }
   //// CREATE/UPDATE the Reward/subscription per user
@@ -267,7 +290,7 @@ export function handleRewardUnitsDeleted(event: RewardUnitsDeleted): void {
     rewardIndexHistory.timeStamp = event.block.timestamp;
     rewardIndexHistory.rewardAmount = reward.rewardAmount;
     rewardIndexHistory.index = reward.currentIndex;
-    rewardIndexHistory.reward = prId;
+    rewardIndexHistory.rewardId = prId;
     rewardIndexHistory.save();
   }
   //// CREATE/UPDATE the Reward/subscription per user

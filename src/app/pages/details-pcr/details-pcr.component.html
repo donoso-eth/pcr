@@ -6,7 +6,7 @@
       <div style="margin-top: 20px" class="grid p-fluid">
         <div class="col-12">
           <div style="position: absolute; right: 25px;top: 10px;">
-            <p-inputSwitch (onChange)="changeStatus($event.checked)" [(ngModel)]="toUpdateReward!.rewardStatus"> </p-inputSwitch>
+            <p-inputSwitch (onChange)="changeStatus($event.checked)" [(ngModel)]="rewardStatus"> </p-inputSwitch>
           </div>
 
           <br />
@@ -116,7 +116,7 @@
                   <!-- #endregion REQUIRED DEPOSIT ////  -->
 
                   <div class="col-12 flex justify-content-around">
-                  <button pButton pRipple style="width: fit-content" (click)="showFunding(toUpdateReward!)" type="button" label="Fund" class="p-button-rounded mr-2 mb-2"></button>
+                  <button pButton pRipple style="width: fit-content" (click)="showFunding()" type="button" label="Fund" class="p-button-rounded mr-2 mb-2"></button>
                   <button pButton pRipple style="width: fit-content" (click)="showUpdateRewardAmount()" type="button" label="Change" class="p-button-rounded mr-2 mb-2"></button>
                 </div>
                 </div>
@@ -129,13 +129,17 @@
             <div class="col-12 lg:col-6 xl:col-6">
               <div class="card">
                 <h5>Index Evolution</h5>
-                <p-chart *ngIf="chartData != undefined" type="line" [data]="chartData" [options]="chartOptions"></p-chart>
+                <p *ngIf="showIndexChart == false">Units to members not yet issued</p>
+                <p-chart *ngIf="chartData != undefined && showIndexChart == true" type="line" [data]="chartData" [options]="chartOptions"></p-chart>
               </div>
             </div>
             <div class="col-12 lg:col-6 xl:col-6">
               <div class="card">
                 <h5>Last Distributions</h5>
-                <p-chart  *ngIf="distributionsChartData!= undefined" type="bar" [data]="distributionsChartData" [options]="distributionsChartOptions"></p-chart>
+                <p *ngIf="showDistributionChart == false">Proposals not yet execued</p>
+                <p-chart  *ngIf="distributionsChartData!= undefined && showDistributionChart == true && toUpdateReward?.priceType == 0" type="bar" [data]="distributionsChartData" [options]="distributionsChartOptions"></p-chart>
+                <p-chart  *ngIf="distributionsChartData!= undefined && showDistributionChart == true && toUpdateReward?.priceType == 1" type="line" [data]="distributionsChartData" [options]="distributionsChartOptions"></p-chart>
+         
               </div>
             </div>
           </div>
@@ -162,7 +166,7 @@
   <h6>Members</h6>
   <p class="flex justify-content-between">
     <input [formControl]="adressesCtrl" pInputText type="text" placeholder="Member to Add" />
-    <button pButton icon="pi pi-check" label="Fund" (click)="doAddMember(toUpdateReward!)" class="p-button-outlined"></button>
+    <button pButton icon="pi pi-check" label="Add" (click)="doAddMember(toUpdateReward!)" class="p-button-outlined"></button>
   </p>
   <!-- <ng-template pTemplate="footer">
     <button pButton icon="pi pi-check" label="Fund" class="p-button-outlined"></button>
@@ -184,27 +188,27 @@
 </p-dialog>
 
 
-<p-dialog header="Let's fund!" [(visible)]="showFundingState" [modal]="true" showEffect="fade" [style]="{ width: '40vw' }" [breakpoints]="{ '960px': '75vw' }">
+<p-dialog header="Let's fund!" [(visible)]="showFundingState" [modal]="true" showEffect="fade" [style]="{ width: '50vw' }" [breakpoints]="{ '960px': '80vw' }">
   <p class="line-height-3 m-0">
-    You are about to fund the PCR Token <span style="color: green">"{{ toUpdateReward!?.title }}"</span> Your current balalnce is {{toUpdateReward!?.fundToken?.rewardTokenBalance!}} DAIx   <br />
-    It requires the {{ toUpdateReward!?.fundToken?.name }} superToken, your current balance is: {{toUpdateReward!?.fundToken?.superTokenBalance!}} DAIx . You may want to:
+    You are about to fund the PCR Token <span style="color: green">"{{ toUpdateReward!?.title }}"</span> Your current balance is <span style="font-weight:bold;color:var(--primary-color)">{{toUpdateReward!?.fundToken?.rewardTokenBalance!}} DAI </span>   <br />
+    It requires the {{ toUpdateReward!?.fundToken?.name }} superToken, your current balance is: <span style="font-weight:bold;color:var(--primary-color)">{{toUpdateReward!?.fundToken?.superTokenBalance!}} DAIx </span>. You may want to:
   </p>
-  <h6>Fund The PCR Token</h6>
+  <h6>Fund The PCR with SuperToken DAIx (values in tokens)</h6>
   <p class="flex justify-content-between" *ngIf="+toUpdateReward!?.fundToken?.superTokenBalance! > +toUpdateReward!?.rewardAmount!">
     <p-inputNumber [formControl]="toFundAmountCtrl" placeholder="Amount" mode="decimal" [showButtons]="true" [min]="0"> </p-inputNumber>
     <button pButton icon="pi pi-check" label="Fund" (click)="doFunding()" class="p-button-outlined"></button>
   </p>
-  <h6>Upgrade from DAI to DAIX</h6>
+  <h6>Upgrade from DAI to DAIx (values in tokens)</h6>
   <p class="flex justify-content-between" *ngIf="+toUpdateReward!?.fundToken?.superTokenBalance! > +toUpdateReward!?.rewardAmount!">
-    Converting to supertoken
+
     <p-inputNumber [formControl]="toUpgradeAmountCtrl" placeholder="Amount" mode="decimal" [showButtons]="true" [min]="0"> </p-inputNumber>
-    <button pButton icon="pi pi-check" label="Fund" (click)="doUpgrade()" class="p-button-outlined"></button>
+    <button pButton icon="pi pi-check" label="Upgrade" (click)="doUpgrade()" class="p-button-outlined"></button>
   </p>
-  <h6>Downgrade from DAIx to DAIx</h6>
+  <h6>Downgrade from DAIx to DAI (values in tokens)</h6>
   <p class="flex justify-content-between" *ngIf="+toUpdateReward!?.fundToken?.superTokenBalance! > +toUpdateReward!?.rewardAmount!">
-    Converting to supertoken
-    <p-inputNumber [formControl]="toUpgradeAmountCtrl" placeholder="Amount" mode="decimal" [showButtons]="true" [min]="0"> </p-inputNumber>
-    <button pButton icon="pi pi-check" label="Fund" (click)="doDowngrade()" class="p-button-outlined"></button>
+ 
+    <p-inputNumber [formControl]="toDowngradeAmountCtrl" placeholder="Amount" mode="decimal" [showButtons]="true" [min]="0"> </p-inputNumber>
+    <button pButton icon="pi pi-check" label="Downgrade" (click)="doDowngrade()" class="p-button-outlined"></button>
   </p>
   <ng-template pTemplate="footer">
     <!-- <button pButton icon="pi pi-check" label="Fund" class="p-button-outlined"></button> -->

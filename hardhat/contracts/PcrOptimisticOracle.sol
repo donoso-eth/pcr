@@ -210,7 +210,7 @@ contract PcrOptimisticOracle is IPcrOptimisticOracle, Initializable, MultiCaller
         require(proposal.timestamp != 0, "Invalid proposalId");
 
         // Only one validated proposal per reward can be executed for distribution.
-        require(reward.rewardStep == DataTypes.RewardStep.Pending, "Reward not in Propose Period");
+        require(reward.rewardStep == DataTypes.RewardStep.Pending, "Reward not in Execurion Period");
 
         // Append reward index to ancillary data.
         bytes memory ancillaryData = _appendpcrId(reward.customAncillaryData);
@@ -259,7 +259,7 @@ contract PcrOptimisticOracle is IPcrOptimisticOracle, Initializable, MultiCaller
             reward.rewardStep = DataTypes.RewardStep.Funding;
             reward.earliestNextAction = block.timestamp + reward.interval;
         }
-        emit Events.RewardSwitchStatus(reward.rewardStatus);
+        emit Events.RewardSwitchStatus(pcrId,reward.rewardStatus);
     }
 
     /********************************************

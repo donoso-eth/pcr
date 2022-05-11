@@ -19,6 +19,8 @@ export interface IPCR_REWARD {
   rewardAmount: string;
   rewardStatus: string;
   rewardStep: string;
+  target:string;
+  targetCondition:string;
   rewardToken: string;
   title: string;
   url: string | null;
@@ -54,7 +56,9 @@ export interface IPCR_REWARD {
   displayStep: number;
   displayCustomAncillaryData: string;
   displayTime: { started:number, finish:number, percentage:number}
-  displayDate: string
+  displayDate: string;
+  displayTarget:string;
+  displayTargetCondition:string;
  
 }
 

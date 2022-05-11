@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
+import { utils } from 'ethers';
 import { calculateStep } from 'src/app/shared/helpers/helpers';
 import { IPROPOSAL, REWARD_STEP } from 'src/app/shared/models/pcr';
 
@@ -35,7 +36,7 @@ export class ProposalDetailComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
      this.display_step = calculateStep(+this.proposal.step,this.proposal.earliestNextAction)
-      console.log(this.proposal)
+   
     
 
     if (this.display_step == 0) {
@@ -44,10 +45,12 @@ export class ProposalDetailComponent implements OnChanges {
       //// DISPLAY PROPOSAL VALUES
       this.startProposePeriod = new Date ((+this.proposal.startQualifying + +this.proposal.interval ) * 1000).toLocaleString();
       
+   
+
       if (this.proposal.priceType == 0){
-        this.priceProposed = this.proposal.priceProposed == 1 ? "Yes" :"No";
+        this.priceProposed = +this.proposal.priceProposed == (1*10**18) ? "Yes" :"No";
       } else {
-        this.priceProposed = this.proposal.priceProposed.toString();
+        this.priceProposed = utils.formatEther(this.proposal.priceProposed);
       }
       
 
@@ -58,13 +61,8 @@ export class ProposalDetailComponent implements OnChanges {
       this.startExecutionPeriod = new Date( (+this.proposal.startLivenessPeriod + +this.proposal.optimisticOracleLivenessTime)*1000).toLocaleString()
     }
 
-
-
-
     this.activeStep = this.display_step;
-    console.log(this.activeStep)
-
-
+ 
   }
 
   doProposeValue() {

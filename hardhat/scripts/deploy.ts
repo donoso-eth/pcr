@@ -35,6 +35,16 @@ const processDir = process.cwd()
 const contract_path = join(processDir,contract_path_relative)
 ensureDir(contract_path)
 
+
+const artifactEvents = join(
+  processDir,
+  `./artifacts/contracts/libraries/Events.sol/Events.json`
+);
+const MetadataEvents = JSON.parse(readFileSync(artifactEvents, 'utf-8'));
+const eventAbi = MetadataEvents.abi;
+
+
+
 async function main() {
 
 let network = hardhatArguments.network;
@@ -90,7 +100,7 @@ console.log('newTimeStamp', new Date(+await getTimestamp()*1000).toLocaleString(
     writeFileSync(
       `${contract_path}/${toDeployContract.jsonName}_metadata.json`,
       JSON.stringify({
-        abi: Metadata.abi,
+        abi: Metadata.abi.concat(eventAbi),
         name: toDeployContract.name,
         address: contract.address,
         network: network,

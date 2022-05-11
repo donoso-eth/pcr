@@ -238,15 +238,6 @@ export class Reward extends Entity {
     this.set("priceType", Value.fromBigInt(value));
   }
 
-  get rewardTargetHitory(): Array<string> {
-    let value = this.get("rewardTargetHitory");
-    return value!.toStringArray();
-  }
-
-  set rewardTargetHitory(value: Array<string>) {
-    this.set("rewardTargetHitory", Value.fromStringArray(value));
-  }
-
   get optimisticOracleLivenessTime(): BigInt {
     let value = this.get("optimisticOracleLivenessTime");
     return value!.toBigInt();
@@ -600,7 +591,7 @@ export class RewardIndexHistory extends Entity {
     super();
     this.set("id", Value.fromString(id));
 
-    this.set("reward", Value.fromString(""));
+    this.set("rewardId", Value.fromString(""));
     this.set("rewardAmount", Value.fromBigInt(BigInt.zero()));
     this.set("index", Value.fromBigInt(BigInt.zero()));
     this.set("timeStamp", Value.fromBigInt(BigInt.zero()));
@@ -634,13 +625,13 @@ export class RewardIndexHistory extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get reward(): string {
-    let value = this.get("reward");
+  get rewardId(): string {
+    let value = this.get("rewardId");
     return value!.toString();
   }
 
-  set reward(value: string) {
-    this.set("reward", Value.fromString(value));
+  set rewardId(value: string) {
+    this.set("rewardId", Value.fromString(value));
   }
 
   get rewardAmount(): BigInt {
@@ -681,7 +672,8 @@ export class Proposal extends Entity {
     this.set("startLivenessPeriod", Value.fromBigInt(BigInt.zero()));
     this.set("priceProposed", Value.fromBigInt(BigInt.zero()));
     this.set("priceResolved", Value.fromBigInt(BigInt.zero()));
-    this.set("reward", Value.fromString(""));
+    this.set("rewardId", Value.fromString(""));
+    this.set("proposalId", Value.fromString(""));
   }
 
   save(): void {
@@ -755,74 +747,22 @@ export class Proposal extends Entity {
     this.set("priceResolved", Value.fromBigInt(value));
   }
 
-  get reward(): string {
-    let value = this.get("reward");
+  get rewardId(): string {
+    let value = this.get("rewardId");
     return value!.toString();
   }
 
-  set reward(value: string) {
-    this.set("reward", Value.fromString(value));
+  set rewardId(value: string) {
+    this.set("rewardId", Value.fromString(value));
   }
 
-  get status(): string | null {
-    let value = this.get("status");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toString();
-    }
-  }
-
-  set status(value: string | null) {
-    if (!value) {
-      this.unset("status");
-    } else {
-      this.set("status", Value.fromString(<string>value));
-    }
-  }
-}
-
-export class ProposalSummary extends Entity {
-  constructor(id: string) {
-    super();
-    this.set("id", Value.fromString(id));
-
-    this.set("reward", Value.fromString(""));
-  }
-
-  save(): void {
-    let id = this.get("id");
-    assert(id != null, "Cannot save ProposalSummary entity without an ID");
-    if (id) {
-      assert(
-        id.kind == ValueKind.STRING,
-        "Cannot save ProposalSummary entity with non-string ID. " +
-          'Considering using .toHex() to convert the "id" to a string.'
-      );
-      store.set("ProposalSummary", id.toString(), this);
-    }
-  }
-
-  static load(id: string): ProposalSummary | null {
-    return changetype<ProposalSummary | null>(store.get("ProposalSummary", id));
-  }
-
-  get id(): string {
-    let value = this.get("id");
+  get proposalId(): string {
+    let value = this.get("proposalId");
     return value!.toString();
   }
 
-  set id(value: string) {
-    this.set("id", Value.fromString(value));
-  }
-
-  get reward(): string {
-    let value = this.get("reward");
-    return value!.toString();
-  }
-
-  set reward(value: string) {
-    this.set("reward", Value.fromString(value));
+  set proposalId(value: string) {
+    this.set("proposalId", Value.fromString(value));
   }
 
   get timeStamp(): BigInt | null {
@@ -842,20 +782,20 @@ export class ProposalSummary extends Entity {
     }
   }
 
-  get result(): BigInt | null {
-    let value = this.get("result");
+  get status(): string | null {
+    let value = this.get("status");
     if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
-      return value.toBigInt();
+      return value.toString();
     }
   }
 
-  set result(value: BigInt | null) {
+  set status(value: string | null) {
     if (!value) {
-      this.unset("result");
+      this.unset("status");
     } else {
-      this.set("result", Value.fromBigInt(<BigInt>value));
+      this.set("status", Value.fromString(<string>value));
     }
   }
 }

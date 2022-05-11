@@ -21,7 +21,7 @@ library Events {
 
     event RewardTargetAndConditionChanged(uint256 pcrId, int256 target, DataTypes.TargetCondition targetCondition);
 
-    event RewardSwitchStatus(DataTypes.RewardStatus rewardStatus);
+    event RewardSwitchStatus(uint256 pcrId, DataTypes.RewardStatus rewardStatus);
     
     event ProposalCreated(address proposer, uint256 proposalId, uint256 pcrId,int256 priceProposed);
 

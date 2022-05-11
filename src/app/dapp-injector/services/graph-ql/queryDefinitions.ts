@@ -48,27 +48,30 @@ query($address: String!){
 
 export const GET_INDEXES = `
 query($id: String!){
-    rewardIndexHistories(first: 5, where: {reward:$id}, orderBy: timeStamp, orderDirection: desc) {
+    rewardIndexHistories(first: 5, where: {rewardId:$id}, orderBy: timeStamp, orderDirection: desc) {
       index
       rewardAmount
       timeStamp
-      reward 
+      rewardId 
     }
   }
 `;
 
 export const GET_PROPOSALS = `
-  {
-    proposals(last: 5, orderBy: id, orderDirection: desc ) {
+query($id: String!){
+    proposals(first: 5, where: {rewardId:$id}, orderBy: timeStamp, orderDirection: desc ) {
       id
-      proposer
-      reward
+      rewardId
+      proposalId
       status
+      timeStamp
       priceProposed
       priceResolved
     }
   }
 `;
+
+
 
 export const GET_REWARD = `
 query($id: String!)
@@ -90,6 +93,8 @@ query($id: String!)
       earliestNextAction
       interval
       priceType
+      target
+      targetCondition
       optimisticOracleLivenessTime
       rewardStep
       rewardStatus

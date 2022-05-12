@@ -11,8 +11,8 @@
               <div class="card">
                 <h5>Last Distributions</h5>
                 <p *ngIf="showDistributionChart == false">Proposals not yet execued</p>
-                <p-chart  *ngIf="distributionsChartData!= undefined && showDistributionChart == true && chartConfig?.priceType == 0" type="bar" [data]="distributionsChartData" [options]="distributionsChartOptions"></p-chart>
-                <p-chart  *ngIf="distributionsChartData!= undefined && showDistributionChart == true && chartConfig?.priceType == 1" type="line" [data]="distributionsChartData" [options]="distributionsChartOptions"></p-chart>
+                <p-chart  *ngIf="distributionsChartData!= undefined && showDistributionChart == true && chartConfig?.priceType == 0" type="bar" [data]="distributionsChartData" [options]="distributionsYesNoChartOptions"></p-chart>
+                <p-chart  *ngIf="distributionsChartData!= undefined && showDistributionChart == true && chartConfig?.priceType == 1" type="line" [data]="distributionsChartData" [options]="distributionsTargetChartOptions "></p-chart>
          
               </div>
             </div>

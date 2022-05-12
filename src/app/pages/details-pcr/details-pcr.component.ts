@@ -8,7 +8,7 @@ import { takeUntil } from 'rxjs';
 import { doSignerTransaction } from 'src/app/dapp-injector/classes/transactor';
 
 import { GraphQlService } from 'src/app/dapp-injector/services/graph-ql/graph-ql.service';
-import { calculateStep, prepareDisplayProposal } from 'src/app/shared/helpers/helpers';
+import { calculateStep, createERC20Instance, createSuperTokenInstance, prepareDisplayProposal } from 'src/app/shared/helpers/helpers';
 import { IPCR_REWARD, IPROPOSAL } from 'src/app/shared/models/pcr';
 
 import { abi_ERC20 } from './abis/erc20';
@@ -70,16 +70,16 @@ export class DetailsPcrComponent extends DappBaseComponent {
 
 
   async refreshBalance(){
-    const superToken = this._createSuperTokenInstance(this.toUpdateReward!.fundToken.superToken);
+    const superToken = createSuperTokenInstance(this.toUpdateReward!.fundToken.superToken, this.dapp.signer!);
     const balanceSupertoken = await superToken.realtimeBalanceOfNow(this.dapp.signerAddress);
 
     this.toUpdateReward!.fundToken.superTokenBalance = (+utils.formatEther(balanceSupertoken[0])).toFixed(4);
 
-    const rewardToken = this._createERC20Instance(this.toUpdateReward!.fundToken.rewardToken);
+    const rewardToken = createERC20Instance(this.toUpdateReward!.fundToken.rewardToken, this.dapp.signer!);
     const balanceRewardToken = await rewardToken.balanceOf(this.dapp.signerAddress);
 
     this.toUpdateReward!.fundToken.rewardTokenBalance = (+utils.formatEther(balanceRewardToken)).toFixed(4);
-
+    this.store.dispatch(Web3Actions.chainBusy({ status: false}));
   }
 
   showTransfer(){
@@ -93,44 +93,7 @@ export class DetailsPcrComponent extends DappBaseComponent {
     this.showFundingState = true;
   }
 
-  async doUpgrade() {
-    if (this.toUpgradeAmountCtrl.value <= 0) {
-      alert('please add Amount to Upgrade');
-      return
-    }
-    this.store.dispatch(Web3Actions.chainBusy({ status: true }));
-    const value = utils.parseEther(this.toUpgradeAmountCtrl.value.toString())
 
-    await doSignerTransaction(
-      this._createERC20Instance(this.toUpdateReward!.fundToken.rewardToken).approve(
-        this.toUpdateReward!.fundToken.superToken
-        ,
-        value
-      )
-    );
-
-    const superToken = this._createSuperTokenInstance(this.toUpdateReward!.fundToken.superToken);
-    await doSignerTransaction(superToken.upgrade(value));
-
-    await this.refreshBalance()
-    this.store.dispatch(Web3Actions.chainBusy({ status: false }));
-
-  }
-
-  async doDowngrade() {
-    if (this.toDowngradeAmountCtrl.value <= 0) {
-      alert('please add Aount to Upgrade');
-      return
-    }
-    this.store.dispatch(Web3Actions.chainBusy({ status: true }));
-    const value = utils.parseEther(this.toDowngradeAmountCtrl.value.toString())
-
-    const superToken = this._createSuperTokenInstance(this.toUpdateReward!.fundToken.superToken);
-    await doSignerTransaction(superToken.downgrade(value));
-
-    await this.refreshBalance()
-    this.store.dispatch(Web3Actions.chainBusy({ status: false }));
-  }
 
   async doFunding() {
     if (this.toFundAmountCtrl.value <= 0) {
@@ -140,7 +103,7 @@ export class DetailsPcrComponent extends DappBaseComponent {
     this.store.dispatch(Web3Actions.chainBusy({ status: true }));
     const value = utils.parseEther(this.toFundAmountCtrl.value.toString())
     await doSignerTransaction(
-      this._createERC20Instance(this.toUpdateReward!.fundToken.superToken).approve(
+      createERC20Instance(this.toUpdateReward!.fundToken.superToken,this.dapp.signer!).approve(
         this.dapp.DAPP_STATE.contracts[+this.toUpdateReward!.id]?.pcrOptimisticOracle.address,
         value
       )
@@ -223,6 +186,7 @@ export class DetailsPcrComponent extends DappBaseComponent {
 
     try {
       const tx = await doSignerTransaction(this.dapp.DAPP_STATE.contracts[+this.toUpdateReward!.id]?.pcrOptimisticOracle.instance.executeDistribution());
+      await this.refreshBalance()
     } catch (error) {
       console.log(error);
       this.store.dispatch(Web3Actions.chainBusy({ status: false }));
@@ -315,12 +279,12 @@ export class DetailsPcrComponent extends DappBaseComponent {
 
   ////////PRIVATE 
 
-  private _createERC20Instance(ERC: string): Contract {
-    return new Contract(ERC, abi_ERC20, this.dapp.signer!);
-  }
+  // private _createERC20Instance(ERC: string): Contract {
+  //   return new Contract(ERC, abi_ERC20, this.dapp.signer!);
+  // }
 
-  private _createSuperTokenInstance(SuperToken: string): Contract {
-    return new Contract(SuperToken, abi_SuperToken, this.dapp.signer!);
-  }
+  // private _createSuperTokenInstance(SuperToken: string): Contract {
+  //   return new Contract(SuperToken, abi_SuperToken, this.dapp.signer!);
+  // }
 
 }

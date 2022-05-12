@@ -44,14 +44,7 @@ export interface IPCR_REWARD {
   };
 
 
-  fundToken: { 
-    name: string; 
-    id: number; 
-    image: string; 
-    rewardToken: string;
-    rewardTokenBalance?:string; 
-    superToken: string;
-    superTokenBalance?:string };
+  fundToken: IFUND_TOKEN
   
   displayStep: number;
   displayCustomAncillaryData: string;
@@ -61,6 +54,17 @@ export interface IPCR_REWARD {
   displayTargetCondition:string;
  
 }
+
+export interface IFUND_TOKEN {
+
+    name: string; 
+    id: number; 
+    image: string; 
+    rewardToken: string;
+    rewardTokenBalance?:string; 
+    superToken: string;
+    superTokenBalance?:string };
+
 
 
 export interface IPROPOSAL {

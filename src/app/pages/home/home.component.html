@@ -12,9 +12,10 @@
             *ngFor="let reward of pcrTokens;index as i">
 
             <h6 [ngStyle]="{ lineHeight: '2.5rem' }">
-              <a class="p-link layout-topbar-button">
-                <i style="color:var(--primary-color)" style="font-size:22px" class="pi pi-eye"></i>
-              </a> {{ reward.title }}
+          
+                <i style="color:var(--primary-color);font-size:25px;position: relative;top: 4px;" class="pi pi-eye"></i>
+                {{ reward.title }}
+        
             </h6>
             <div>
               <div *ngIf="reward.displayStep == 0">
@@ -63,9 +64,9 @@
       *ngFor="let membership of pcrMemberships">
 
       <h6 [ngStyle]="{ lineHeight: '2.5rem' }">
-        <a  class="p-link layout-topbar-button">
-          <i style="color:var(--primary-color);font-size: large;" class="pi pi-eye"></i>
-        </a> {{ membership.title}}: <span style="color:var(--primary-color)">You have {{membership.units}} units</span>
+      
+          <i style="color:var(--primary-color);font-size: 25px;position: relative;top: 4px;" class="pi pi-eye"></i>
+     {{ membership.title}}: <span style="color:var(--primary-color)">You have {{membership.units}} units</span>
       </h6>
       <div>
         <div *ngIf="membership.displayStep == 0">
@@ -86,7 +87,7 @@
       <div  class="flex align-items-center justify-content-end" [ngStyle]="{  height: '2.5rem' }">
 
         <div class="flex justify-content-center align-items-center">
-          <p class="mr-2 mb-0">Current Index: {{membership.currentIndex}} per unit</p>
+          <p class="mr-2 mb-0">Current Index: {{utils.formatEther(membership.currentIndex)}} per unit</p>
           <img [width]="40" src="assets/images/tokens/{{membership?.fundToken?.image}}_icon.svg"
             style="margin-right: 5px;" />
         </div>

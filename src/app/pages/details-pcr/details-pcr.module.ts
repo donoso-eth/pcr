@@ -17,6 +17,7 @@ import { StepsModule } from 'primeng/steps';
 import { ChartModule } from 'primeng/chart';
 import { ProposalDetailModule } from 'src/app/shared/components/proposal-detail/proposal-detail.module';
 import { ChartsModuleShared } from 'src/app/shared/components/charts/charts.module';
+import { UserBalanceModule } from 'src/app/shared/components/user-balance/user-balance.module';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { ChartsModuleShared } from 'src/app/shared/components/charts/charts.modu
 
     ProposalDetailModule,
     ChartsModuleShared,
+    UserBalanceModule, 
     
     TabViewModule,
     ButtonModule,

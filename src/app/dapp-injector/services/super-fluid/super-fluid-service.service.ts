@@ -19,19 +19,20 @@ export class SuperFluidServiceService {
   flow!: ConstantFlowAgreementV1;
   ida!:InstantDistributionAgreementV1;
   operations: Array<Operation> = [];
-  constructor(private dapp: DappInjector) {}
+  constructor(private dapp: DappInjector) {
 
-  async getContracts() {}
+
+  }
+
 
   async initializeFramework() {
 
-
     this.sf = await Framework.create({
-      networkName: 'local',//this.dapp.DAPP_STATE.connectedNetwork!,
+      networkName: global_address[this.dapp.dappConfig.defaultNetwork].sfNetwork,
       provider: this.dapp.DAPP_STATE.defaultProvider!,
-      customSubgraphQueriesEndpoint:
-      'https://api.thegraph.com/subgraphs/name/superfluid-finance/protocol-v1-kovan',
-      resolverAddress: global_address.kovan.resolver,
+      customSubgraphQueriesEndpoint:global_address[this.dapp.dappConfig.defaultNetwork].subgraph,
+
+      resolverAddress: global_address[this.dapp.dappConfig.defaultNetwork].resolver,
     });
 
     this.flow = this.sf.cfaV1;

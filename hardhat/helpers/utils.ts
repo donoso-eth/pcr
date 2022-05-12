@@ -24,6 +24,17 @@ export function getHardhatNetwork(hre: HardhatRuntimeEnvironment) {
 }
 
 const global_address = {
+  localhost: {
+    host: '0xF0d7d1D47109bA426B9D8A3Cde1941327af1eea3',
+    cfa: '0xECa8056809e7e8db04A8fF6e4E82cD889a46FE2F',
+    ida: '0x556ba0b3296027Dd7BCEb603aE53dEc3Ac283d2b',
+    fDaix: '0xe3cb950cb164a31c66e32c320a800d477019dcff',
+    fDai: '0xb64845d53a373d35160b72492818f0d2f51292c0',
+    resolver:"0x851d3dd9dc97c1df1DA73467449B3893fc76D85B",
+    subgraph:"https://thegraph.com/hosted-service/subgraph/superfluid-finance/protocol-v1-kovan",
+    sfNetwork:"local",
+    finder:"0xeD0169a88d267063184b0853BaAAAe66c3c154B2"
+  },
   kovan: {
     host: '0xF0d7d1D47109bA426B9D8A3Cde1941327af1eea3',
     cfa: '0xECa8056809e7e8db04A8fF6e4E82cD889a46FE2F',
@@ -31,7 +42,9 @@ const global_address = {
     fDaix: '0xe3cb950cb164a31c66e32c320a800d477019dcff',
     fDai: '0xb64845d53a373d35160b72492818f0d2f51292c0',
     resolver:"0x851d3dd9dc97c1df1DA73467449B3893fc76D85B",
-    finder:"0xeD0169a88d267063184b0853BaAAAe66c3c154B2"
+    finder:"0xeD0169a88d267063184b0853BaAAAe66c3c154B2",
+    subgraph:"https://thegraph.com/hosted-service/subgraph/superfluid-finance/protocol-v1-kovan",
+    sfNetwork:"kovan",
   },
   mumbai: {
     host: '0xEB796bdb90fFA0f28255275e16936D25d3418603',
@@ -40,7 +53,9 @@ const global_address = {
     fDaix: '0x5D8B4C2554aeB7e86F387B4d6c00Ac33499Ed01f',
     fDai: '0x15F0Ca26781C3852f8166eD2ebce5D18265cceb7',
     resolver:"0x8C54C83FbDe3C59e59dd6E324531FB93d4F504d3",
-    finder:"0xb22033fF04AD01fbE8d78ef4622a20626834271B"
+    finder:"0xb22033fF04AD01fbE8d78ef4622a20626834271B",
+    sfNetwork:"mumbai",
+    subgraph:"https://thegraph.com/hosted-service/subgraph/superfluid-finance/protocol-v1-mumbai"
   },
 };
 

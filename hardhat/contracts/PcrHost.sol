@@ -3,21 +3,21 @@ pragma solidity ^0.8.0;
 import "hardhat/console.sol";
 import {Clones} from "@openzeppelin/contracts/proxy/Clones.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
 
 import {ISuperfluid, ISuperToken} from "@superfluid-finance/ethereum-contracts/contracts/apps/SuperAppBase.sol";
 import {IInstantDistributionAgreementV1} from "@superfluid-finance/ethereum-contracts/contracts/interfaces/agreements/IInstantDistributionAgreementV1.sol";
 
 import {IPcrToken} from "./interfaces/IPcrToken.sol";
 import {IPcrOptimisticOracle} from "./interfaces/IPcrOptimisticOracle.sol";
+import {IPcrHost} from "./interfaces/IPcrhost.sol";
 
 import {DataTypes} from "./libraries/DataTypes.sol";
 import {Events} from "./libraries/Events.sol";
 
-import "@openzeppelin/contracts/utils/Strings.sol";
-
 import "@uma/core/contracts/oracle/interfaces/FinderInterface.sol";
 
-contract PcrHost {
+contract PcrHost is IPcrHost {
   using Counters for Counters.Counter;
   Counters.Counter public _pcrTokensIssued;
 
@@ -35,7 +35,7 @@ contract PcrHost {
     DataTypes.PCRHOST_CONFIG_INPUT memory pcrHostConfig,
     DataTypes.IDA_INPUT memory _ida,
     DataTypes.OPTIMISTIC_ORACLE_INPUT memory _optimisticOracleInput
-  ) external {
+  ) external override {
     _pcrTokensIssued.increment();
 
     uint256 id = _pcrTokensIssued.current();
@@ -48,21 +48,11 @@ contract PcrHost {
 
     address _optimisticOracleContract = Clones.clone(pcrHostConfig.pcrOptimisticOracleImpl);
 
-    _pcrTokensContractsByUser[msg.sender][_tokenId] = Pcr_addresses({
-      tokenContract: _tokenContract,
-      optimisticOracleContract: _optimisticOracleContract
-    });
+    _pcrTokensContractsByUser[msg.sender][_tokenId] = Pcr_addresses({tokenContract: _tokenContract, optimisticOracleContract: _optimisticOracleContract});
 
-    string memory tokenSymbol = string(
-      abi.encodePacked("PCR", Strings.toString(id))
-    );
+    string memory tokenSymbol = string(abi.encodePacked("PCR", Strings.toString(id)));
 
-    string memory tokenName = string(
-      abi.encodePacked(
-        "Perpetual Conditional Reward Token Nr: ",
-        Strings.toString(id)
-      )
-    );
+    string memory tokenName = string(abi.encodePacked("Perpetual Conditional Reward Token Nr: ", Strings.toString(id)));
 
     //// INITIALIZE TOJEN cONTRACT WITH
     DataTypes.PCRTOKEN_INITIALIZER memory pcrTokenInitializer;
@@ -77,65 +67,51 @@ contract PcrHost {
 
     IPcrToken(_tokenContract).initialize(pcrTokenInitializer);
 
-    DataTypes.PCR_OPTIMISTIC_ORACLE_INITIALIZER
-      memory pcrOptimisticOracleContractInitializer;
-    pcrOptimisticOracleContractInitializer = DataTypes
-      .PCR_OPTIMISTIC_ORACLE_INITIALIZER({
-        admin: msg.sender,
-        rewardId: id,
-        tokenContract: _tokenContract,
-        rewardToken: _ida.rewardToken,
-        optimisticOracleInput: _optimisticOracleInput
-      });
+    DataTypes.PCR_OPTIMISTIC_ORACLE_INITIALIZER memory pcrOptimisticOracleContractInitializer;
+    pcrOptimisticOracleContractInitializer = DataTypes.PCR_OPTIMISTIC_ORACLE_INITIALIZER({
+      admin: msg.sender,
+      rewardId: id,
+      tokenContract: _tokenContract,
+      rewardToken: _ida.rewardToken,
+      optimisticOracleInput: _optimisticOracleInput
+    });
 
-    IPcrOptimisticOracle(_optimisticOracleContract).initialize(
-      pcrOptimisticOracleContractInitializer
-    );
+    IPcrOptimisticOracle(_optimisticOracleContract).initialize(pcrOptimisticOracleContractInitializer);
 
     DataTypes.REWARD_EVENT memory rewardEvent = DataTypes.REWARD_EVENT(
       msg.sender,
-     _optimisticOracleInput.target,
-     _optimisticOracleInput.targetCondition,
+      _optimisticOracleInput.target,
+      _optimisticOracleInput.targetCondition,
       _ida.rewardToken,
-      string(abi.encodePacked(tokenSymbol,' ',tokenName)),
+      string(abi.encodePacked(tokenSymbol, " ", tokenName)),
       id,
       block.timestamp + _optimisticOracleInput.interval,
       _optimisticOracleInput,
-    _tokenContract,
-    _optimisticOracleContract,
-    pcrHostConfig.title,
-    pcrHostConfig.url
+      _tokenContract,
+      _optimisticOracleContract,
+      pcrHostConfig.title,
+      pcrHostConfig.url
     );
 
-    emit Events.RewardCreated(rewardEvent );
+    emit Events.RewardCreated(rewardEvent);
   }
 
   // ============= View Functions ============= ============= =============  //
 
   // #region ViewFunctions
 
-  function getNumbersOfPcrTokens() external view returns (uint256) {
+  function getNumbersOfPcrTokens() external view override returns (uint256) {
     uint256 id = _pcrTokensIssued.current();
     return id;
   }
 
-  function getTotalPcrTokensByUser(address _owner)
-    external
-    view
-    returns (uint256)
-  {
+  function getTotalPcrTokensByUser(address _owner) external view override returns (uint256) {
     uint256 _totalPcrTokens = _pcrTokensByUser[_owner];
     return _totalPcrTokens;
   }
 
-  function getTokensAddressByUserAndId(address _owner, uint256 _id)
-    external
-    view
-    returns (Pcr_addresses memory)
-  {
-    Pcr_addresses memory _contractAdresses = _pcrTokensContractsByUser[_owner][
-      _id
-    ];
+  function getTokensAddressByUserAndId(address _owner, uint256 _id) external view returns (Pcr_addresses memory) {
+    Pcr_addresses memory _contractAdresses = _pcrTokensContractsByUser[_owner][_id];
     return _contractAdresses;
   }
 

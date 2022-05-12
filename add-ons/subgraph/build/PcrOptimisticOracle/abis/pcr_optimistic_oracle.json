@@ -135,6 +135,12 @@
     "inputs": [
       {
         "indexed": false,
+        "internalType": "uint256",
+        "name": "pcrId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
         "internalType": "enum DataTypes.RewardStatus",
         "name": "rewardStatus",
         "type": "uint8"

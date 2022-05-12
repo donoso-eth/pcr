@@ -59,7 +59,7 @@ templates:
           handler: handleProposalAcceptedAndDistribuition
         - event: RewardTargetAndConditionChanged(uint256,int256,uint8)
           handler: handleRewardTargetAndConditionChanged
-        - event: RewardSwitchStatus(uint8)
+        - event: RewardSwitchStatus(uint256,uint8)
           handler: handleRewardSwitchStatus
   - name: PcrToken
     kind: ethereum/contract

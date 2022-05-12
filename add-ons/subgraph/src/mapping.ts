@@ -132,7 +132,7 @@ export function handleRewardSwitchStatus(event:RewardSwitchStatus): void {
 
   let reward = Reward.load(id);
   if (reward !== null) {
-    reward.rewardStatus = event.params.rewardStatus;
+    reward.rewardStatus = BigInt.fromI32(event.params.rewardStatus);
     reward.save();
   }
 }

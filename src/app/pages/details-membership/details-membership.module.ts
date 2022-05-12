@@ -18,6 +18,7 @@ import { ChartModule } from 'primeng/chart';
 import { ProposalDetailModule } from 'src/app/shared/components/proposal-detail/proposal-detail.module';
 import { SuperFluidServiceModule } from 'src/app/dapp-injector/services/super-fluid/super-fluid-service.module';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { ChartsModuleShared } from 'src/app/shared/components/charts/charts.module';
 
 @NgModule({
   declarations: [
@@ -31,16 +32,14 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
     SuperFluidServiceModule,
     ProposalDetailModule,
+    ChartsModuleShared,
 
-    TabViewModule,
+ 
     ButtonModule,
     InputTextModule, 
     InputNumberModule,
     InputTextareaModule,
     InputSwitchModule,
-    DialogModule,
-    StepsModule,
-    ChartModule,
     ProgressSpinnerModule
   ]
 })

@@ -59,12 +59,12 @@
     </div>
     <div style="position: relative; border-color: transparent" class="card">
       <h5>Pcr's Rewards Received</h5>
-      <div style="position:relative" class="card flex justify-content-between"
+      <div  (click)="goDetailsMembership(membership)" style="position:relative;cursor:pointer" class="card flex justify-content-between"
       *ngFor="let membership of pcrMemberships">
 
       <h6 [ngStyle]="{ lineHeight: '2.5rem' }">
-        <a (click)="goDetailsMembership(membership)" class="p-link layout-topbar-button">
-          <i style="color:var(--primary-color)" class="pi pi-eye"></i>
+        <a  class="p-link layout-topbar-button">
+          <i style="color:var(--primary-color);font-size: large;" class="pi pi-eye"></i>
         </a> {{ membership.title}}: <span style="color:var(--primary-color)">You have {{membership.units}} units</span>
       </h6>
       <div>

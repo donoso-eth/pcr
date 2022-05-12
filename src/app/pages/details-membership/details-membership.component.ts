@@ -37,11 +37,12 @@ export class DetailsMembershipComponent extends DappBaseComponent {
   routeItems: { label: string }[];
 
   activeStep = 0;
-  chartData: { labels: string[]; datasets: { label: string; data: number[]; fill: boolean; backgroundColor: string; borderColor: string; tension: number }[] };
-  chartOptions: any;
+
   currentProposal!: IPROPOSAL;
 
   idaMembership!: IWeb3Subscription;
+
+  chartConfig!:{id:string, priceType:number, target:number }
 
   constructor(
     private router: Router,
@@ -53,54 +54,8 @@ export class DetailsMembershipComponent extends DappBaseComponent {
   ) {
     super(dapp, store);
     this.routeItems = [{ label: 'Qualifying' }, { label: 'Propose Period' }, { label: 'Liveness Period' }, { label: 'Execution Period' }];
-    this.chartOptions = {
-      plugins: {
-        legend: {
-          labels: {
-            color: '#ebedef',
-          },
-        },
-      },
-      scales: {
-        x: {
-          ticks: {
-            color: '#ebedef',
-          },
-          grid: {
-            color: 'rgba(160, 167, 181, .3)',
-          },
-        },
-        y: {
-          ticks: {
-            color: '#ebedef',
-          },
-          grid: {
-            color: 'rgba(160, 167, 181, .3)',
-          },
-        },
-      },
-    };
-    this.chartData = {
-      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-      datasets: [
-        {
-          label: 'First Dataset',
-          data: [65, 59, 80, 81, 56, 55, 40],
-          fill: false,
-          backgroundColor: '#2f4860',
-          borderColor: '#2f4860',
-          tension: 0.4,
-        },
-        {
-          label: 'Second Dataset',
-          data: [28, 48, 40, 19, 86, 27, 90],
-          fill: false,
-          backgroundColor: '#00bb7e',
-          borderColor: '#00bb7e',
-          tension: 0.4,
-        },
-      ],
-    };
+
+
   }
 
   async proposeValue(value: number) {
@@ -110,7 +65,7 @@ export class DetailsMembershipComponent extends DappBaseComponent {
 
   async executeProposal() {
     /// TO dO CHAEK IF CURRENT DEPOSIT and ISSUER MEMBERs
-    if (+this.toUpdateMembership!.rewardAmount <= +this.toUpdateMembership!.currentdeposit) {
+    if (+this.toUpdateMembership!.rewardAmount > +this.toUpdateMembership!.currentdeposit) {
       alert('Please Fund The Deposit');
       return;
     }
@@ -212,7 +167,10 @@ export class DetailsMembershipComponent extends DappBaseComponent {
 
         this.idaMembership = await this.superFluidService.getSubscription(this.toUpdateMembership.fundToken.superToken);
 
-        console.log(this.idaMembership);
+    
+
+        this.chartConfig = { id: this.toUpdateMembership?.id!, priceType:+this.toUpdateMembership?.priceType,target:+this.toUpdateMembership?.target! }
+
 
         this.store.dispatch(Web3Actions.chainBusy({ status: false }));
       });

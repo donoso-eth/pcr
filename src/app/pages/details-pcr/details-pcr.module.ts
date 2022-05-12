@@ -16,6 +16,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { StepsModule } from 'primeng/steps';
 import { ChartModule } from 'primeng/chart';
 import { ProposalDetailModule } from 'src/app/shared/components/proposal-detail/proposal-detail.module';
+import { ChartsModuleShared } from 'src/app/shared/components/charts/charts.module';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { ProposalDetailModule } from 'src/app/shared/components/proposal-detail/
     ReactiveFormsModule,
 
     ProposalDetailModule,
-
+    ChartsModuleShared,
+    
     TabViewModule,
     ButtonModule,
     InputTextModule, 
@@ -37,7 +39,6 @@ import { ProposalDetailModule } from 'src/app/shared/components/proposal-detail/
     InputSwitchModule,
     DialogModule,
     StepsModule,
-    ChartModule
   ]
 })
 export class DetailsPcrModule{ }

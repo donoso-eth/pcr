@@ -78,7 +78,6 @@ export class HomeComponent extends DappBaseComponent implements OnInit {
 
   async getTokens() {
 
-
     this.pcrTokens = [];
     this.pcrMemberships = [];
     const  users = this.graphqlService.queryUser(this.dapp.signerAddress!).pipe(takeUntil(this.destroyHooks)).subscribe((val=> {

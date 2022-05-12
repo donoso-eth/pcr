@@ -1,52 +1,92 @@
 <div class="grid">
   <div class="col-12">
-    <div style="position: relative; border-color: transparent" class="card">
-      <h5>Pcr's Memberships</h5>
+    <div *ngIf="toUpdateMembership !== undefined" style="position: relative; border-color: transparent" class="card">
+      <h5><i style="color: var(--primary-color); font-size: large" class="pi pi-back"></i>{{ toUpdateMembership!.title }}</h5>
 
       <div style="margin-top: 20px" class="grid p-fluid">
-        <div *ngIf="toUpdateMembership !== undefined" class="col-12">
-          <h6>{{ toUpdateMembership!.title }}</h6>
-          <br />
+        <div class="col-12">
           <textarea pInputTextarea placeholder="Your Message" [autoResize]="true" cols="30">{{ toUpdateMembership!.displayCustomAncillaryData }}</textarea>
-
-          <div style="position: relative; background-color: var(--surface-ground);text-align:center" class="card mt-3 flex align-items-center flex-column justify-content-center">
-            <h4 class="mb-1">Membership</h4>
-            <div *ngIf="idaMembership?.approved == true">
-              <p>Your membership already approved</p>
+          <div style="margin-top: 20px" class="grid">
+            <div class="col-12 lg:col-6 xl:col-6">
+              <div
+                style="position: relative; background-color: var(--surface-ground); text-align: center"
+                class="card mt-3 flex align-items-center flex-column justify-content-center"
+              >
+                <h4 class="mb-1">Membership</h4>
+                <div *ngIf="idaMembership?.approved == true">
+                  <p>Your membership already approved</p>
+                </div>
+                <div *ngIf="idaMembership?.approved == false">
+                  <p>Your Membership not yet approved</p>
+                  <button
+                    pButton
+                    pRipple
+                    style="position: relative; width: fit-content"
+                    (click)="approveMembership()"
+                    type="button"
+                    label="Approve"
+                    class="p-button-rounded mr-2 mb-2"
+                  ></button>
+                </div>
+                <div style="margin-top: 20px" *ngIf="+idaMembership?.pendingDistribution! > 0">
+                  <p>
+                    There are already distributed rewards <span style="color: var(--primary-color)">{{ idaMembership?.pendingDistribution! }} tokens</span> , if you prefer you can
+                    only claim this reward and subscribe later
+                  </p>
+                  <button
+                    pButton
+                    pRipple
+                    style="position: relative; width: fit-content"
+                    (click)="claim()"
+                    type="button"
+                    label="Claim Units"
+                    class="p-button-rounded mr-2 mb-2"
+                  ></button>
+                </div>
+            
+              </div>
             </div>
-            <div *ngIf="idaMembership?.approved == false">
-              <p>Your Membership not yet approved</p>
-              <button
-              pButton
-              pRipple
-              style="position: relative; width: fit-content"
-              (click)="approveMembership()"
-              type="button"
-              label="Approve"
-              class="p-button-rounded mr-2 mb-2"
-            ></button>
-            </div>
-            <div style="margin-top:20px" *ngIf="+idaMembership?.pendingDistribution!>0">
-              <p>There are already distributed rewards <span style="color:var(--primary-color)">{{idaMembership?.pendingDistribution!}} tokens</span> , if you prefer you can only claim this reward and subscribe later</p>
-              <button
-              pButton
-              pRipple
-              style="position: relative; width: fit-content"
-              (click)="claim()"
-              type="button"
-              label="Claim Units"
-              class="p-button-rounded mr-2 mb-2"
-            ></button>
-            </div>
-            <!-- <p-progressSpinner></p-progressSpinner> -->
-            <div>
-              
+            <div class="col-12 lg:col-6 xl:col-6">
+              <div
+                style="position: relative; background-color: var(--surface-ground); text-align: center"
+                class="card mt-3 flex align-items-center flex-column justify-content-center"
+              >
+                <h4 class="mb-1">Your Balance</h4>
+         
+                <div class="grid p-fluid justify-content-center">
+                <div class="col-6 text-center">
+                  <p>Your Membership not yet approved</p>
+                  <button
+                    pButton
+                    pRipple
+                    style="position: relative; width: fit-content"
+                    (click)="approveMembership()"
+                    type="button"
+                    label="Approve"
+                    class="p-button-rounded mr-2 mb-2"
+                  ></button>
+                </div>
+                <div  class="col-6 text-center">
+                  <p>
+                    There are alre<span style="color: var(--primary-color)">{{ idaMembership?.pendingDistribution! }} tokens</span> ,
+                  <button
+                    pButton
+                    pRipple
+                    style="position: relative; width: fit-content"
+                    (click)="claim()"
+                    type="button"
+                    label="Claim Units"
+                    class="p-button-rounded mr-2 mb-2"
+                  ></button>
+                </div>
+                </div>
+              </div>
             </div>
           </div>
 
           <!-- ////// STATUS PROPOSAL -->
 
-          <div style="position: relative; background-color: var(--surface-ground)" class="card mt-3 flex align-items-center flex-column justify-content-center">
+          <div style="position: relative; background-color: var(--surface-ground)" class="card flex align-items-center flex-column justify-content-center">
             <h4 class="mb-1">Current Status</h4>
             <div style="width: 100%" class="grid p-fluid">
               <proposal-detail
@@ -57,37 +97,11 @@
                 [proposal]="currentProposal"
               ></proposal-detail>
             </div>
-
-            <!-- ////// CHARTSSS  -->
-            <div style="margin-top: 20px" class="grid p-fluid">
-              <div class="col-12 lg:col-6 xl:col-6">
-                <div class="card">
-                  <h5>Index Evolution</h5>
-                  <p-chart type="line" [data]="chartData" [options]="chartOptions"></p-chart>
-                </div>
-              </div>
-              <div class="col-12 lg:col-6 xl:col-6">
-                <div class="card">
-                  <h5>Last Distributions</h5>
-                  <p-chart type="line" [data]="chartData" [options]="chartOptions"></p-chart>
-                </div>
-              </div>
-            </div>
-
-            <div *ngIf="toUpdateMembership! == undefined" class="card">
-              <div class="grid flex flex-column align-items-center">
-                <div class="flex justify-content-center align-items-center bg-pink-500 border-circle" style="height: 3.2rem; width: 3.2rem">
-                  <i class="pi pi-fw pi-exclamation-circle text-2xl text-white"></i>
-                </div>
-                <h1 class="text-900 font-bold text-5xl mb-2">Nothing Found</h1>
-                <span class="text-600">Please create a new Perpetual Conditional toUpdateMembership!</span>
-              </div>
-            </div>
           </div>
+
+          <charts-pcr *ngIf="chartConfig !== undefined" [chartConfig]="chartConfig"></charts-pcr>
         </div>
       </div>
     </div>
   </div>
-
-
 </div>

@@ -27,7 +27,8 @@ export enum REWARD_STEP {
   styleUrls: ['./details-pcr.component.scss'],
 })
 export class DetailsPcrComponent extends DappBaseComponent {
-  pcrTokens: Array<IPCR_REWARD> = [];
+
+  utils = utils;
 
   toUpdateReward: IPCR_REWARD | undefined = undefined;
 
@@ -35,7 +36,7 @@ export class DetailsPcrComponent extends DappBaseComponent {
   showFundingState = false;
   showIssuingState = false;
   showingUpdateAmount = false;
-
+  showTransferState = false;
   //// FormControls
   toFundAmountCtrl = new FormControl(0, Validators.required);
   toUpdateAmountCtrl = new FormControl(0, Validators.required);
@@ -51,6 +52,7 @@ export class DetailsPcrComponent extends DappBaseComponent {
 
 
   chartConfig!:{id:string, priceType:number, target:number }
+
 
   constructor(private cd: ChangeDetectorRef, private router: Router, private route: ActivatedRoute, dapp: DappInjector, store: Store, private graphqlService: GraphQlService) {
     super(dapp, store);
@@ -80,10 +82,14 @@ export class DetailsPcrComponent extends DappBaseComponent {
 
   }
 
+  showTransfer(){
+    this.showTransferState = true;
+  }
+
   async showFunding() {
-    this.store.dispatch(Web3Actions.chainBusy({ status: true }));
-    await this.refreshBalance()
-    this.store.dispatch(Web3Actions.chainBusy({ status: false }));
+    // this.store.dispatch(Web3Actions.chainBusy({ status: true }));
+    // await this.refreshBalance()
+    // this.store.dispatch(Web3Actions.chainBusy({ status: false }));
     this.showFundingState = true;
   }
 
@@ -139,9 +145,11 @@ export class DetailsPcrComponent extends DappBaseComponent {
         value
       )
     );
-    await doSignerTransaction(this.dapp.DAPP_STATE.contracts[+this.toUpdateReward!.id]?.pcrOptimisticOracle.instance.depositReward(this.toFundAmountCtrl.value)!);
+    await doSignerTransaction(this.dapp.DAPP_STATE.contracts[+this.toUpdateReward!.id]?.pcrOptimisticOracle.instance.depositReward(value)!);
 
     //this.toUpdateReward!.currentdeposit = +this.toUpdateReward!.currentdeposit + this.toFundAmountCtrl.value;
+
+    await this.refreshBalance()
 
     // this.store.dispatch(Web3Actions.chainBusy({ status: false }));
     this.showFundingState = false;
@@ -242,6 +250,7 @@ export class DetailsPcrComponent extends DappBaseComponent {
       .subscribe(async (data: any) => {
         if (data) {
           const localReward = data.data['reward'];
+      
 
           if (localReward !== undefined) {
             if (this.toUpdateReward == undefined) {
@@ -259,10 +268,13 @@ export class DetailsPcrComponent extends DappBaseComponent {
           } else {
             this.toUpdateReward = undefined;
           }
+          await this.refreshBalance()
 
           this.currentProposal = prepareDisplayProposal(this.toUpdateReward!);
         }
 
+        console.log(this.toUpdateReward)
+     
      
         this.rewardStatus = this.toUpdateReward?.rewardStatus == '0' ? true : false
 

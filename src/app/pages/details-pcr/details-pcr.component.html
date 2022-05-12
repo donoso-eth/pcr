@@ -25,7 +25,7 @@
           <!-- ////// blocks -->
 
           <div style="margin-top: 20px" class="grid">
-            <div class="col-12 lg:col-6 xl:col-6">
+            <div class="col-12 lg:col-4 xl:col-4">
               <div style="background-color: var(--surface-ground)" class="card mb-0">
                 <div class="grid p-fluid justify-content-center">
                   <div class="col-12 flex align-items-center">
@@ -38,7 +38,7 @@
                   <!-- #region ISSUERS  ////  -->
                   <div class="col-4 text-center">
                     <div class="flex justify-content-between flex-column mb-3">
-                      <div class="text-900 font-medium text-xl">
+                      <div class="text-900 font-medium text-lg">
                         Members <br />
                         <span [class]="+toUpdateReward!.unitsIssued > 0 ? 'text-green-500' : 'text-orange-500'"> {{ toUpdateReward!.unitsIssued }}</span>
                       </div>
@@ -50,9 +50,9 @@
                   <!-- #region INDEX ////  -->
                   <div class="col-4 text-center">
                     <div class="flex justify-content-between flex-column mb-3">
-                      <div class="text-900 font-medium text-xl">
+                      <div class="text-900 font-medium text-lg">
                         Index <br />
-                        <span> {{ toUpdateReward!.currentIndex }}$/unit</span>
+                        <span style="color:var(--primary-color)"> {{ toUpdateReward!.currentIndex }}$/unit</span>
                       </div>
                     </div>
                   </div>
@@ -61,9 +61,9 @@
                   <!-- #region TOTAL  ////  -->
                   <div class="col-4 text-center">
                     <div class="flex justify-content-between flex-column mb-3">
-                      <div class="text-900 font-medium text-xl">
+                      <div class="text-900 font-medium text-lg">
                         Distributed<br />
-                        <span> {{ toUpdateReward!.totalDistributed }}</span>
+                        <span style="color:var(--primary-color)"> {{ toUpdateReward!.totalDistributed }}</span>
                       </div>
                     </div>
                   </div>
@@ -80,7 +80,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-12 lg:col-6 xl:col-6">
+            <div class="col-12 lg:col-4 xl:col-4">
               <div style="background-color: var(--surface-ground)" class="card mb-0">
                 <div class="grid p-fluid justify-content-center">
                   <div style="position:relative;" class="col-12 flex align-items-center">
@@ -95,9 +95,9 @@
                   <!-- #region CURRENT DEPOSIT ////  -->
                   <div class="col-6 text-center">
                     <div class="flex justify-content-between flex-column mb-3">
-                      <div class="text-900 font-medium text-xl">
+                      <div class="text-900 font-medium text-lg">
                         Current<br />
-                        <span [class]="+toUpdateReward!.rewardAmount <= +toUpdateReward!.currentdeposit ? 'text-green-500' : 'text-orange-500'" >  ${{ toUpdateReward!.currentdeposit }}</span>
+                        <span [class]="+toUpdateReward!.rewardAmount <= +toUpdateReward!.currentdeposit ? 'text-green-500' : 'text-orange-500'" >  ${{(+utils.formatEther(toUpdateReward!.currentdeposit)).toFixed(4) }}</span>
                       </div>
                     </div>
                   </div>
@@ -107,9 +107,9 @@
                   <!-- #region REQUIRED DEPOSIT ////  -->
                   <div class="col-6 text-center">
                     <div class="flex justify-content-between flex-column mb-3">
-                      <div class="text-900 font-medium text-xl">
-                       Reward Amount<br />
-                        <span> ${{ toUpdateReward!.rewardAmount }}</span>
+                      <div class="text-900 font-medium text-lg">
+                  Amount<br />
+                        <span style="color:var(--primary-color)"> ${{ (+utils.formatEther(toUpdateReward!.rewardAmount)).toFixed(4) }}</span>
                       </div>
                     </div>
                   </div>
@@ -119,6 +119,44 @@
                   <button pButton pRipple style="width: fit-content" (click)="showFunding()" type="button" label="Fund" class="p-button-rounded mr-2 mb-2"></button>
                   <button pButton pRipple style="width: fit-content" (click)="showUpdateRewardAmount()" type="button" label="Change" class="p-button-rounded mr-2 mb-2"></button>
                 </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 lg:col-4 xl:col-4">
+              <div style="background-color: var(--surface-ground)" class="card mb-0">
+                <div class="grid p-fluid justify-content-center">
+                  <div style="position:relative;" class="col-12 flex align-items-center">
+                  
+                    <span class="block text-500 font-medium ml-2"> Your Balance</span>
+                    <img src="assets/images/tokens/{{ toUpdateReward!?.fundToken?.image }}_icon.svg" style="position: absolute; width: 40px;right: 20px;" />
+            
+                  </div>
+                  <!-- #region BALANCE REWARDTOKEN ////  -->
+                  <div class="col-5 text-center">
+                    <div class="flex justify-content-between flex-column mb-3">
+                      <div class="text-900 font-medium text-md">
+                        ERC20 (DAI)<br />
+                        <span *ngIf="toUpdateReward!?.fundToken?.rewardTokenBalance" style="color:var(--primary-color)" >  ${{ toUpdateReward!?.fundToken?.rewardTokenBalance! }}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- #endregion BALANCE REWARDTOKEN  ////  -->
+
+                  <!-- #region BALANCE SUPER TOKEN ////  -->
+                  <div class="col-7 text-center">
+                    <div class="flex justify-content-between flex-column mb-3">
+                      <div class="text-900 font-medium text-md">
+                       SuperToken (DAIx)<br />
+                        <span  *ngIf="toUpdateReward!?.fundToken?.superTokenBalance !== undefined" style="color:var(--primary-color)"> ${{toUpdateReward!?.fundToken?.superTokenBalance! }}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- #endregion BALANCE SUPER TOKE DEPOSIT ////  -->
+
+                  <div class="col-12 flex justify-content-around">
+                  <button pButton pRipple style="width: fit-content" (click)="showTransfer()" type="button" label="Transfer" class="p-button-rounded mr-2 mb-2"></button>
+                    </div>
                 </div>
               </div>
             </div>
@@ -182,18 +220,30 @@
     It requires the {{ toUpdateReward!?.fundToken?.name }} superToken, your current balance is: <span style="font-weight:bold;color:var(--primary-color)">{{toUpdateReward!?.fundToken?.superTokenBalance!}} DAIx </span>. You may want to:
   </p>
   <h6>Fund The PCR with SuperToken DAIx (values in tokens)</h6>
-  <p class="flex justify-content-between" *ngIf="+toUpdateReward!?.fundToken?.superTokenBalance! > +toUpdateReward!?.rewardAmount!">
+  <p class="flex justify-content-between" >
     <p-inputNumber [formControl]="toFundAmountCtrl" placeholder="Amount" mode="decimal" [showButtons]="true" [min]="0"> </p-inputNumber>
     <button pButton icon="pi pi-check" label="Fund" (click)="doFunding()" class="p-button-outlined"></button>
   </p>
+
+  <ng-template pTemplate="footer">
+    <!-- <button pButton icon="pi pi-check" label="Fund" class="p-button-outlined"></button> -->
+  </ng-template>
+</p-dialog>
+
+
+<p-dialog header="token <--> SuperToken!" [(visible)]="showTransferState" [modal]="true" showEffect="fade" [style]="{ width: '50vw' }" [breakpoints]="{ '960px': '80vw' }">
+  <p class="line-height-3 m-0">
+    You are about to fund the PCR Token <span style="color: green">"{{ toUpdateReward!?.title }}"</span> Your current balance is <span style="font-weight:bold;color:var(--primary-color)">{{toUpdateReward!?.fundToken?.rewardTokenBalance!}} DAI </span>   <br />
+    It requires the {{ toUpdateReward!?.fundToken?.name }} superToken, your current balance is: <span style="font-weight:bold;color:var(--primary-color)">{{toUpdateReward!?.fundToken?.superTokenBalance!}} DAIx </span>. You may want to:
+  </p>
   <h6>Upgrade from DAI to DAIx (values in tokens)</h6>
-  <p class="flex justify-content-between" *ngIf="+toUpdateReward!?.fundToken?.superTokenBalance! > +toUpdateReward!?.rewardAmount!">
+  <p class="flex justify-content-between">
 
     <p-inputNumber [formControl]="toUpgradeAmountCtrl" placeholder="Amount" mode="decimal" [showButtons]="true" [min]="0"> </p-inputNumber>
     <button pButton icon="pi pi-check" label="Upgrade" (click)="doUpgrade()" class="p-button-outlined"></button>
   </p>
   <h6>Downgrade from DAIx to DAI (values in tokens)</h6>
-  <p class="flex justify-content-between" *ngIf="+toUpdateReward!?.fundToken?.superTokenBalance! > +toUpdateReward!?.rewardAmount!">
+  <p class="flex justify-content-between" >
  
     <p-inputNumber [formControl]="toDowngradeAmountCtrl" placeholder="Amount" mode="decimal" [showButtons]="true" [min]="0"> </p-inputNumber>
     <button pButton icon="pi pi-check" label="Downgrade" (click)="doDowngrade()" class="p-button-outlined"></button>

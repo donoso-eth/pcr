@@ -35,7 +35,7 @@
             <div class="flex align-items-center justify-content-end" [ngStyle]="{ width: '200px', height: '2.5rem' }">
 
               <div class="flex justify-content-center align-items-center">
-                <p class="mr-2 mb-0">Reward: {{reward.rewardAmount}}</p>
+                <p class="mr-2 mb-0">Reward: {{utils.formatEther(reward.rewardAmount)}}</p>
                 <img [width]="40" src="assets/images/tokens/{{reward?.fundToken?.image}}_icon.svg"
                   style="margin-right: 5px;" />
               </div>

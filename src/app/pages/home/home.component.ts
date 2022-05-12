@@ -30,7 +30,7 @@ export class HomeComponent extends DappBaseComponent implements OnInit {
   pcrTokens: Array<IPCR_REWARD> = [];
   pcrMemberships:Array<any> = [];
 
-
+  utils = utils
  
   activeStep = 0;
    constructor(private router: Router, dapp: DappInjector, store: Store, private graphqlService: GraphQlService) {

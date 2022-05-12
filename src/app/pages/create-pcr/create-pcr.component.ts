@@ -159,9 +159,10 @@ export class CreatePcrComponent extends DappBaseComponent implements OnInit {
 
    
 
+
     const OptimisticOracle: OPTIMISTICORACLEINPUTStruct = {
       finder: global_address.kovan.finder,
-      rewardAmount: this.rewardForm.controls.tokenAmountCtrl.value,
+      rewardAmount: utils.parseEther(this.rewardForm.controls.tokenAmountCtrl.value.toString()),
       target: target,
       priceType,
       targetCondition: condition,

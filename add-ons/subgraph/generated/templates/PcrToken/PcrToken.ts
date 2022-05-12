@@ -10,6 +10,32 @@ import {
   BigInt
 } from "@graphprotocol/graph-ts";
 
+export class RewardBulkUnitsIssued extends ethereum.Event {
+  get params(): RewardBulkUnitsIssued__Params {
+    return new RewardBulkUnitsIssued__Params(this);
+  }
+}
+
+export class RewardBulkUnitsIssued__Params {
+  _event: RewardBulkUnitsIssued;
+
+  constructor(event: RewardBulkUnitsIssued) {
+    this._event = event;
+  }
+
+  get pcrId(): BigInt {
+    return this._event.parameters[0].value.toBigInt();
+  }
+
+  get beneficiaries(): Array<Address> {
+    return this._event.parameters[1].value.toAddressArray();
+  }
+
+  get amount(): BigInt {
+    return this._event.parameters[2].value.toBigInt();
+  }
+}
+
 export class RewardUnitsDeleted extends ethereum.Event {
   get params(): RewardUnitsDeleted__Params {
     return new RewardUnitsDeleted__Params(this);

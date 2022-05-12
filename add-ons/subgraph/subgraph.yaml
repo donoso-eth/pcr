@@ -83,5 +83,7 @@ templates:
       eventHandlers:
         - event: RewardUnitsIssued(uint256,address,uint256)
           handler: handleRewardUnitsIssued
+        - event: RewardBulkUnitsIssued(uint256,address[],uint256)
+          handler: handleRewardBulkUnitsIssued
         - event: RewardUnitsDeleted(uint256,address,uint256)
           handler: handleRewardUnitsDeleted

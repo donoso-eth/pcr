@@ -32,5 +32,7 @@ library Events {
     //// TOKEN CONTRACT
     event RewardUnitsIssued(uint256 pcrId, address beneficiary, uint256 amount);
 
+    event RewardBulkUnitsIssued(uint256 pcrId, address[] beneficiaries, uint256 amount);
+
     event RewardUnitsDeleted(uint256 pcrId, address beneficiary,  uint256 amount);
 }

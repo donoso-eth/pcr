@@ -59,6 +59,11 @@ export class DetailsMembershipComponent extends DappBaseComponent {
   
   }
 
+
+back (){
+  this.router.navigateByUrl('home')
+}
+
   async proposeValue(value: number) {
     this.store.dispatch(Web3Actions.chainBusy({ status: true }));
     await doSignerTransaction(this.dapp.DAPP_STATE.contracts[+this.toUpdateMembership!.id]?.pcrOptimisticOracle.instance.proposeDistribution(value)!);

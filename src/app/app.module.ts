@@ -44,7 +44,7 @@ export const contractProvider= {provide: 'contractMetadata', useValue:PcrHostMet
     AppRoutingModule,
     DappInjectorModule.forRoot({wallet:'local', defaultNetwork:'localhost'}),
     StoreModule.forRoot({web3: we3ReducerFunction}),
-    GraphQlModule.forRoot({uri:"http://localhost:8000/subgraphs/name/angular-web3/pcr"}),
+    GraphQlModule.forRoot({uri:"http://localhost:8000/subgraphs/name/donoso-eth/perpetual-conditional-reward"}),
 
     DropdownModule,
     ProgressSpinnerModule

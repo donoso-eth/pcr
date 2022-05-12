@@ -1,20 +1,3 @@
-export const GET_QUERY = `
-  query($receiver: String!){
-    streams(where:{
-          receiver: $receiver
-        }
-       ) {
-    	token {
-        id
-        symbol
-      }
-      createdAtTimestamp
-	    updatedAtTimestamp
-	    currentFlowRate
-	    streamedUntilUpdatedAt
-        }
-  }
-`;
 
 export const GET_USER = `
 query($address: String!){
@@ -27,6 +10,7 @@ query($address: String!){
       earliestNextAction
       rewardToken
       rewardAmount
+      rewardStatus
       }
       rewardsMembership {
       id
@@ -39,6 +23,7 @@ query($address: String!){
         rewardToken
         currentIndex
         rewardAmount
+        rewardStatus
         }
       }
       proposaslsSubmitted

@@ -10,7 +10,7 @@ import {IInstantDistributionAgreementV1} from "@superfluid-finance/ethereum-cont
 
 import {IPcrToken} from "./interfaces/IPcrToken.sol";
 import {IPcrOptimisticOracle} from "./interfaces/IPcrOptimisticOracle.sol";
-import {IPcrHost} from "./interfaces/IPcrhost.sol";
+import {IPcrHost} from "./interfaces/IPcrHost.sol";
 
 import {DataTypes} from "./libraries/DataTypes.sol";
 import {Events} from "./libraries/Events.sol";

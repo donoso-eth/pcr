@@ -17,7 +17,7 @@
                 {{ reward.title }}
         
             </h6>
-            <div>
+            <div *ngIf="reward.rewardStatus == '0'">
               <div *ngIf="reward.displayStep == 0">
                 <p [ngStyle]="{ lineHeight: '2.5rem' }">Period Qualifying. Rewals proposals {{reward.displayDate}}</p>
               </div>
@@ -33,6 +33,9 @@
                 <p [ngStyle]="{ lineHeight: '2.5rem' }">Period Waiting to be executed</p>
               </div>
             </div>
+            <div *ngIf="reward.rewardStatus !== '0'">
+            <p [ngStyle]="{ lineHeight: '2.5rem' }">This PCR is not active</p>
+              </div>
             <div class="flex align-items-center justify-content-end" [ngStyle]="{ width: '200px', height: '2.5rem' }">
 
               <div class="flex justify-content-center align-items-center">
@@ -68,7 +71,7 @@
           <i style="color:var(--primary-color);font-size: 25px;position: relative;top: 4px;" class="pi pi-eye"></i>
      {{ membership.title}}: <span style="color:var(--primary-color)">You have {{membership.units}} units</span>
       </h6>
-      <div>
+      <div *ngIf="membership.rewardStatus === '0'">
         <div *ngIf="membership.displayStep == 0">
             <p [ngStyle]="{ lineHeight: '2.5rem' }">Period Qualifying. Rewals proposals {{membership.displayDate}}</p>
         </div>
@@ -84,6 +87,9 @@
           <p [ngStyle]="{ lineHeight: '2.5rem' }">Period Waiting to be executed</p>
         </div>
       </div>
+      <div *ngIf="membership.rewardStatus !== '0'">
+        <p [ngStyle]="{ lineHeight: '2.5rem' }">This PCR is not active</p>
+          </div>
       <div  class="flex align-items-center justify-content-end" [ngStyle]="{  height: '2.5rem' }">
 
         <div class="flex justify-content-center align-items-center">

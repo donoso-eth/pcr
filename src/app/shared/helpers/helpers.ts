@@ -1,5 +1,5 @@
 
-import { Contract, Signer } from 'ethers';
+import { Contract, Signer, utils } from 'ethers';
 import { abi_ERC20 } from '../components/user-balance/abis/erc20';
 import { abi_SuperToken } from '../components/user-balance/abis/superToken';
 import { IPCR_REWARD, IPROPOSAL, REWARD_STEP } from '../models/pcr';
@@ -32,7 +32,8 @@ export const prepareDisplayProposal = (reward:IPCR_REWARD):IPROPOSAL => {
             title:reward.title, 
             priceType: reward.priceType,
             step:reward.rewardStep, 
-            rewardId:reward.id 
+            rewardId:reward.id,
+            rewardStatus:reward.rewardStatus
         }}
     return proposal;
 
@@ -44,4 +45,11 @@ export const createERC20Instance = (ERC: string, signer:Signer): Contract => {
 
 export const  createSuperTokenInstance = (SuperToken: string, signer:Signer): Contract => {
   return new Contract(SuperToken, abi_SuperToken,signer);
+}
+
+export const isAddress = (address:string) => {
+  try {
+      utils.getAddress(address);
+  } catch (e) { return false; }
+  return true;
 }

@@ -79,7 +79,8 @@ export interface IPROPOSAL {
   optimisticOracleLivenessTime:number;
   title:string,
   step:string,
-  rewardId:string
+  rewardId:string,
+  rewardStatus:string,
   status: string
 
 }

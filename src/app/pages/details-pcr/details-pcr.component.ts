@@ -8,11 +8,10 @@ import { takeUntil } from 'rxjs';
 import { doSignerTransaction } from 'src/app/dapp-injector/classes/transactor';
 
 import { GraphQlService } from 'src/app/dapp-injector/services/graph-ql/graph-ql.service';
-import { calculateStep, createERC20Instance, createSuperTokenInstance, prepareDisplayProposal } from 'src/app/shared/helpers/helpers';
+import { calculateStep, createERC20Instance, createSuperTokenInstance, isAddress, prepareDisplayProposal } from 'src/app/shared/helpers/helpers';
 import { IPCR_REWARD, IPROPOSAL } from 'src/app/shared/models/pcr';
 
-import { abi_ERC20 } from './abis/erc20';
-import { abi_SuperToken } from './abis/superToken';
+
 
 export enum REWARD_STEP {
   QUALIFYING,
@@ -37,12 +36,15 @@ export class DetailsPcrComponent extends DappBaseComponent {
   showIssuingState = false;
   showingUpdateAmount = false;
   showTransferState = false;
+  showBulkIssuingState = false
+
   //// FormControls
   toFundAmountCtrl = new FormControl(0, Validators.required);
   toUpdateAmountCtrl = new FormControl(0, Validators.required);
   toUpgradeAmountCtrl = new FormControl(0, Validators.required);
   toDowngradeAmountCtrl = new FormControl(0, Validators.required);
-  adressesCtrl = new FormControl('', [Validators.required, Validators.minLength(32), Validators.maxLength(32)]);
+  adressesCtrl = new FormControl('', [Validators.required, Validators.minLength(42), Validators.maxLength(42)]);
+  bulkAdressesCtrl = new FormControl('', [Validators.required]);
   routeItems: { label: string }[];
   activeStep = 0;
   rewardStatus!:boolean;
@@ -59,6 +61,11 @@ export class DetailsPcrComponent extends DappBaseComponent {
     this.routeItems = [{ label: 'Qualifying' }, { label: 'Propose Period' }, { label: 'Liveness Period' }, { label: 'Execution Period' }];
 
   }
+
+  back (){
+    this.router.navigateByUrl('home')
+  }
+
 
   async changeStatus(value: boolean) {
     this.store.dispatch(Web3Actions.chainBusy({ status: true }));
@@ -140,15 +147,50 @@ export class DetailsPcrComponent extends DappBaseComponent {
     this.showIssuingState = true;
   }
 
-  async doAddMember(reward: IPCR_REWARD) {
-    if (this.adressesCtrl.value.invalid) {
+  
+  async doAddMember() {
+    console.log(this.adressesCtrl.invalid)
+    if (this.adressesCtrl.invalid) {
       alert('please add and adresse');
+      return
+    }
+
+    if (isAddress(this.adressesCtrl.value) == false){
+      alert('addresse is not valid');
+      return
     }
 
     this.store.dispatch(Web3Actions.chainBusy({ status: true }));
-    await doSignerTransaction(this.dapp.DAPP_STATE.contracts[+reward.id]?.pcrToken?.instance.issue(this.adressesCtrl.value, 1)!);
+    await doSignerTransaction(this.dapp.DAPP_STATE.contracts[+this.toUpdateReward!.id]?.pcrToken?.instance.issue(this.adressesCtrl.value, 1)!);
     this.showIssuingState = true;
   }
+
+
+  showBulkAddMembers(reward: IPCR_REWARD) {
+    this.showBulkIssuingState = true;
+  }
+
+  async doBulkAddMembers() {
+    if (this.bulkAdressesCtrl.invalid) {
+      alert('please add and adresse');
+    }
+
+    let addresses:Array<string> = this.bulkAdressesCtrl.value.split(",")
+  
+
+    for (const checkAddress of addresses) {
+      if (isAddress(checkAddress) == false){
+        alert(`Address ${checkAddress} is not valid`)
+        return
+      }
+    }
+ 
+
+    this.store.dispatch(Web3Actions.chainBusy({ status: true }));
+    await doSignerTransaction(this.dapp.DAPP_STATE.contracts[+this.toUpdateReward!.id]?.pcrToken?.instance.bulkIssue(addresses, 1)!);
+    this.showBulkIssuingState = false;
+  }
+
 
   async proposeValue(value: number) {
     this.store.dispatch(Web3Actions.chainBusy({ status: true }));

@@ -83,6 +83,7 @@ export const global_address = {
     resolver:"0x851d3dd9dc97c1df1DA73467449B3893fc76D85B",
     subgraph:"https://thegraph.com/hosted-service/subgraph/superfluid-finance/protocol-v1-kovan",
     sfNetwork:"local",
+    graphUrl:"http://localhost:8020/",
     finder:"0xeD0169a88d267063184b0853BaAAAe66c3c154B2"
   },
   kovan: {

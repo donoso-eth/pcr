@@ -32,7 +32,9 @@ export class AppTopBarComponent extends DappBaseComponent {
   toggleTopMenu(val: any) {}
 
   doDisconnect() {
+    this.store.dispatch(Web3Actions.chainBusy({ status: true }));
     this.store.dispatch(Web3Actions.disconnectChain({ status: 'force-disconnect' }));
+    this.store.dispatch(Web3Actions.chainBusy({ status: false}));
   }
 
   override async hookContractConnected(): Promise<void> {

@@ -153,6 +153,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.StoreInterface__factory>;
     getContractFactory(
+      name: "IPcrHost",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IPcrHost__factory>;
+    getContractFactory(
       name: "IPcrOptimisticOracle",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IPcrOptimisticOracle__factory>;
@@ -352,6 +356,11 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.StoreInterface>;
+    getContractAt(
+      name: "IPcrHost",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IPcrHost>;
     getContractAt(
       name: "IPcrOptimisticOracle",
       address: string,

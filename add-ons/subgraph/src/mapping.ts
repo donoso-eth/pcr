@@ -9,7 +9,7 @@ import {
   RewardTargetAndConditionChanged,
   RewardSwitchStatus,
 } from '../generated/templates/PcrOptimisticOracle/PcrOptimisticOracle';
-import { RewardUnitsDeleted, RewardUnitsIssued } from '../generated/templates/PcrToken/PcrToken';
+import { RewardBulkUnitsIssued, RewardUnitsDeleted, RewardUnitsIssued } from '../generated/templates/PcrToken/PcrToken';
 
 import { PcrOptimisticOracle, PcrToken } from '../generated/templates';
 import { BigDecimal, BigInt } from '@graphprotocol/graph-ts';
@@ -238,6 +238,55 @@ export function handleRewardTargetAndConditionChanged(event: RewardTargetAndCond
 }
 
 ///////// PCRTOKEN/IDA EVENTS
+
+export function handleRewardBulkUnitsIssued(event: RewardBulkUnitsIssued): void {
+  let beneficiares = event.params.beneficiaries
+  let prId = event.params.pcrId.toString();
+
+  let nrBeneficiaries = beneficiares.length;
+  for (let i = 0; i < nrBeneficiaries ; i++) {
+    let beneficiary = beneficiares[i];
+    let beneficiaryId = beneficiary.toHexString();
+    createUser(beneficiaryId);
+
+  //// CREATE/UPDATE the Reward/subscription per user
+  let subscriptionId = beneficiary.toHexString().concat(prId);
+  let subscription = UserMembership.load(subscriptionId);
+
+  if (subscription === null) {
+    subscription = new UserMembership(subscriptionId);
+    subscription.units = event.params.amount;
+    subscription.beneficiary = beneficiaryId;
+    subscription.reward = prId;
+  } else {
+    subscription.units = subscription.units.plus(event.params.amount);
+  }
+  subscription.save();
+}
+
+let reward = Reward.load(prId);
+if (reward !== null) {
+  reward.unitsIssued = reward.unitsIssued.plus(event.params.amount.times(BigInt.fromI32(nrBeneficiaries)));
+  reward.currentIndex = reward.rewardAmount.div(reward.unitsIssued);
+  reward.save();
+
+  //// CREATE  a new History Index  Entity
+  let indexId = event.transaction.hash.toHex();
+  let rewardIndexHistory = new RewardIndexHistory(indexId);
+  rewardIndexHistory.timeStamp = event.block.timestamp;
+  rewardIndexHistory.index = reward.currentIndex;
+  rewardIndexHistory.rewardAmount = reward.rewardAmount;
+  rewardIndexHistory.rewardId = prId;
+  rewardIndexHistory.save();
+}
+
+
+  }
+
+
+ 
+
+
 
 export function handleRewardUnitsIssued(event: RewardUnitsIssued): void {
   let beneficiaryId = event.params.beneficiary.toHexString();

@@ -15,10 +15,16 @@
  <div  *ngIf="blockchain_status == 'wallet-connected'"  style="align-items: center;
  margin-right: 30px;" class="layout-topbar-menu" >
     <a>{{ address_to_show}}</a>
-    <a  (click)="doDisconnect()" class="p-link layout-topbar-button">
-        <i style="color:var(--primary-color)"  class="pi pi-cog"></i>
-       
-    </a>
+    <button
+    pButton
+    pRipple
+    style="position: relative; width: fit-content"
+    (click)="doDisconnect()"
+    type="button"
+    label="Disconnect"
+    class="p-button-rounded mr-2 mb-2"
+  ></button>
+
     <p-dropdown [options]="users"  [formControl]="localUserCtrl"  placeholder="Select a RewardType">
         <ng-template pTemplate="selectedItem">
             <div  style="display:inline-flex; width: 100%;" class="country-item country-item-value" >

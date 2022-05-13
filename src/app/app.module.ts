@@ -5,11 +5,9 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { DappInjectorModule } from './dapp-injector/dapp-injector.module';
 import { StoreModule } from '@ngrx/store';
-import { we3ReducerFunction } from 'angular-web3';
+import { global_address, we3ReducerFunction } from 'angular-web3';
 
 import { AppTopBarComponent } from './shared/components/toolbar/app.topbar.component';
-
-
 import { AppFooterComponent } from './shared/components/footer/app.footer.component';
 
 import { HttpClientModule } from '@angular/common/http';
@@ -25,9 +23,13 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { ButtonModule } from 'primeng/button';
+
 export const contractMetadata = new InjectionToken<ICONTRACT_METADATA>('contractMetadata')
 
 export const contractProvider= {provide: 'contractMetadata', useValue:PcrHostMetadata };
+
+const network = 'localhost';
+
 
 @NgModule({
   declarations: [
@@ -45,10 +47,9 @@ export const contractProvider= {provide: 'contractMetadata', useValue:PcrHostMet
     FormsModule,
     ReactiveFormsModule,
     AppRoutingModule,
-    DappInjectorModule.forRoot({wallet:'local', defaultNetwork:'localhost'}),
+    DappInjectorModule.forRoot({wallet:'local', defaultNetwork:network}),
     StoreModule.forRoot({web3: we3ReducerFunction}),
-    GraphQlModule.forRoot({uri:"http://localhost:8000/subgraphs/name/donoso-eth/perpetual-conditional-reward"}),
-    //GraphQlModule.forRoot({uri:"https://api.thegraph.com/subgraphs/name/donoso-eth/perpetual-conditional-reward"}),
+    GraphQlModule.forRoot({uri: global_address[network].graphUri}),
 
     DropdownModule,
     ProgressSpinnerModule,

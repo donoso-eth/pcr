@@ -84,7 +84,8 @@ export const global_address = {
     subgraph:"https://thegraph.com/hosted-service/subgraph/superfluid-finance/protocol-v1-kovan",
     sfNetwork:"local",
     graphUrl:"http://localhost:8020/",
-    finder:"0xeD0169a88d267063184b0853BaAAAe66c3c154B2"
+    finder:"0xeD0169a88d267063184b0853BaAAAe66c3c154B2",
+    graphUri:"http://localhost:8000/subgraphs/name/donoso-eth/perpetual-conditional-reward"
   },
   kovan: {
     host: '0xF0d7d1D47109bA426B9D8A3Cde1941327af1eea3',
@@ -96,18 +97,19 @@ export const global_address = {
     finder:"0xeD0169a88d267063184b0853BaAAAe66c3c154B2",
     subgraph:"https://thegraph.com/hosted-service/subgraph/superfluid-finance/protocol-v1-kovan",
     sfNetwork:"kovan",
+    graphUri:"https://api.thegraph.com/subgraphs/name/donoso-eth/perpetual-conditional-reward"
   },
-  mumbai: {
-    host: '0xEB796bdb90fFA0f28255275e16936D25d3418603',
-    cfa: '0x49e565Ed1bdc17F3d220f72DF0857C26FA83F873',
-    ida: '0x804348D4960a61f2d5F9ce9103027A3E849E09b8',
-    fDaix: '0x5D8B4C2554aeB7e86F387B4d6c00Ac33499Ed01f',
-    fDai: '0x15F0Ca26781C3852f8166eD2ebce5D18265cceb7',
-    resolver:"0x8C54C83FbDe3C59e59dd6E324531FB93d4F504d3",
-    finder:"0xb22033fF04AD01fbE8d78ef4622a20626834271B",
-    sfNetwork:"mumbai",
-    subgraph:"https://thegraph.com/hosted-service/subgraph/superfluid-finance/protocol-v1-mumbai"
-  },
+  // mumbai: {
+  //   host: '0xEB796bdb90fFA0f28255275e16936D25d3418603',
+  //   cfa: '0x49e565Ed1bdc17F3d220f72DF0857C26FA83F873',
+  //   ida: '0x804348D4960a61f2d5F9ce9103027A3E849E09b8',
+  //   fDaix: '0x5D8B4C2554aeB7e86F387B4d6c00Ac33499Ed01f',
+  //   fDai: '0x15F0Ca26781C3852f8166eD2ebce5D18265cceb7',
+  //   resolver:"0x8C54C83FbDe3C59e59dd6E324531FB93d4F504d3",
+  //   finder:"0xb22033fF04AD01fbE8d78ef4622a20626834271B",
+  //   sfNetwork:"mumbai",
+  //   subgraph:"https://thegraph.com/hosted-service/subgraph/superfluid-finance/protocol-v1-mumbai"
+  // },
 };
 
 

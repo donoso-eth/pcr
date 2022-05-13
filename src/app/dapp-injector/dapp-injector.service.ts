@@ -198,6 +198,12 @@ export class DappInjector implements OnDestroy {
 
   ///// ---------  Contract Initialization
   private async contractInitialization() {
+
+    // UNCOMMENT THIS NEXT THREE LINES TO INTERACT WITH KOVAN already deployed contracts
+    //
+    //
+    //
+
     const contract = new AngularContract<PcrHost>({
       metadata: this.contractMetadata,
       provider: this.DAPP_STATE.defaultProvider!,
@@ -277,10 +283,7 @@ export class DappInjector implements OnDestroy {
 
     const pcrTokenMetadata = PcrTokenMetadata;
     const pcrOptimisticOracleMetadata = PcrOptimisticOracleMetadata;
-    if (pcrTokenAddress !== undefined) {
-      pcrTokenMetadata.address = pcrTokenAddress;
-      pcrOptimisticOracleMetadata.address = pcrOptimisticOracleAddress;
-    }
+
 
     const pcrToken = new AngularContract<PcrToken>({ metadata: pcrTokenMetadata, provider: this.DAPP_STATE.defaultProvider!, signer: this.DAPP_STATE.signer! });
     await pcrToken.init();

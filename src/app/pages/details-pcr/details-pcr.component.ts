@@ -321,21 +321,9 @@ export class DetailsPcrComponent extends DappBaseComponent {
       this.getTokens(params['id']);
     }
 
-    // let pcrAddress = await this.dapp.DAPP_STATE.pcrHostContract?.instance!.getTokensAddressByUserAndId(this.dapp.signerAddress!, 1);
 
-    // if (pcrAddress !== undefined) {
-    //   await this.dapp.launchClones(pcrAddress!.tokenContract, pcrAddress!.optimisticOracleContract,1);
-    // }
   }
 
-  ////////PRIVATE 
 
-  // private _createERC20Instance(ERC: string): Contract {
-  //   return new Contract(ERC, abi_ERC20, this.dapp.signer!);
-  // }
-
-  // private _createSuperTokenInstance(SuperToken: string): Contract {
-  //   return new Contract(SuperToken, abi_SuperToken, this.dapp.signer!);
-  // }
 
 }

@@ -221,10 +221,5 @@ back (){
       this.getMemberships(params['id']);
     }
 
-    // let pcrAddress = await this.dapp.DAPP_STATE.pcrHostContract?.instance!.getTokensAddressByUserAndId(this.dapp.signerAddress!, 1);
-
-    // if (pcrAddress !== undefined) {
-    //   await this.dapp.launchClones(pcrAddress!.tokenContract, pcrAddress!.optimisticOracleContract,1);
-    // }
   }
 }

@@ -10,13 +10,13 @@ export const calculateStep = (_step: number, _earliestNextAction: number): REWAR
   let timeStamp = +(new Date().getTime() / 1000).toFixed(0);
   let earliestNextAction = +_earliestNextAction.toString();
   let step: REWARD_STEP = REWARD_STEP.QUALIFYING;
-  if (rewardStep == 0 && timeStamp < earliestNextAction) {
+  if (rewardStep == 0 && timeStamp <= earliestNextAction) {
     step = REWARD_STEP.QUALIFYING;
-  } else if (rewardStep == 0 && timeStamp >= earliestNextAction) {
+  } else if (rewardStep == 0 && timeStamp > earliestNextAction) {
     step = REWARD_STEP.AWAITING_PROPOSAL;
-  } else if (rewardStep == 2 && timeStamp < earliestNextAction) {
+  } else if (rewardStep == 2 && timeStamp <= earliestNextAction) {
     step = REWARD_STEP.LIVENESS_PERIOD;
-  } else if (rewardStep == 2 && timeStamp >= earliestNextAction) {
+  } else if (rewardStep == 2 && timeStamp > earliestNextAction) {
     step = REWARD_STEP.AWAITING_EXECUTION;
   }
   return step;

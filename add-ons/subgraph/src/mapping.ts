@@ -8,6 +8,7 @@ import {
   RewardAmountUpdated,
   RewardTargetAndConditionChanged,
   RewardSwitchStatus,
+  ProposalDisputed
 } from '../generated/templates/PcrOptimisticOracle/PcrOptimisticOracle';
 import { RewardBulkUnitsIssued, RewardUnitsDeleted, RewardUnitsIssued } from '../generated/templates/PcrToken/PcrToken';
 
@@ -161,6 +162,33 @@ export function handleProposalCreated(event: ProposalCreated): void {
 
     reward.rewardStep = BigInt.fromI32(2);
     reward.earliestNextAction = event.block.timestamp.plus(reward.optimisticOracleLivenessTime);
+    reward.save();
+  }
+}
+
+export function handleProposalDisputed(event: ProposalDisputed): void {
+  let proposerId = event.params.proposer.toHexString();
+
+ 
+  let proposalId = event.params.proposalId.toString();
+  let prId = event.params.pcrId.toString();
+  
+  let uidProposal = prId.concat('-').concat(proposalId)
+  let reward = Reward.load(prId);
+  if (reward !== null) {
+    let proposal = Proposal.load(uidProposal);
+
+    if (proposal !== null) {
+      proposal.proposer = proposerId;
+      proposal.startLivenessPeriod = BigInt.fromI32(0);
+      proposal.priceProposed = BigInt.fromI32(0);
+      proposal.priceResolved = BigInt.fromI32(0);
+      proposal.status = 'Pending';
+      proposal.save();
+    }
+
+    reward.rewardStep = BigInt.fromI32(0);
+    reward.earliestNextAction = event.block.timestamp.minus(reward.optimisticOracleLivenessTime);
     reward.save();
   }
 }

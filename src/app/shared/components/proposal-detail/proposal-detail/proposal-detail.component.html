@@ -30,11 +30,14 @@
         </div>
         <div *ngIf="display_step > 1">
           <p [ngStyle]="{ lineHeight: '2.5rem' }">Proposal Submitted {{ startLivenessPeriod }} with {{ priceProposed }}</p>
+        
         </div>
       </div>
       <div *ngIf="activeStep == 2">
         <div *ngIf="display_step == 2">
           <p [ngStyle]="{ lineHeight: '2.5rem' }">Period Liveliveness will end {{ startExecutionPeriod }}, the answer Proposed is {{ priceProposed }}</p>
+          <button style="width: fit-content; margin-top: 20px" (click)="doDispute()" label="Dispute" pButton pRipple type="button" class="p-button-rounded ml-2"></button>
+
         </div>
 
         <div *ngIf="display_step == 3">Period Liveliveness ended at {{ startExecutionPeriod }}</div>

@@ -33,6 +33,7 @@ export class ProposalDetailComponent implements OnChanges {
   @Input()  public proposal!: IPROPOSAL;
   @Output() private proposeValue = new EventEmitter<number>();
   @Output() private executeProposal = new EventEmitter();
+  @Output() private disputeProposal = new EventEmitter();
 
   ngOnChanges(changes: SimpleChanges): void {
      this.display_step = calculateStep(+this.proposal.step,this.proposal.earliestNextAction)
@@ -65,18 +66,22 @@ export class ProposalDetailComponent implements OnChanges {
  
   }
 
-  doProposeValue() {
+  doDispute() {
+    this.disputeProposal.emit();
+  }
 
+
+  doProposeValue() {
     const value = this.toProposeKpiAmountCtrl.value;
-    this.proposeValue.emit(value)
+    this.proposeValue.emit(value);
   }
 
   doProposeAnswer(value:number){
-    this.proposeValue.emit(value)
+    this.proposeValue.emit(value);
   }
 
   doExecuteProposal(){
-    this.executeProposal.emit()
+    this.executeProposal.emit();
   }
 
 

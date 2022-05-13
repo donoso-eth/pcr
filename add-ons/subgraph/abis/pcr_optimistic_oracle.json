@@ -1,4 +1,28 @@
-[  
+[     {
+  "anonymous": false,
+  "inputs": [
+    {
+      "indexed": false,
+      "internalType": "address",
+      "name": "proposer",
+      "type": "address"
+    },
+    {
+      "indexed": false,
+      "internalType": "uint256",
+      "name": "proposalId",
+      "type": "uint256"
+    },
+    {
+      "indexed": false,
+      "internalType": "uint256",
+      "name": "pcrId",
+      "type": "uint256"
+    }
+  ],
+  "name": "ProposalDisputed",
+  "type": "event"
+}, 
   {
     "anonymous": false,
     "inputs": [

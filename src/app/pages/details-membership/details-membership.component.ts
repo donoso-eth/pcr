@@ -69,6 +69,12 @@ back (){
     await doSignerTransaction(this.dapp.DAPP_STATE.contracts[+this.toUpdateMembership!.id]?.pcrOptimisticOracle.instance.proposeDistribution(value)!);
   }
 
+  async disputeProposal(){
+    this.store.dispatch(Web3Actions.chainBusy({ status: true }));
+    await doSignerTransaction(this.dapp.DAPP_STATE.contracts[+this.toUpdateMembership!.id]?.pcrOptimisticOracle.instance.disputeDistribution()!);
+
+  }
+
   async executeProposal() {
     /// TO dO CHAEK IF CURRENT DEPOSIT and ISSUER MEMBERs
     if (+this.toUpdateMembership!.rewardAmount > +this.toUpdateMembership!.currentdeposit) {

@@ -203,6 +203,12 @@ export class DetailsPcrComponent extends DappBaseComponent {
     await doSignerTransaction(this.dapp.DAPP_STATE.contracts[+this.toUpdateReward!.id]?.pcrOptimisticOracle.instance.proposeDistribution(answer)!);
   }
 
+  async disputeProposal(){
+    this.store.dispatch(Web3Actions.chainBusy({ status: true }));
+    await doSignerTransaction(this.dapp.DAPP_STATE.contracts[+this.toUpdateReward!.id]?.pcrOptimisticOracle.instance.disputeDistribution()!);
+
+  }
+
   async executeProposal() {
     /// TO dO CHAEK IF CURRENT DEPOSIT and ISSUER MEMBERs
     if (+this.toUpdateReward!.rewardAmount > +this.toUpdateReward!.currentdeposit) {

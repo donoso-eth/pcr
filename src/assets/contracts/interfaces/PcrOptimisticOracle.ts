@@ -84,6 +84,7 @@ export interface PcrOptimisticOracleInterface extends utils.Interface {
     "ancillaryBytesLimit()": FunctionFragment;
     "changeTarget(int256,uint8)": FunctionFragment;
     "depositReward(uint256)": FunctionFragment;
+    "disputeDistribution()": FunctionFragment;
     "executeDistribution()": FunctionFragment;
     "finder()": FunctionFragment;
     "initialize((address,uint256,address,address,(address,int256,uint8,uint256,uint256,uint256,bytes32,uint8,bytes)))": FunctionFragment;
@@ -132,6 +133,10 @@ export interface PcrOptimisticOracleInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "depositReward",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "disputeDistribution",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "executeDistribution",
@@ -209,6 +214,10 @@ export interface PcrOptimisticOracleInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "depositReward",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "disputeDistribution",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -303,6 +312,10 @@ export interface PcrOptimisticOracle extends BaseContract {
 
     depositReward(
       depositAmount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    disputeDistribution(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -424,6 +437,10 @@ export interface PcrOptimisticOracle extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  disputeDistribution(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   executeDistribution(
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -542,6 +559,8 @@ export interface PcrOptimisticOracle extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    disputeDistribution(overrides?: CallOverrides): Promise<void>;
+
     executeDistribution(overrides?: CallOverrides): Promise<void>;
 
     finder(overrides?: CallOverrides): Promise<string>;
@@ -656,6 +675,10 @@ export interface PcrOptimisticOracle extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    disputeDistribution(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     executeDistribution(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -738,6 +761,10 @@ export interface PcrOptimisticOracle extends BaseContract {
 
     depositReward(
       depositAmount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    disputeDistribution(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

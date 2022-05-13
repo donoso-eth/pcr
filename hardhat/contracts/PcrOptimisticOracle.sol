@@ -97,8 +97,6 @@ contract PcrOptimisticOracle is IPcrOptimisticOracle, Initializable, MultiCaller
   // endregion
 
   /**
-   * @title INITILIZER.
-   *
    * @notice initializer of the contract/oracle
    */
   function initialize(DataTypes.PCR_OPTIMISTIC_ORACLE_INITIALIZER calldata optimisticOracleinitializer) external initializer {
@@ -222,6 +220,30 @@ contract PcrOptimisticOracle is IPcrOptimisticOracle, Initializable, MultiCaller
     emit Events.ProposalCreated(msg.sender, id, pcrId, _proposedPrice);
   }
 
+
+  function disputeDistribution() external onlyActiveRewards {
+    uint256 timestamp = block.timestamp;
+    console.log(timestamp); console.log(reward.earliestNextAction);
+    require(timestamp > reward.earliestNextAction &&  timestamp <= reward.earliestNextAction +reward.optimisticOracleLivenessTime, "NOT_LIVENESS_PERIOD");
+    require(reward.rewardStep == DataTypes.RewardStep.Pending, "NOT_IN_LIVENESS_PERIOD");
+
+    uint256 id = _proposalId.current();
+
+
+    // Append pcrId to ancillary data.
+    bytes memory ancillaryData = _appendpcrId(reward.customAncillaryData);
+
+    // Dispute Price
+    optimisticOracle.disputePriceFor(msg.sender, address(this), reward.priceIdentifier, timestamp, ancillaryData);
+
+    reward.rewardStep = DataTypes.RewardStep.Funding;
+    reward.earliestNextAction = reward.earliestNextAction - reward.optimisticOracleLivenessTime;
+
+
+     emit Events.ProposalDisputed(msg.sender, id, pcrId);
+  }
+
+
   /**
    * @notice Allows any caller to execute distribution that has been validated by the Optimistic Oracle.
    * @dev Calling this for unresolved proposals will revert.
@@ -300,6 +322,8 @@ contract PcrOptimisticOracle is IPcrOptimisticOracle, Initializable, MultiCaller
     uint256 refund
   ) external {
     require(msg.sender == address(optimisticOracle), "Not authorized");
+
+    console.log('pricedisputed huahau');
 
     // Flag the associated reward unblocked for new distribution proposals unless rewards already distributed.
     reward.rewardStep = DataTypes.RewardStep.Funding;

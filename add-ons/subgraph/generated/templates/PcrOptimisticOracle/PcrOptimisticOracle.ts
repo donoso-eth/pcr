@@ -10,6 +10,32 @@ import {
   BigInt
 } from "@graphprotocol/graph-ts";
 
+export class ProposalDisputed extends ethereum.Event {
+  get params(): ProposalDisputed__Params {
+    return new ProposalDisputed__Params(this);
+  }
+}
+
+export class ProposalDisputed__Params {
+  _event: ProposalDisputed;
+
+  constructor(event: ProposalDisputed) {
+    this._event = event;
+  }
+
+  get proposer(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+
+  get proposalId(): BigInt {
+    return this._event.parameters[1].value.toBigInt();
+  }
+
+  get pcrId(): BigInt {
+    return this._event.parameters[2].value.toBigInt();
+  }
+}
+
 export class ProposalAcceptedAndDistribuition extends ethereum.Event {
   get params(): ProposalAcceptedAndDistribuition__Params {
     return new ProposalAcceptedAndDistribuition__Params(this);

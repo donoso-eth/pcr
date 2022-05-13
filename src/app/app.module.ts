@@ -45,10 +45,10 @@ export const contractProvider= {provide: 'contractMetadata', useValue:PcrHostMet
     FormsModule,
     ReactiveFormsModule,
     AppRoutingModule,
-    DappInjectorModule.forRoot({wallet:'wallet', defaultNetwork:'kovan'}),
+    DappInjectorModule.forRoot({wallet:'local', defaultNetwork:'localhost'}),
     StoreModule.forRoot({web3: we3ReducerFunction}),
-    //GraphQlModule.forRoot({uri:"http://localhost:8000/subgraphs/name/donoso-eth/perpetual-conditional-reward"}),
-    GraphQlModule.forRoot({uri:"https://api.thegraph.com/subgraphs/name/donoso-eth/perpetual-conditional-reward"}),
+    GraphQlModule.forRoot({uri:"http://localhost:8000/subgraphs/name/donoso-eth/perpetual-conditional-reward"}),
+    //GraphQlModule.forRoot({uri:"https://api.thegraph.com/subgraphs/name/donoso-eth/perpetual-conditional-reward"}),
 
     DropdownModule,
     ProgressSpinnerModule,

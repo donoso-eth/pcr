@@ -4,9 +4,9 @@ schema:
 dataSources:
   - kind: ethereum/contract
     name: PcrHost
-    network: kovan
+    network: localhost
     source:
-      address: '0xC9aA24Bb16a018Cb10323821f7cF06d9CDF121E4'
+      address: '0x87C9ae76E787D263E768BFBc8C23032240315751'
       abi: PcrHost
       startBlock: 31578143
     mapping:
@@ -28,7 +28,7 @@ dataSources:
 templates:
   - name: PcrOptimisticOracle
     kind: ethereum/contract
-    network: kovan
+    network: localhost
     source:
       abi: PcrOptimisticOracle
     mapping:
@@ -51,6 +51,8 @@ templates:
           handler: handleRewardAmountUpdated
         - event: ProposalCreated(address,uint256,uint256,int256)
           handler: handleProposalCreated
+        - event: ProposalDisputed(address,uint256,uint256)
+          handler: handleProposalDisputed
         - event: ProposalRejected(uint256,uint256,uint256,int256)
           handler: handleProposalRejected
         - event: ProposalAcceptedAndDistribuition(uint256,uint256,uint256,int256)
@@ -61,7 +63,7 @@ templates:
           handler: handleRewardSwitchStatus
   - name: PcrToken
     kind: ethereum/contract
-    network: kovan
+    network: localhost
     source:
       abi: PcrToken
     mapping:

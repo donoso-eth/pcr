@@ -30,7 +30,7 @@ contract PcrHost is IPcrHost {
   mapping(address => uint256) private _pcrTokensByUser;
 
   constructor() {}
-
+  
   function createPcrReward(
     DataTypes.PCRHOST_CONFIG_INPUT memory pcrHostConfig,
     DataTypes.IDA_INPUT memory _ida,

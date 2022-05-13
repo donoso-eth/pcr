@@ -65,8 +65,13 @@ export class UserBalanceComponent implements OnChanges {
     }
     this.store.dispatch(Web3Actions.chainBusy({ status: true }));
     const value = utils.parseEther(this.toDowngradeAmountCtrl.value.toString())
-
+    console.log(value.toString())
+    console.log(this.fundToken)
     const superToken = this._createSuperTokenInstance(this.fundToken.superToken);
+
+    const balance = await superToken.realtimeBalanceOfNow(this.dapp.signerAddress!)
+    console.log(balance[0].toString())
+
     await doSignerTransaction(superToken.downgrade(value));
 
     await this.refreshEvent.emit()

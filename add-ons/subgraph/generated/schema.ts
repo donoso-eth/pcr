@@ -489,103 +489,6 @@ export class UserMembership extends Entity {
   }
 }
 
-export class RewardTargetHitory extends Entity {
-  constructor(id: string) {
-    super();
-    this.set("id", Value.fromString(id));
-
-    this.set("reward", Value.fromString(""));
-  }
-
-  save(): void {
-    let id = this.get("id");
-    assert(id != null, "Cannot save RewardTargetHitory entity without an ID");
-    if (id) {
-      assert(
-        id.kind == ValueKind.STRING,
-        "Cannot save RewardTargetHitory entity with non-string ID. " +
-          'Considering using .toHex() to convert the "id" to a string.'
-      );
-      store.set("RewardTargetHitory", id.toString(), this);
-    }
-  }
-
-  static load(id: string): RewardTargetHitory | null {
-    return changetype<RewardTargetHitory | null>(
-      store.get("RewardTargetHitory", id)
-    );
-  }
-
-  get id(): string {
-    let value = this.get("id");
-    return value!.toString();
-  }
-
-  set id(value: string) {
-    this.set("id", Value.fromString(value));
-  }
-
-  get reward(): string {
-    let value = this.get("reward");
-    return value!.toString();
-  }
-
-  set reward(value: string) {
-    this.set("reward", Value.fromString(value));
-  }
-
-  get target(): BigInt | null {
-    let value = this.get("target");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toBigInt();
-    }
-  }
-
-  set target(value: BigInt | null) {
-    if (!value) {
-      this.unset("target");
-    } else {
-      this.set("target", Value.fromBigInt(<BigInt>value));
-    }
-  }
-
-  get targetCondition(): BigInt | null {
-    let value = this.get("targetCondition");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toBigInt();
-    }
-  }
-
-  set targetCondition(value: BigInt | null) {
-    if (!value) {
-      this.unset("targetCondition");
-    } else {
-      this.set("targetCondition", Value.fromBigInt(<BigInt>value));
-    }
-  }
-
-  get timeStamp(): BigInt | null {
-    let value = this.get("timeStamp");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toBigInt();
-    }
-  }
-
-  set timeStamp(value: BigInt | null) {
-    if (!value) {
-      this.unset("timeStamp");
-    } else {
-      this.set("timeStamp", Value.fromBigInt(<BigInt>value));
-    }
-  }
-}
-
 export class RewardIndexHistory extends Entity {
   constructor(id: string) {
     super();
@@ -674,6 +577,8 @@ export class Proposal extends Entity {
     this.set("priceResolved", Value.fromBigInt(BigInt.zero()));
     this.set("rewardId", Value.fromString(""));
     this.set("proposalId", Value.fromString(""));
+    this.set("status", Value.fromString(""));
+    this.set("target", Value.fromBigInt(BigInt.zero()));
   }
 
   save(): void {
@@ -782,20 +687,21 @@ export class Proposal extends Entity {
     }
   }
 
-  get status(): string | null {
+  get status(): string {
     let value = this.get("status");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toString();
-    }
+    return value!.toString();
   }
 
-  set status(value: string | null) {
-    if (!value) {
-      this.unset("status");
-    } else {
-      this.set("status", Value.fromString(<string>value));
-    }
+  set status(value: string) {
+    this.set("status", Value.fromString(value));
+  }
+
+  get target(): BigInt {
+    let value = this.get("target");
+    return value!.toBigInt();
+  }
+
+  set target(value: BigInt) {
+    this.set("target", Value.fromBigInt(value));
   }
 }

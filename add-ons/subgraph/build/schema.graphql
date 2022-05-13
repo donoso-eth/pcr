@@ -56,13 +56,7 @@ type UserMembership @entity {
   units: BigInt!
 }
 
-type RewardTargetHitory @entity {
-  id: ID!
-  reward: Reward!
-  target: BigInt
-  targetCondition: BigInt
-  timeStamp: BigInt
-}
+
 
 type RewardIndexHistory @entity {
   id: ID!
@@ -82,5 +76,6 @@ type Proposal @entity {
   rewardId: String!
   proposalId:String!
   timeStamp: BigInt
-  status: ProposalStatus
+  status: ProposalStatus!
+  target:BigInt!
 }

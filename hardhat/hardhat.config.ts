@@ -30,7 +30,7 @@ if (existsSync('./typechain-types')) {
 const mainnetGwei = 21;
 
 
-const defaultNetwork = 'localhost';
+const defaultNetwork = 'kovan';
 
 const config: HardhatUserConfig = {
   solidity: {
@@ -49,7 +49,7 @@ const config: HardhatUserConfig = {
       forking: {
         //your rpc url here, in this case for Mumbai 31301672
         url: process.env.KOVAN_URL || "",
-        blockNumber: 31301672,
+        blockNumber: 31578143,
       },
     },
     localhost: {
@@ -68,8 +68,9 @@ const config: HardhatUserConfig = {
       // },
     },
     kovan: {
-      url: `https://kovan.infura.io/v3/${INFURA_ID}`, // <---- YOUR INFURA ID! (or it won't work)
+      url: process.env.KOVAN_URL || "", // <---- YOUR INFURA ID! (or it won't work)
       // `https://speedy-nodes-nyc.moralis.io/${MORALIS_ID}/eth/kovan`
+      gasPrice: 3* 1000000000,
       accounts:
         process.env['DEPLOYER_KEY'] !== undefined
           ? [process.env['DEPLOYER_KEY']]
@@ -89,7 +90,7 @@ const config: HardhatUserConfig = {
           : [],
     },
     ropsten: {
-      url: `https://ropsten.infura.io/v3/${INFURA_ID}`, // <---- YOUR INFURA ID! (or it won't work)
+      url: process.env.KOVAN_URL || "",// <---- YOUR INFURA ID! (or it won't work)
       // `https://speedy-nodes-nyc.moralis.io/${MORALIS_ID}/eth/ropsten`
           accounts:
         process.env['DEPLOYER_KEY'] !== undefined

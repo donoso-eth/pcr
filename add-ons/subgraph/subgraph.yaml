@@ -4,11 +4,11 @@ schema:
 dataSources:
   - kind: ethereum/contract
     name: PcrHost
-    network: localhost
+    network: kovan
     source:
-      address: '0xD9d684546ED4c727B136503016E137822DD9b4D7'
+      address: '0xC9aA24Bb16a018Cb10323821f7cF06d9CDF121E4'
       abi: PcrHost
-      startBlock: 31301672
+      startBlock: 31578143
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -16,7 +16,6 @@ dataSources:
       entities:
         - Reward
         - Proposal
-        - RewardTargetHitory
         - RewardIndexHistory
         - UserMembership
       abis:
@@ -29,7 +28,7 @@ dataSources:
 templates:
   - name: PcrOptimisticOracle
     kind: ethereum/contract
-    network: localhost
+    network: kovan
     source:
       abi: PcrOptimisticOracle
     mapping:
@@ -40,7 +39,6 @@ templates:
       entities:
         - Reward
         - Proposal
-        - RewardTargetHitory
         - RewardIndexHistory
         - UserMembership
       abis:
@@ -63,7 +61,7 @@ templates:
           handler: handleRewardSwitchStatus
   - name: PcrToken
     kind: ethereum/contract
-    network: localhost
+    network: kovan
     source:
       abi: PcrToken
     mapping:
@@ -74,7 +72,6 @@ templates:
       entities:
         - Reward
         - Proposal
-        - RewardTargetHitory
         - RewardIndexHistory
         - UserMembership
       abis:

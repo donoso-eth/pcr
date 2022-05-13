@@ -2,7 +2,7 @@
   <div class="col-12">
     <div style="position: relative; border-color: transparent" class="card">
       <h5>Pcr's Created</h5>
-
+    
       <button pButton pRipple style="position: absolute; top: 15px; right: 20px" (click)="createPcr()" type="button"
         label="New" class="p-button-rounded mr-2 mb-2"></button>
 
@@ -19,18 +19,18 @@
             </h6>
             <div *ngIf="reward.rewardStatus == '0'">
               <div *ngIf="reward.displayStep == 0">
-                <p [ngStyle]="{ lineHeight: '2.5rem' }">Period Qualifying. Rewals proposals {{reward.displayDate}}</p>
+                <p [ngStyle]="{ lineHeight: '2.5rem' }">Qualifying till {{reward.displayDate}}</p>
               </div>
               <div *ngIf="reward.displayStep == 1">
-                <p [ngStyle]="{ lineHeight: '2.5rem' }">Period Waiting for Proposals</p>
+                <p [ngStyle]="{ lineHeight: '2.5rem' }">Waiting for Proposals</p>
               </div>
               <div *ngIf="reward.displayStep == 2">
-                <p [ngStyle]="{ lineHeight: '2.5rem' }">Period Liveness Rewards can be executed after
+                <p [ngStyle]="{ lineHeight: '2.5rem' }">Liveliness till
                   {{reward.displayDate}}</p>
               </div>
 
               <div *ngIf="reward.displayStep == 3">
-                <p [ngStyle]="{ lineHeight: '2.5rem' }">Period Waiting to be executed</p>
+                <p [ngStyle]="{ lineHeight: '2.5rem' }">Waiting to be executed</p>
               </div>
             </div>
             <div *ngIf="reward.rewardStatus !== '0'">
@@ -73,18 +73,18 @@
       </h6>
       <div *ngIf="membership.rewardStatus === '0'">
         <div *ngIf="membership.displayStep == 0">
-            <p [ngStyle]="{ lineHeight: '2.5rem' }">Period Qualifying. Rewals proposals {{membership.displayDate}}</p>
+            <p [ngStyle]="{ lineHeight: '2.5rem' }">Qualifying till {{membership.displayDate}}</p>
         </div>
         <div *ngIf="membership.displayStep == 1">
-          <p [ngStyle]="{ lineHeight: '2.5rem' }">Period Waiting for Proposals</p>
+          <p [ngStyle]="{ lineHeight: '2.5rem' }">Waiting for Proposals</p>
         </div>
         <div *ngIf="membership.displayStep == 2">
-          <p [ngStyle]="{ lineHeight: '2.5rem' }">Period Liveness memberships can be executed after
+          <p [ngStyle]="{ lineHeight: '2.5rem' }">Liveliness till
             {{membership.displayDate}}</p>
         </div>
 
         <div *ngIf="membership.displayStep == 3">
-          <p [ngStyle]="{ lineHeight: '2.5rem' }">Period Waiting to be executed</p>
+          <p [ngStyle]="{ lineHeight: '2.5rem' }">Waiting to be executed</p>
         </div>
       </div>
       <div *ngIf="membership.rewardStatus !== '0'">
@@ -93,7 +93,7 @@
       <div  class="flex align-items-center justify-content-end" [ngStyle]="{  height: '2.5rem' }">
 
         <div class="flex justify-content-center align-items-center">
-          <p class="mr-2 mb-0">Current Index: {{utils.formatEther(membership.currentIndex)}} per unit</p>
+          <p class="mr-2 mb-0">Index: {{(+utils.formatEther(membership.currentIndex)).toFixed(4)}}/unit</p>
           <img [width]="40" src="assets/images/tokens/{{membership?.fundToken?.image}}_icon.svg"
             style="margin-right: 5px;" />
         </div>

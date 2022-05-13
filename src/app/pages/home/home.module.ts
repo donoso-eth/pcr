@@ -15,6 +15,8 @@ import { DialogModule } from 'primeng/dialog';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { StepsModule } from 'primeng/steps';
 import { ChartModule } from 'primeng/chart';
+import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
 
 @NgModule({
   declarations: [
@@ -31,7 +33,8 @@ import { ChartModule } from 'primeng/chart';
     InputTextModule, 
     InputNumberModule,
     InputTextareaModule,
-    InputSwitchModule,
-  ]
+    InputSwitchModule
+  ],
+  providers:[]
 })
 export class HomeModule { }

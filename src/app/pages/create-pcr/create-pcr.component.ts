@@ -22,7 +22,7 @@ import { Store } from '@ngrx/store';
   templateUrl: './create-pcr.component.html',
   styleUrls: ['./create-pcr.component.scss'],
 })
-export class CreatePcrComponent extends DappBaseComponent implements OnInit {
+export class CreatePcrComponent extends DappBaseComponent  {
   rewardForm: FormGroup;
 
   conditions = [
@@ -118,7 +118,7 @@ export class CreatePcrComponent extends DappBaseComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void { }
+ 
 
   goHome() {
     this.display = false;

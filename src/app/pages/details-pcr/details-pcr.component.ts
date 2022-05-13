@@ -130,16 +130,19 @@ export class DetailsPcrComponent extends DappBaseComponent {
   }
 
   async doUpdateRewardAmount() {
-    const newAmount = this.toUpdateAmountCtrl.value;
-    if (newAmount <= 0) {
+  
+    if (this.toUpdateAmountCtrl.value <= 0) {
       alert('please onput a positive value');
       return;
     }
-    this.showingUpdateAmount = false;
+   
  
+    const newAmount = utils.parseEther(this.toUpdateAmountCtrl.value.toString());
+
     this.store.dispatch(Web3Actions.chainBusy({ status: true }));
     await doSignerTransaction(this.dapp.DAPP_STATE.contracts[+this.toUpdateReward!.id]?.pcrOptimisticOracle.instance.updateRewardAmount(newAmount));
-    this.store.dispatch(Web3Actions.chainBusy({ status: false }));
+    this.showingUpdateAmount = false;
+    //this.store.dispatch(Web3Actions.chainBusy({ status: false }));
    
   }
 

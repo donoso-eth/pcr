@@ -142,7 +142,7 @@ export class ChartsComponent implements OnChanges {
         },
         y: {
           id: 'A',
-          display: false,
+          display: true,
           type: 'linear',
           position: 'left',
           min: 0,
@@ -226,8 +226,9 @@ export class ChartsComponent implements OnChanges {
           let value = item.status == 'Accepted' ? 1 : 0;
           proposalChart.push(value);
         } else if (this.chartConfig!.priceType == 1) {
-          proposalChart.push(utils.formatEther(item.priceProposed));
-          targetChart.push(utils.formatEther(this.chartConfig!.target));
+          proposalChart.push(item.priceProposed);
+          console.log(+this.chartConfig!.target);
+          targetChart.push(+this.chartConfig!.target);
         }
       }
 

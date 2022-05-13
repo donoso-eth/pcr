@@ -50,7 +50,7 @@
     <h6>Downgrade from DAIx to DAI (values in tokens)</h6>
     <p class="flex justify-content-between" >
    
-      <p-inputNumber [formControl]="toDowngradeAmountCtrl" placeholder="Amount" mode="decimal" [showButtons]="true" [min]="0"> </p-inputNumber>
+      <p-inputNumber [formControl]="toDowngradeAmountCtrl"[step]="0.01"  pattern="0.00" placeholder="Amount" mode="decimal" [showButtons]="true" [min]="0"> </p-inputNumber>
       <button style="margin-left:30px"  pButton icon="pi pi-check" label="Downgrade" (click)="doDowngrade()" class="p-button-outlined"></button>
     </p>
     <ng-template pTemplate="footer">

@@ -58,7 +58,7 @@
                     <div class="flex justify-content-between flex-column mb-3">
                       <div class="text-900 font-medium text-lg">
                         Index <br />
-                        <span style="color: var(--primary-color)"> {{ utils.formatEther(toUpdateReward!.currentIndex) }}$/unit</span>
+                        <span style="color: var(--primary-color)"> {{ (+utils.formatEther(toUpdateReward!.currentIndex)).toFixed(2) }}$/unit</span>
                       </div>
                     </div>
                   </div>

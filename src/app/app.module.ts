@@ -22,6 +22,9 @@ import { LoadingComponent } from './shared/components/loading/loading.component'
 import { DropdownModule } from 'primeng/dropdown';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
+import { ButtonModule } from 'primeng/button';
 export const contractMetadata = new InjectionToken<ICONTRACT_METADATA>('contractMetadata')
 
 export const contractProvider= {provide: 'contractMetadata', useValue:PcrHostMetadata };
@@ -42,14 +45,17 @@ export const contractProvider= {provide: 'contractMetadata', useValue:PcrHostMet
     FormsModule,
     ReactiveFormsModule,
     AppRoutingModule,
-    DappInjectorModule.forRoot({wallet:'local', defaultNetwork:'localhost'}),
+    DappInjectorModule.forRoot({wallet:'wallet', defaultNetwork:'kovan'}),
     StoreModule.forRoot({web3: we3ReducerFunction}),
-    GraphQlModule.forRoot({uri:"http://localhost:8000/subgraphs/name/donoso-eth/perpetual-conditional-reward"}),
+    //GraphQlModule.forRoot({uri:"http://localhost:8000/subgraphs/name/donoso-eth/perpetual-conditional-reward"}),
+    GraphQlModule.forRoot({uri:"https://api.thegraph.com/subgraphs/name/donoso-eth/perpetual-conditional-reward"}),
 
     DropdownModule,
-    ProgressSpinnerModule
+    ProgressSpinnerModule,
+    ToastModule,
+    ButtonModule
   ],
-  providers: [contractProvider],
+  providers: [contractProvider,  MessageService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,18 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { DappBaseComponent, DappInjector, global_tokens, Web3Actions } from 'angular-web3';
-import { Contract, utils } from 'ethers';
+import { utils } from 'ethers';
+import { MessageService } from 'primeng/api';
 import { takeUntil } from 'rxjs';
-import { doSignerTransaction } from 'src/app/dapp-injector/classes/transactor';
 
 import { GraphQlService } from 'src/app/dapp-injector/services/graph-ql/graph-ql.service';
 import { calculateStep } from 'src/app/shared/helpers/helpers';
 import { IPCR_REWARD } from 'src/app/shared/models/pcr';
 
-import { abi_ERC20 } from './abis/erc20';
-import { abi_SuperToken } from './abis/superToken';
+
 
 export enum REWARD_STEP {
   QUALIFYING,
@@ -25,6 +23,7 @@ export enum REWARD_STEP {
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
+  providers:[]
 })
 export class HomeComponent extends DappBaseComponent implements OnInit {
   pcrTokens: Array<IPCR_REWARD> = [];
@@ -33,7 +32,7 @@ export class HomeComponent extends DappBaseComponent implements OnInit {
   utils = utils
  
   activeStep = 0;
-   constructor(private router: Router, dapp: DappInjector, store: Store, private graphqlService: GraphQlService) {
+   constructor(private msg: MessageService,private router: Router, dapp: DappInjector, store: Store, private graphqlService: GraphQlService) {
     super(dapp, store);
 
 
@@ -52,7 +51,9 @@ export class HomeComponent extends DappBaseComponent implements OnInit {
 
 
   goDetailsToken(reward:IPCR_REWARD){
-    this.router.navigateByUrl(`details-pcr/${reward.id}`)
+   //this.msg.add({key: 'tst', severity: 'info', summary: 'Info Message', detail: 'PrimeNG rocks'});
+
+   this.router.navigateByUrl(`details-pcr/${reward.id}`)
   }
 
 

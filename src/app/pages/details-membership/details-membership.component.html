@@ -10,7 +10,7 @@
             <div class="col-12 lg:col-6 xl:col-6">
               <div
                 style="position: relative; background-color: var(--surface-ground); text-align: center"
-                class="card mt-3 flex align-items-center flex-column justify-content-center"
+                class="card  flex align-items-center flex-column justify-content-center"
               >
                 <h4 class="mb-1">Membership</h4>
                 <div *ngIf="idaMembership?.approved == true">
@@ -30,7 +30,7 @@
                 </div>
                 <div style="margin-top: 20px" *ngIf="+idaMembership?.pendingDistribution! > 0">
                   <p>
-                    There are already distributed rewards <span style="color: var(--primary-color)">{{ utils.formatEther(idaMembership?.pendingDistribution!) }} tokens</span> , if you prefer you can
+                    There are already distributed rewards <span style="color: var(--primary-color)">{{ (+utils.formatEther(idaMembership?.pendingDistribution!)).toFixed(4) }} tokens</span> , if you prefer you can
                     only claim this reward and subscribe later
                   </p>
                   <button

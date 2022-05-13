@@ -151,12 +151,12 @@ back (){
     const superToken = createSuperTokenInstance(this.toUpdateMembership!.fundToken.superToken, this.dapp.signer!);
     const balanceSupertoken = await superToken.realtimeBalanceOfNow(this.dapp.signerAddress);
 
-    this.toUpdateMembership!.fundToken.superTokenBalance = (+utils.formatEther(balanceSupertoken[0])).toFixed(4);
+    this.toUpdateMembership!.fundToken.superTokenBalance = (utils.formatEther(balanceSupertoken[0])).substring(0,6);
 
     const rewardToken = createERC20Instance(this.toUpdateMembership!.fundToken.rewardToken, this.dapp.signer!);
     const balanceRewardToken = await rewardToken.balanceOf(this.dapp.signerAddress);
 
-    this.toUpdateMembership!.fundToken.rewardTokenBalance = (+utils.formatEther(balanceRewardToken)).toFixed(4);
+    this.toUpdateMembership!.fundToken.rewardTokenBalance = (utils.formatEther(balanceRewardToken)).substring(0,6);
     this.store.dispatch(Web3Actions.chainBusy({ status: false}));
   }
 

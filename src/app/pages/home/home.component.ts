@@ -51,7 +51,7 @@ export class HomeComponent extends DappBaseComponent implements OnInit {
 
 
   goDetailsToken(reward:IPCR_REWARD){
-   //this.msg.add({key: 'tst', severity: 'info', summary: 'Info Message', detail: 'PrimeNG rocks'});
+
 
    this.router.navigateByUrl(`details-pcr/${reward.id}`)
   }

@@ -17,6 +17,7 @@ import {
 import { doSignerTransaction } from 'src/app/dapp-injector/classes/transactor';
 import { Store } from '@ngrx/store';
 import { Description } from '@ethersproject/properties';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-create-pcr',
@@ -64,6 +65,7 @@ export class CreatePcrComponent extends DappBaseComponent  {
   display = false; 
 
   constructor(
+    private msg: MessageService,
     public formBuilder: FormBuilder,
     private router: Router,
     dapp: DappInjector,
@@ -111,11 +113,11 @@ export class CreatePcrComponent extends DappBaseComponent  {
         [Validators.required],
       ],
       intervalAmountCtrl: [10, [Validators.required, Validators.min(1)]],
-      livelinessCtrl: [
+      livenessCtrl: [
         { name: 'minutes', id: 0, factor: 60 },
         [Validators.required],
       ],
-      livelinessAmountCtrl: [10, [Validators.required, Validators.min(1)]],
+      livenessAmountCtrl: [10, [Validators.required, Validators.min(1)]],
     });
   }
 
@@ -170,8 +172,8 @@ export class CreatePcrComponent extends DappBaseComponent  {
       interval:
         this.rewardForm.controls.intervalAmountCtrl.value *
         this.rewardForm.controls.intervalCtrl.value.factor,
-      optimisticOracleLivenessTime:  this.rewardForm.controls.livelinessAmountCtrl.value *
-      this.rewardForm.controls.livelinessCtrl.value.factor,
+      optimisticOracleLivenessTime:  this.rewardForm.controls.livenessAmountCtrl.value *
+      this.rewardForm.controls.livenessCtrl.value.factor,
       customAncillaryData,
       priceIdentifier,
     };
@@ -185,15 +187,19 @@ export class CreatePcrComponent extends DappBaseComponent  {
  
     this.store.dispatch(Web3Actions.chainBusy({ status: true }));
 
-    await doSignerTransaction(
+   const result =  await doSignerTransaction(
       this.dapp.pcrHostContract?.instance.createPcrReward(
         rewardConfig,
         Ida,
         OptimisticOracle
       )!
     );
+    if (result.success == true){
     this.store.dispatch(Web3Actions.chainBusy({ status: false }));
     this.display = true;
+    } else {
+      this.msg.add({key: 'tst', severity: 'danger', summary: 'OOPS', detail: 'Error creating the pcd'});
+    }
   }
 
   back() {

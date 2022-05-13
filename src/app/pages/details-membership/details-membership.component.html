@@ -15,6 +15,15 @@
                 <h4 class="mb-1">Membership</h4>
                 <div *ngIf="idaMembership?.approved == true">
                   <p>Your membership already approved</p>
+                  <button
+                  pButton
+                  pRipple
+                  style="position: relative; width: fit-content"
+                  (click)="cancelMembership()"
+                  type="button"
+                  label="Cancel"
+                  class="p-button-rounded mr-2 mb-2"
+                ></button>
                 </div>
                 <div *ngIf="idaMembership?.approved == false">
                   <p>Your Membership not yet approved</p>

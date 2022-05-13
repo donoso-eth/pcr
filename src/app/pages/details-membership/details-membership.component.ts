@@ -90,16 +90,26 @@ back (){
 
   async approveMembership() {
     this.store.dispatch(Web3Actions.chainBusy({ status: true }));
-    await this.superFluidService.approveSubscription(this.toUpdateMembership.fundToken.superToken)
-    this.idaMembership = await this.superFluidService.getSubscription(this.toUpdateMembership.fundToken.superToken);
+    await this.superFluidService.approveSubscription(this.toUpdateMembership.fundToken.superToken,+this.toUpdateMembership!.id)
+    this.idaMembership = await this.superFluidService.getSubscription(this.toUpdateMembership.fundToken.superToken,+this.toUpdateMembership!.id);
+    console.log(this.idaMembership)
     await this.refreshBalance()
+    this.store.dispatch(Web3Actions.chainBusy({ status: false }));
+  }
+
+  async cancelMembership(){
+    this.store.dispatch(Web3Actions.chainBusy({ status: true }));
+    await this.superFluidService.cancelSubscription(this.toUpdateMembership.fundToken.superToken,+this.toUpdateMembership!.id)
+    this.idaMembership = await this.superFluidService.getSubscription(this.toUpdateMembership.fundToken.superToken,+this.toUpdateMembership!.id);
+    await this.refreshBalance()
+    console.log(this.idaMembership)
     this.store.dispatch(Web3Actions.chainBusy({ status: false }));
   }
 
   async claim(){
     this.store.dispatch(Web3Actions.chainBusy({ status: true }));
-    await this.superFluidService.claimSubscription(this.toUpdateMembership.fundToken.superToken)
-    this.idaMembership = await this.superFluidService.getSubscription(this.toUpdateMembership.fundToken.superToken);
+    await this.superFluidService.claimSubscription(this.toUpdateMembership.fundToken.superToken,+this.toUpdateMembership!.id)
+    this.idaMembership = await this.superFluidService.getSubscription(this.toUpdateMembership.fundToken.superToken,+this.toUpdateMembership!.id);
    await this.refreshBalance()
     this.store.dispatch(Web3Actions.chainBusy({ status: false }));
   }
@@ -139,13 +149,6 @@ back (){
     return reward;
   }
 
-  private _createERC20Instance(ERC: string): Contract {
-    return new Contract(ERC, abi_ERC20, this.dapp.signer!);
-  }
-
-  private _createSuperTokenInstance(SuperToken: string): Contract {
-    return new Contract(SuperToken, abi_SuperToken, this.dapp.signer!);
-  }
 
   async refreshBalance(){
     const superToken = createSuperTokenInstance(this.toUpdateMembership!.fundToken.superToken, this.dapp.signer!);
@@ -187,12 +190,11 @@ back (){
 
         await this.dapp.launchClones(this.toUpdateMembership!.tokenImpl, this.toUpdateMembership!.optimisticOracleImpl, +this.toUpdateMembership!.id);
 
-        this.idaMembership = await this.superFluidService.getSubscription(this.toUpdateMembership.fundToken.superToken);
+        this.idaMembership = await this.superFluidService.getSubscription(this.toUpdateMembership.fundToken.superToken,+this.toUpdateMembership!.id);
 
     
 
         this.chartConfig = { id: this.toUpdateMembership?.id!, priceType:+this.toUpdateMembership?.priceType,target:+this.toUpdateMembership?.target! }
-
 
         this.store.dispatch(Web3Actions.chainBusy({ status: false }));
       });

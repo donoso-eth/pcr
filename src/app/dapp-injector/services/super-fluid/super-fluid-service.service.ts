@@ -175,7 +175,7 @@ export class SuperFluidServiceService {
   }
 
 
-  async getSubscription(rewardToken:string){
+  async getSubscription(rewardToken:string,id:number){
 
     if (this.sf == undefined){
       await this.initializeFramework()
@@ -188,14 +188,14 @@ export class SuperFluidServiceService {
       indexId: '0',
       subscriber: this.dapp.signerAddress!,
       providerOrSigner: this.dapp.signer!,
-      publisher: this.dapp.DAPP_STATE.contracts[1].pcrToken.address,
+      publisher: this.dapp.DAPP_STATE.contracts[id].pcrToken.address,
     });
 
     return subsc
 
   }
 
-  async approveSubscription(rewardToken:string){
+  async approveSubscription(rewardToken:string,id:number){
 
     if (this.sf == undefined){
       await this.initializeFramework()
@@ -203,15 +203,29 @@ export class SuperFluidServiceService {
     const approveOperation = await this.ida.approveSubscription({
       superToken: rewardToken,
       indexId: '0',
-      publisher: this.dapp.DAPP_STATE.contracts[1].pcrToken.address,
+      publisher: this.dapp.DAPP_STATE.contracts[id].pcrToken.address,
     });
 
     await approveOperation.exec(this.dapp.signer!)
 
   }
 
+  async cancelSubscription(rewardToken:string,id:number){
 
-  async claimSubscription(rewardToken:string){
+    if (this.sf == undefined){
+      await this.initializeFramework()
+    }
+    const approveOperation = await this.ida.revokeSubscription({
+      superToken: rewardToken,
+      indexId: '0',
+      publisher: this.dapp.DAPP_STATE.contracts[id].pcrToken.address,
+    });
+
+    await approveOperation.exec(this.dapp.signer!)
+
+  }
+
+  async claimSubscription(rewardToken:string,id:number){
 
     if (this.sf == undefined){
       await this.initializeFramework()
@@ -220,7 +234,7 @@ export class SuperFluidServiceService {
       superToken: rewardToken,
       indexId: '0',
       subscriber: this.dapp.signerAddress!,
-      publisher: this.dapp.DAPP_STATE.contracts[1].pcrToken.address,
+      publisher: this.dapp.DAPP_STATE.contracts[id].pcrToken.address,
     });
 
     await claimOperation.exec(this.dapp.signer!)

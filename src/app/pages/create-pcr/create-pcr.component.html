@@ -102,10 +102,10 @@
 								<p-inputNumber formControlName="intervalAmountCtrl" placeholder="Interval" mode="decimal" [showButtons]="true" [min]="0">
 								</p-inputNumber>
 								<h5>Liveness Periodl</h5>
-								<p-dropdown [options]="intervals"   formControlName="livelinessCtrl"  placeholder="Select a Interval">
+								<p-dropdown [options]="intervals"   formControlName="livenessCtrl"  placeholder="Select a Interval">
 									<ng-template pTemplate="selectedItem">
 										<div  style="display:inline-flex" class="country-item country-item-value" *ngIf="selectedToken">
-												<div>{{rewardForm.controls.livelinessCtrl.value.name}}</div>
+												<div>{{rewardForm.controls.livenessCtrl.value.name}}</div>
 										</div>
 									</ng-template>
 									<ng-template let-interval pTemplate="interval">
@@ -115,7 +115,7 @@
 										</div>
 									</ng-template>
 								</p-dropdown>
-								<p-inputNumber formControlName="livelinessAmountCtrl" placeholder="Interval" mode="decimal" [showButtons]="true" [min]="0">
+								<p-inputNumber formControlName="livenessAmountCtrl" placeholder="Interval" mode="decimal" [showButtons]="true" [min]="0">
 								</p-inputNumber>
 
 

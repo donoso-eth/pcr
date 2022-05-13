@@ -37,11 +37,6 @@ contract PcrOptimisticOracle is IPcrOptimisticOracle, Initializable, MultiCaller
   using SafeERC20 for IERC20;
   using Counters for Counters.Counter;
 
-  /********************************************
-   *  OPTIMISTIC ORACLE DATA STRUCTURES  *
-   ********************************************/
-
-  // Enum controlling acceptance of distribution payout proposals and their execution.
 
   /********************************************
    *      STATE VARIABLES AND CONSTANTS       *
@@ -58,19 +53,22 @@ contract PcrOptimisticOracle is IPcrOptimisticOracle, Initializable, MultiCaller
   // Ancillary data length limit can be synced and stored in the contract.
   uint256 public ancillaryBytesLimit;
 
-  // Rewards are stored in dynamic array.
+  // Rewards are stored in a REward Struct
   DataTypes.Reward public reward;
 
-  //
+  // Reward/token id provided by initialization
   uint256 public pcrId;
-  //
+
+  // Adress of the instantiate IDA Superfluid Contract for token transfer
   address public TOKEN_INDEX_PUBLISHER_ADDRESS;
 
+  // Proposal counter 
   Counters.Counter public _proposalId;
 
+  // Proposal 
   DataTypes.Proposal public proposal;
 
-  // Immutable variables provided at deployment.
+  // Uma finder address
   FinderInterface public finder;
   address public rewardToken; // This cannot be declared immutable as bondToken needs to be checked against whitelist.
 
@@ -99,7 +97,9 @@ contract PcrOptimisticOracle is IPcrOptimisticOracle, Initializable, MultiCaller
   // endregion
 
   /**
-   * @notice INITILIZER.
+   * @title INITILIZER.
+   *
+   * @notice initializer of the contract/oracle
    */
   function initialize(DataTypes.PCR_OPTIMISTIC_ORACLE_INITIALIZER calldata optimisticOracleinitializer) external initializer {
     finder = optimisticOracleinitializer.optimisticOracleInput.finder;
@@ -143,19 +143,25 @@ contract PcrOptimisticOracle is IPcrOptimisticOracle, Initializable, MultiCaller
   }
 
   /**
-   * @notice Allows anyone to deposit additional rewards for distribution before `earliestNextAction`.
-   * @dev The caller must approve this contract to transfer `additionalRewardAmount` amount of `rewardToken`.
-   * @param newRewardAmount Additional reward amount that the admin is posting for distribution.
+   * @notice Allows the admin to change the Reward Amount
+   * 
+   * @param newRewardAmount New reward amount that the admin is posting for distribution.
    */
   function updateRewardAmount(uint256 newRewardAmount) external onlyAdmin {
-    // Pull additional rewards from the admin.
+
     reward.rewardAmount = newRewardAmount;
-    // Update rewardAmount and log new amount.
+
     emit Events.RewardAmountUpdated(pcrId, newRewardAmount);
 
-    console.log("event REWARD AMOUNT CHANGED");
+
   }
 
+  /**
+   * @notice Allows the admin to change the target and target conditoin for the reward
+   * @dev function tested but not implemented in frontend
+   * @param _newTarget New target for the REward KPI
+   * @param _newTargetCondition New targetCondition (Greater, Greater or Equal, Equal, Less or Equal, Less)
+   */
   function changeTarget(int256 _newTarget, DataTypes.TargetCondition _newTargetCondition) external onlyAdmin {
     reward.target = _newTarget;
     reward.targetCondition = _newTargetCondition;
@@ -163,6 +169,10 @@ contract PcrOptimisticOracle is IPcrOptimisticOracle, Initializable, MultiCaller
     emit Events.RewardTargetAndConditionChanged(pcrId, reward.target, reward.targetCondition);
   }
 
+  /**
+   * @notice Allows the admin to Pause the Reward or Unpause
+   * @dev The removed/delete state not yet implemented
+   */
   function switchRewardStatus() external onlyAdmin {
     if (reward.rewardStatus == DataTypes.RewardStatus.Active) {
       reward.rewardStatus = DataTypes.RewardStatus.Paused;
@@ -181,8 +191,8 @@ contract PcrOptimisticOracle is IPcrOptimisticOracle, Initializable, MultiCaller
   /**
    * @notice Allows any caller to propose distribution for funded reward starting from `earliestNextAction`.
    * Only one undisputed proposal at a time is allowed.
-   * @dev The caller must approve this contract to transfer `optimisticOracleProposerBond` + final fee amount
-   * of `bondToken`.
+   * @dev The caller must approve this contract to transfer
+   * @param _proposedPrice The Proposed KPI value when tarhet value or Yes/No when imple question
    */
   function proposeDistribution(int256 _proposedPrice) external onlyActiveRewards {
     uint256 timestamp = block.timestamp;
@@ -201,10 +211,10 @@ contract PcrOptimisticOracle is IPcrOptimisticOracle, Initializable, MultiCaller
     // Request price from Optimistic Oracle.
     optimisticOracle.requestPrice(reward.priceIdentifier, timestamp, ancillaryData, IERC20(0x489Bf230d4Ab5c2083556E394a28276C22c3B580), 0);
 
-    // Set proposal liveness and bond and calculate total bond amount.
+    // Set proposal liveness and bond.
     optimisticOracle.setCustomLiveness(reward.priceIdentifier, timestamp, ancillaryData, reward.optimisticOracleLivenessTime);
 
-    // Propose canonical value representing "True"; i.e. the proposed distribution is valid.
+    // Propose Value.
     optimisticOracle.proposePriceFor(msg.sender, address(this), reward.priceIdentifier, timestamp, ancillaryData, int256(_proposedPrice));
 
     // Store and log proposed distribution.
@@ -230,23 +240,23 @@ contract PcrOptimisticOracle is IPcrOptimisticOracle, Initializable, MultiCaller
     // Get resolved price. Reverts if the request is not settled or settleable.
     int256 resolvedPrice = optimisticOracle.settleAndGetPrice(reward.priceIdentifier, proposal.timestamp, ancillaryData);
 
-    // Transfer rewards to MerkleDistributor for accepted proposal and flag distributionProposed Accepted.
-    // This does not revert on rejected proposals so that disputer could receive back its bond and winning
-    // in the same transaction when settleAndGetPrice is called above.
-
+    // Get  if the condition is met for distribution
     bool isConditionMet = _checkTargetCondition(resolvedPrice, reward.target, reward.targetCondition);
 
+    // Create a new Proposal ID
     _proposalId.increment();
     uint256 new_proposal_id = _proposalId.current();
 
+    // Prepare the reward for the next distribution and propsal
     reward.earliestNextAction = block.timestamp + reward.interval;
     reward.rewardStep = DataTypes.RewardStep.Funding;
+
 
     if (isConditionMet == true) {
       SuperToken(rewardToken).approve(TOKEN_INDEX_PUBLISHER_ADDRESS, reward.rewardAmount);
       SuperToken(rewardToken).send(TOKEN_INDEX_PUBLISHER_ADDRESS, reward.rewardAmount, "0x");
 
-      ////
+      //// Proposal is accepted
       emit Events.ProposalAcceptedAndDistribuition(proposal.pcrId, proposal.proposalId, new_proposal_id, resolvedPrice);
     }
     // ProposalRejected can be emitted multiple times whenever someone tries to execute the same rejected proposal.

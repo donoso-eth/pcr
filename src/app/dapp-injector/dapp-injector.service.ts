@@ -69,7 +69,7 @@ export class DappInjector implements OnDestroy {
   ///// ---- -----  Launching webmodal when chain is disconnected
   async launchWebModal() {
     if (this.dappConfig.wallet !== 'wallet') {
-      this.dappBootstrap();
+      this.localWallet(1)
     } else {
       await this.webModal.connectWallet();
     }
@@ -89,12 +89,15 @@ export class DappInjector implements OnDestroy {
         case 'wallet':
           const walletResult = await this.walletInitialization();
 
-          this.DAPP_STATE.signer = walletResult.signer;
-          this.DAPP_STATE.defaultProvider = walletResult.provider;
+        if (walletResult !== undefined) {
 
-          this.webModalInstanceLaunch();
+          this.DAPP_STATE.signer = walletResult!.signer;
+          this.DAPP_STATE.defaultProvider = walletResult!.provider;
           this.contractInitialization();
-        
+        }
+          this.webModalInstanceLaunch();
+         
+       
 
           break;
 
@@ -180,14 +183,16 @@ export class DappInjector implements OnDestroy {
       } else {
         this.store.dispatch(Web3Actions.chainStatus({ status: 'wallet-not-connected' }));
         this.store.dispatch(Web3Actions.chainBusy({ status: false }));
-        throw new Error('WALLET_NOT_CONNECTED');
+        //throw new Error('WALLET_NOT_CONNECTED');
+        return
       }
     } else {
       /////  NO metamask
       this.store.dispatch(Web3Actions.chainStatus({ status: 'wallet-not-connected' }));
 
       this.store.dispatch(Web3Actions.chainBusy({ status: false }));
-      throw new Error('WALLET_NOT_CONNECTED');
+      return
+      //throw new Error('WALLET_NOT_CONNECTED');
     }
   }
 

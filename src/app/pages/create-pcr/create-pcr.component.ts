@@ -16,6 +16,7 @@ import {
 } from 'src/assets/contracts/interfaces/PcrHost';
 import { doSignerTransaction } from 'src/app/dapp-injector/classes/transactor';
 import { Store } from '@ngrx/store';
+import { Description } from '@ethersproject/properties';
 
 @Component({
   selector: 'app-create-pcr',
@@ -128,11 +129,11 @@ export class CreatePcrComponent extends DappBaseComponent  {
   async createPcr() {
     //
 
-    const question = this.rewardForm.controls.questionCtrl.value;
-
+    const question = this.rewardForm.controls.titleCtrl.value;
+    const description = this.rewardForm.controls.questionCtrl.value;
     const customAncillaryData = utils.hexlify(
       utils.toUtf8Bytes(
-        `q: title: ${question}?, p1: 0, p2: 1, p3: 0.5. Where p2 corresponds to YES, p1 to a NO, p3 to unknown`
+        `q: title: ${question}?,description:${description}. res_data: p1: 0, p2: 1, p3: 0.5. Where p2 corresponds to Yes, p1 to a No, p3 to unknown`
       )
     );
 

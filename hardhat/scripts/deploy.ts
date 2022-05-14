@@ -43,25 +43,21 @@ async function main() {
   }
 
   if (network == 'localhost') {
-    // let todayTimeSamp = +(new Date().getTime() / 1000).toFixed(0);
-    // console.log('oldTimeStamp', todayTimeSamp);
-    // await setNextBlockTimestamp(hre, todayTimeSamp);
+    let todayTimeSamp = +(new Date().getTime() / 1000).toFixed(0);
 
-    // await mineBlocks(hre, 1);
+    console.log('oldTimeStamp: ', new Date(+(todayTimeSamp)*1000).toLocaleString());
+    await setNextBlockTimestamp(hre, todayTimeSamp);
 
-    // console.log('newTimeStamp', new Date(+(await getTimestamp()) * 1000).toLocaleString());
+    await mineBlocks(hre, 1);
+
+    console.log('newTimeStamp: ', new Date(+(await getTimestamp()) * 1000).toLocaleString());
   }
 
   const contract_config = JSON.parse(readFileSync(join(processDir, 'contract.config.json'), 'utf-8')) as { [key: string]: ICONTRACT_DEPLOY };
 
   const deployContracts = ['pcrToken', 'pcrHost', 'pcrOptimisticOracle'];
 
-  // Hardhat always runs the compile task when running scripts with its command
-  // line interface.
-  //
-  // If this script is run directly using `node` you may want to call compile
-  // manually to make sure everything is compiled
-  // await hre.run('compile');
+
 
   for (const toDeployName of deployContracts) {
     const toDeployContract = contract_config[toDeployName];

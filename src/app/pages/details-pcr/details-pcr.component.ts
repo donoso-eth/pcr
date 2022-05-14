@@ -4,14 +4,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { DappBaseComponent, DappInjector, global_tokens, Web3Actions } from 'angular-web3';
 import { Contract, utils } from 'ethers';
-import { takeUntil } from 'rxjs';
+import { MessageService } from 'primeng/api';
+import { Subject, takeUntil } from 'rxjs';
 import { doSignerTransaction } from 'src/app/dapp-injector/classes/transactor';
 
 import { GraphQlService } from 'src/app/dapp-injector/services/graph-ql/graph-ql.service';
 import { calculateStep, createDisplayDescription, createERC20Instance, createSuperTokenInstance, isAddress, prepareDisplayProposal } from 'src/app/shared/helpers/helpers';
 import { IPCR_REWARD, IPROPOSAL } from 'src/app/shared/models/pcr';
-
-
 
 export enum REWARD_STEP {
   QUALIFYING,
@@ -26,7 +25,6 @@ export enum REWARD_STEP {
   styleUrls: ['./details-pcr.component.scss'],
 })
 export class DetailsPcrComponent extends DappBaseComponent {
-
   utils = utils;
 
   toUpdateReward: IPCR_REWARD | undefined = undefined;
@@ -36,7 +34,7 @@ export class DetailsPcrComponent extends DappBaseComponent {
   showIssuingState = false;
   showingUpdateAmount = false;
   showTransferState = false;
-  showBulkIssuingState = false
+  showBulkIssuingState = false;
 
   //// FormControls
   toFundAmountCtrl = new FormControl(0, Validators.required);
@@ -47,120 +45,140 @@ export class DetailsPcrComponent extends DappBaseComponent {
   bulkAdressesCtrl = new FormControl('', [Validators.required]);
   routeItems: { label: string }[];
   activeStep = 0;
-  rewardStatus!:boolean;
+  rewardStatus!: boolean;
 
   currentProposal!: IPROPOSAL;
 
+  chartConfig!: { id: string; priceType: number; target: number };
 
 
-  chartConfig!:{id:string, priceType:number, target:number }
+  public cancelQuerySubscrition: Subject<void> = new Subject();
 
-
-  constructor(private cd: ChangeDetectorRef, private router: Router, private route: ActivatedRoute, dapp: DappInjector, store: Store, private graphqlService: GraphQlService) {
+  constructor(private msg: MessageService, private router: Router, private route: ActivatedRoute, dapp: DappInjector, store: Store, private graphqlService: GraphQlService) {
     super(dapp, store);
     this.routeItems = [{ label: 'Qualifying' }, { label: 'Propose Period' }, { label: 'Liveness Period' }, { label: 'Execution Period' }];
-
-  }
-
-  back (){
-    this.router.navigateByUrl('home')
   }
 
 
-  async changeStatus(value: boolean) {
+///// USER PUBLIC FUNCTIONS
+  async changeStatus() {
     this.store.dispatch(Web3Actions.chainBusy({ status: true }));
-    await doSignerTransaction(this.dapp.DAPP_STATE.contracts[+this.toUpdateReward!.id]?.pcrOptimisticOracle.instance.switchRewardStatus());
-   // this.store.dispatch(Web3Actions.chainBusy({ status: false }));
-   
-
+    const result = await doSignerTransaction(this.dapp.DAPP_STATE.contracts[+this.toUpdateReward!.id]?.pcrOptimisticOracle.instance.switchRewardStatus());
+    if (result.success == true) {
+      this.msg.add({ key: 'tst', severity: 'success', summary: 'Great!', detail: `PCR Status changed with txHash:${result.txHash}` });
+    } else {
+      this.store.dispatch(Web3Actions.chainBusy({ status: false }));
+      this.msg.add({ key: 'tst', severity: 'danger', summary: 'OOPS', detail: `Error toggling PCR Status with txHash:${result.txHash}` });
+    }
   }
 
-
-  async refreshBalance(){
+  async refreshBalance() {
+    
     const superToken = createSuperTokenInstance(this.toUpdateReward!.fundToken.superToken, this.dapp.signer!);
+    
     const balanceSupertoken = await superToken.realtimeBalanceOfNow(this.dapp.signerAddress);
 
     this.toUpdateReward!.fundToken.superTokenBalance = (+utils.formatEther(balanceSupertoken[0])).toFixed(4);
 
     const rewardToken = createERC20Instance(this.toUpdateReward!.fundToken.rewardToken, this.dapp.signer!);
+    
     const balanceRewardToken = await rewardToken.balanceOf(this.dapp.signerAddress);
 
     this.toUpdateReward!.fundToken.rewardTokenBalance = (+utils.formatEther(balanceRewardToken)).toFixed(4);
-    this.store.dispatch(Web3Actions.chainBusy({ status: false}));
+   
+    //this.getRewardDetails(this.toUpdateReward!.id)
+
   }
 
-  showTransfer(){
+
+  // #region DIALOGS STATE AND ACTIONS
+
+  // show dialogs
+  showTransfer() {
     this.showTransferState = true;
   }
-
   async showFunding() {
-    // this.store.dispatch(Web3Actions.chainBusy({ status: true }));
-    // await this.refreshBalance()
-    // this.store.dispatch(Web3Actions.chainBusy({ status: false }));
     this.showFundingState = true;
   }
-
-
-
-  async doFunding() {
-    if (this.toFundAmountCtrl.value <= 0) {
-      alert('please add a numer');
-      return
-    }
-    this.store.dispatch(Web3Actions.chainBusy({ status: true }));
-    const value = utils.parseEther(this.toFundAmountCtrl.value.toString())
-    await doSignerTransaction(
-      createERC20Instance(this.toUpdateReward!.fundToken.superToken,this.dapp.signer!).approve(
-        this.dapp.DAPP_STATE.contracts[+this.toUpdateReward!.id]?.pcrOptimisticOracle.address,
-        value
-      )
-    );
-    await doSignerTransaction(this.dapp.DAPP_STATE.contracts[+this.toUpdateReward!.id]?.pcrOptimisticOracle.instance.depositReward(value)!);
-
-    //this.toUpdateReward!.currentdeposit = +this.toUpdateReward!.currentdeposit + this.toFundAmountCtrl.value;
-
-    await this.refreshBalance()
-
-    // this.store.dispatch(Web3Actions.chainBusy({ status: false }));
-    this.showFundingState = false;
+  showAddMembers(reward: IPCR_REWARD) {
+    this.showIssuingState = true;
   }
 
   showUpdateRewardAmount() {
     this.showingUpdateAmount = true;
   }
 
+  showBulkAddMembers(reward: IPCR_REWARD) {
+    this.showBulkIssuingState = true;
+  }
+
+   // do actions from dialogs
+  async doFunding() {
+    if (this.toFundAmountCtrl.value <= 0) {
+      alert('please add a numer');
+      return;
+    }
+    this.store.dispatch(Web3Actions.chainBusy({ status: true }));
+    const value = utils.parseEther(this.toFundAmountCtrl.value.toString());
+
+    //// APPROVE AMOUNT
+    const resultApprove = await doSignerTransaction(
+      createERC20Instance(this.toUpdateReward!.fundToken.superToken, this.dapp.signer!).approve(
+        this.dapp.DAPP_STATE.contracts[+this.toUpdateReward!.id]?.pcrOptimisticOracle.address,
+        value
+      )
+    );
+    if (resultApprove.success == true) {} 
+    else {
+      this.store.dispatch(Web3Actions.chainBusy({ status: false }));
+      this.msg.add({ key: 'tst', severity: 'danger', summary: 'OOPS', detail: `Error Approving Amount with txHash:${resultApprove.txHash}` });
+      return
+    }
+
+  //// SEND DEPOSIT
+    const result = await doSignerTransaction(this.dapp.DAPP_STATE.contracts[+this.toUpdateReward!.id]?.pcrOptimisticOracle.instance.depositReward(value)!);
+
+    this.showFundingState = false;
+    if (result.success == true) {
+      await this.refreshBalance();
+      this.msg.add({ key: 'tst', severity: 'success', summary: 'Great!', detail: `Deposit succesful with txHash:${result.txHash}` });
+    } else {
+      this.store.dispatch(Web3Actions.chainBusy({ status: false }));
+      this.msg.add({ key: 'tst', severity: 'danger', summary: 'OOPS', detail: `Error Depositing with txHash:${result.txHash}` });
+    }
+  }
+
   async doUpdateRewardAmount() {
-  
     if (this.toUpdateAmountCtrl.value <= 0) {
       alert('please onput a positive value');
       return;
     }
-   
- 
+
     const newAmount = utils.parseEther(this.toUpdateAmountCtrl.value.toString());
 
     this.store.dispatch(Web3Actions.chainBusy({ status: true }));
-    await doSignerTransaction(this.dapp.DAPP_STATE.contracts[+this.toUpdateReward!.id]?.pcrOptimisticOracle.instance.updateRewardAmount(newAmount));
+    const result = await doSignerTransaction(this.dapp.DAPP_STATE.contracts[+this.toUpdateReward!.id]?.pcrOptimisticOracle.instance.updateRewardAmount(newAmount));
     this.showingUpdateAmount = false;
-    //this.store.dispatch(Web3Actions.chainBusy({ status: false }));
-   
+    if (result.success == true) {
+
+      this.msg.add({ key: 'tst', severity: 'success', summary: 'Great!', detail: `Reward Amount changed with txHash:${result.txHash}` });
+    } else {
+      this.store.dispatch(Web3Actions.chainBusy({ status: false }));
+      this.msg.add({ key: 'tst', severity: 'danger', summary: 'OOPS', detail: `Error Changing Reward Amount with txHash:${result.txHash}` });
+    }
+     //// APPROVE AMOUNT
+
   }
 
-  showAddMembers(reward: IPCR_REWARD) {
-    this.showIssuingState = true;
-  }
-
-  
   async doAddMember() {
-    console.log(this.adressesCtrl.invalid)
     if (this.adressesCtrl.invalid) {
       alert('please add and adresse');
-      return
+      return;
     }
 
-    if (isAddress(this.adressesCtrl.value) == false){
+    if (isAddress(this.adressesCtrl.value) == false) {
       alert('addresse is not valid');
-      return
+      return;
     }
 
     this.store.dispatch(Web3Actions.chainBusy({ status: true }));
@@ -168,45 +186,62 @@ export class DetailsPcrComponent extends DappBaseComponent {
     this.showIssuingState = true;
   }
 
-
-  showBulkAddMembers(reward: IPCR_REWARD) {
-    this.showBulkIssuingState = true;
-  }
-
   async doBulkAddMembers() {
     if (this.bulkAdressesCtrl.invalid) {
-      alert('please add and adresse');
+      this.msg.add({ key: 'tst', severity: 'warning', summary: 'Missing info', detail: `Please add at least one address` });
+      return
     }
 
-    let addresses:Array<string> = this.bulkAdressesCtrl.value.split(",")
-  
+    let addresses: Array<string> = this.bulkAdressesCtrl.value.split(',');
 
     for (const checkAddress of addresses) {
-      if (isAddress(checkAddress) == false){
-        alert(`Address ${checkAddress} is not valid`)
-        return
+      if (isAddress(checkAddress) == false) {
+        alert(`Address ${checkAddress} is not valid`);
+        return;
       }
     }
- 
 
     this.store.dispatch(Web3Actions.chainBusy({ status: true }));
-    await doSignerTransaction(this.dapp.DAPP_STATE.contracts[+this.toUpdateReward!.id]?.pcrToken?.instance.bulkIssue(addresses, 1)!);
+    const result =  await doSignerTransaction(this.dapp.DAPP_STATE.contracts[+this.toUpdateReward!.id]?.pcrToken?.instance.bulkIssue(addresses, 1)!);
     this.showBulkIssuingState = false;
+    if (result.success == true) {
+      this.msg.add({ key: 'tst', severity: 'success', summary: 'Great!', detail: `Members Added with txHash:${result.txHash}` });
+    } else {
+      this.store.dispatch(Web3Actions.chainBusy({ status: false }));
+      this.msg.add({ key: 'tst', severity: 'danger', summary: 'OOPS', detail: `Error Adding Members with txHash:${result.txHash}` });
+    }
+    
+
   }
 
+  // #endregion dialogs
 
+
+  //#region  HOOKS PROPOSALS INTERACTION
   async proposeValue(value: number) {
     this.store.dispatch(Web3Actions.chainBusy({ status: true }));
 
     const answer = utils.parseEther(value.toString());
 
-    await doSignerTransaction(this.dapp.DAPP_STATE.contracts[+this.toUpdateReward!.id]?.pcrOptimisticOracle.instance.proposeDistribution(answer)!);
+    const result = await doSignerTransaction(this.dapp.DAPP_STATE.contracts[+this.toUpdateReward!.id]?.pcrOptimisticOracle.instance.proposeDistribution(answer)!);
+ 
+    if (result.success == true) {
+      this.msg.add({ key: 'tst', severity: 'success', summary: 'Great!', detail: `Proposal successful sent with txHash:${result.txHash}` });
+    } else {
+      this.store.dispatch(Web3Actions.chainBusy({ status: false }));
+      this.msg.add({ key: 'tst', severity: 'danger', summary: 'OOPS', detail: `Error Proposing value with txHash:${result.txHash}` });
+    }
   }
 
-  async disputeProposal(){
+  async disputeProposal() {
     this.store.dispatch(Web3Actions.chainBusy({ status: true }));
-    await doSignerTransaction(this.dapp.DAPP_STATE.contracts[+this.toUpdateReward!.id]?.pcrOptimisticOracle.instance.disputeDistribution()!);
-
+    const result = await doSignerTransaction(this.dapp.DAPP_STATE.contracts[+this.toUpdateReward!.id]?.pcrOptimisticOracle.instance.disputeDistribution()!);
+    if (result.success == true) {
+      this.msg.add({ key: 'tst', severity: 'success', summary: 'Great!', detail: `Proposal Disputed with txHash:${result.txHash}` });
+    } else {
+      this.store.dispatch(Web3Actions.chainBusy({ status: false }));
+      this.msg.add({ key: 'tst', severity: 'danger', summary: 'OOPS', detail: `Error Disputing Price with txHash:${result.txHash}` });
+    }
   }
 
   async executeProposal() {
@@ -232,44 +267,42 @@ export class DetailsPcrComponent extends DappBaseComponent {
       if (proposalId.toString() == this.currentProposal.id && pcrId.toString() == this.currentProposal.rewardId) {
         this.store.dispatch(Web3Actions.chainBusy({ status: false }));
       }
-   
     });
 
-    try {
-      const tx = await doSignerTransaction(this.dapp.DAPP_STATE.contracts[+this.toUpdateReward!.id]?.pcrOptimisticOracle.instance.executeDistribution());
-      await this.refreshBalance()
-    } catch (error) {
-      console.log(error);
-      this.store.dispatch(Web3Actions.chainBusy({ status: false }));
-    }
-  }
-
-  transformRewardObject(reward: IPCR_REWARD) {
-
+  
+     const result = await doSignerTransaction(this.dapp.DAPP_STATE.contracts[+this.toUpdateReward!.id]?.pcrOptimisticOracle.instance.executeDistribution());
  
-      reward.displayDescription = createDisplayDescription(reward)
+     if (result.success == true) {
+      await this.refreshBalance();
+      this.msg.add({ key: 'tst', severity: 'success', summary: 'Great!', detail: `Proposal Execited Successfully  with txHash:${result.txHash}` });
+    } else {
+      this.store.dispatch(Web3Actions.chainBusy({ status: false }));
+      this.msg.add({ key: 'tst', severity: 'danger', summary: 'OOPS', detail: `Error Executing Proposal value with txHash:${result.txHash}` });
+    }
 
 
-    const displayReward = global_tokens.filter((fil) => fil.superToken == reward.rewardToken)[0];
-    reward.fundToken = displayReward;
-    reward.displayStep = calculateStep(+reward.rewardStep, reward.earliestNextAction);
-    reward.displayTargetCondition = utils.formatEther(reward.target)
-    return reward;
   }
 
-
-  refresh(){
-    this.getTokens(this.toUpdateReward!.id)
+  refresh() {
+    this.getRewardDetails(this.toUpdateReward!.id);
   }
 
-  async getTokens(id: string) {
+  //#endregion
+
+
+  //#region GET AND PREPARE DATA
+  async getRewardDetails(id: string) {
+
+    this.cancelQuerySubscrition.next();
+
     this.graphqlService
       .watchTokens(id)
-      .pipe(takeUntil(this.destroyHooks))
+      .pipe(takeUntil(this.destroyHooks), takeUntil(this.cancelQuerySubscrition))
       .subscribe(async (data: any) => {
         if (data) {
           const localReward = data.data['reward'];
-      
+          console.log(localReward)
+
 
           if (localReward !== undefined) {
             if (this.toUpdateReward == undefined) {
@@ -279,7 +312,7 @@ export class DetailsPcrComponent extends DappBaseComponent {
                 ...this.toUpdateReward,
                 ...localReward,
                 ...{
-                  displayTargetCondition :utils.formatEther(localReward.target),
+                  displayTargetCondition: utils.formatEther(localReward.target),
                   step: calculateStep(localReward.rewardStep, localReward.earliestNextAction),
                 },
               };
@@ -287,21 +320,14 @@ export class DetailsPcrComponent extends DappBaseComponent {
           } else {
             this.toUpdateReward = undefined;
           }
-          await this.refreshBalance()
+          await this.refreshBalance();
 
           this.currentProposal = prepareDisplayProposal(this.toUpdateReward!);
         }
 
-        console.log(this.toUpdateReward)
-     
-     
-        this.rewardStatus = this.toUpdateReward?.rewardStatus == '0' ? true : false
+        this.rewardStatus = this.toUpdateReward?.rewardStatus == '0' ? true : false;
 
-
-     
-
-        this.chartConfig = { id: this.toUpdateReward?.id!, priceType:+this.toUpdateReward?.priceType!,target:+this.toUpdateReward?.target! }
-
+        this.chartConfig = { id: this.toUpdateReward?.id!, priceType: +this.toUpdateReward?.priceType!, target: +this.toUpdateReward?.target! };
 
         await this.dapp.launchClones(this.toUpdateReward!.tokenImpl, this.toUpdateReward!.optimisticOracleImpl, +this.toUpdateReward!.id);
 
@@ -310,24 +336,37 @@ export class DetailsPcrComponent extends DappBaseComponent {
 
     this.store.dispatch(Web3Actions.chainBusy({ status: false }));
   }
+  transformRewardObject(reward: IPCR_REWARD) {
+    reward.displayDescription = createDisplayDescription(reward);
 
+    const displayReward = global_tokens.filter((fil) => fil.superToken == reward.rewardToken)[0];
+    reward.fundToken = displayReward;
+    reward.displayStep = calculateStep(+reward.rewardStep, reward.earliestNextAction);
+    reward.displayTargetCondition = utils.formatEther(reward.target);
+    return reward;
+  }
+  //#endregion
+
+  // NAVIGATION
 
   createPcr() {
     this.router.navigateByUrl('create-pcr');
   }
 
+  back() {
+    this.router.navigateByUrl('home');
+  }
+
+
+  /// INITIALIZATION
+
   override async hookContractConnected(): Promise<void> {
-    //this.getTokens();
+
     this.store.dispatch(Web3Actions.chainBusy({ status: true }));
     const params = this.route.snapshot.params;
 
     if (params['id'] !== undefined) {
-      this.getTokens(params['id']);
+      this.getRewardDetails(params['id']);
     }
-
-
   }
-
-
-
 }

@@ -2,91 +2,85 @@ import { Component, Input, OnChanges, Output, SimpleChanges, EventEmitter } from
 import { FormControl, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { DappInjector, Web3Actions } from 'angular-web3';
-import { Contract, utils } from 'ethers';
+import { utils } from 'ethers';
+import { MessageService } from 'primeng/api';
 import { doSignerTransaction } from 'src/app/dapp-injector/classes/transactor';
+import { createERC20Instance, createSuperTokenInstance } from 'src/app/shared/helpers/helpers';
 
 import { IFUND_TOKEN } from 'src/app/shared/models/pcr';
-import { abi_ERC20 } from '../abis/erc20';
-import { abi_SuperToken } from '../abis/superToken';
-
-
 
 
 @Component({
   selector: 'user-balance',
   templateUrl: './user-balance.component.html',
-  styleUrls: ['./user-balance.component.scss']
+  styleUrls: ['./user-balance.component.scss'],
 })
 export class UserBalanceComponent implements OnChanges {
-
   showTransferState = false;
   toUpgradeAmountCtrl = new FormControl(0, Validators.required);
   toDowngradeAmountCtrl = new FormControl(0, Validators.required);
-  constructor(private store: Store, private dapp:DappInjector) { }
+  constructor(private msg: MessageService, private store: Store, private dapp: DappInjector) {}
+
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(this.fundToken)
+
   }
 
   @Input() fundToken!: IFUND_TOKEN;
-  @Output() refreshEvent = new EventEmitter()
+  @Output() refreshEvent = new EventEmitter();
 
-  showTransfer(){
+  showTransfer() {
     this.showTransferState = true;
   }
 
+  //// UPGRADE TOKENS
   async doUpgrade() {
     if (this.toUpgradeAmountCtrl.value <= 0) {
-      alert('please add Amount to Upgrade');
-      return
+      this.msg.add({ key: 'tst', severity: 'warning', summary: 'Missing info', detail: `Please add amount to Upgrade` });
+      return;
     }
     this.store.dispatch(Web3Actions.chainBusy({ status: true }));
-    const value = utils.parseEther(this.toUpgradeAmountCtrl.value.toString())
+    const value = utils.parseEther(this.toUpgradeAmountCtrl.value.toString());
 
-    await doSignerTransaction(
-      this._createERC20Instance(this.fundToken.rewardToken).approve(
-        this.fundToken.superToken
-        ,
-        value
-      )
-    );
+    const resultApprove = await doSignerTransaction(createERC20Instance(this.fundToken.rewardToken, this.dapp.signer!).approve(this.fundToken.superToken, value));
+    if (resultApprove.success == true) {
+    } else {
+      this.store.dispatch(Web3Actions.chainBusy({ status: false }));
+      this.msg.add({ key: 'tst', severity: 'danger', summary: 'OOPS', detail: `Error Approving Amount with txHash:${resultApprove.txHash}` });
+      return;
+    }
 
-    const superToken = this._createSuperTokenInstance(this.fundToken.superToken);
-    await doSignerTransaction(superToken.upgrade(value));
+    const superToken = createSuperTokenInstance(this.fundToken.superToken, this.dapp.signer!);
+    const result = await doSignerTransaction(superToken.upgrade(value));
 
-    await this.refreshEvent.emit();
-  
-
+    if (result.success == true) {
+      await this.refreshEvent.emit();
+      this.msg.add({ key: 'tst', severity: 'success', summary: 'Great!', detail: `Upgrade Operation succesful with txHash:${result.txHash}` });
+    } else {
+      this.store.dispatch(Web3Actions.chainBusy({ status: false }));
+      this.msg.add({ key: 'tst', severity: 'danger', summary: 'OOPS', detail: `Error Upgrading with txHash:${result.txHash}` });
+    }
   }
 
+  /// DOWNGRADE TOKENS
   async doDowngrade() {
     if (this.toDowngradeAmountCtrl.value <= 0) {
-      alert('please add Aount to Upgrade');
-      return
+
+      this.msg.add({ key: 'tst', severity: 'warning', summary: 'Missing info', detail: `Please add amount to Downgrade` });
+   
+      return;
     }
     this.store.dispatch(Web3Actions.chainBusy({ status: true }));
-    const value = utils.parseEther(this.toDowngradeAmountCtrl.value.toString())
-    console.log(value.toString())
-    console.log(this.fundToken)
-    const superToken = this._createSuperTokenInstance(this.fundToken.superToken);
+    const value = utils.parseEther(this.toDowngradeAmountCtrl.value.toString());
 
-    const balance = await superToken.realtimeBalanceOfNow(this.dapp.signerAddress!)
-    console.log(balance[0].toString())
+    const superToken = createSuperTokenInstance(this.fundToken.superToken, this.dapp.signer!);
 
-    await doSignerTransaction(superToken.downgrade(value));
-
-    await this.refreshEvent.emit()
-
+    const result = await doSignerTransaction(superToken.downgrade(value));
+    if (result.success == true) {
+      await this.refreshEvent.emit();
+      this.msg.add({ key: 'tst', severity: 'success', summary: 'Great!', detail: `Downgrade Operation succesful with txHash:${result.txHash}` });
+    } else {
+      this.store.dispatch(Web3Actions.chainBusy({ status: false }));
+      this.msg.add({ key: 'tst', severity: 'danger', summary: 'OOPS', detail: `Error Downgrading with txHash:${result.txHash}` });
+    }
   }
-
-
-    ////////PRIVATE 
-
-    private _createERC20Instance(ERC: string): Contract {
-      return new Contract(ERC, abi_ERC20, this.dapp.signer!);
-    }
-  
-    private _createSuperTokenInstance(SuperToken: string): Contract {
-      return new Contract(SuperToken, abi_SuperToken, this.dapp.signer!);
-    }
-
 }

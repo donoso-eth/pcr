@@ -149,7 +149,7 @@ export class CreatePcrComponent extends DappBaseComponent {
       this.store.dispatch(Web3Actions.chainBusy({ status: false }));
       this.display = true;
     } else {
-      this.msg.add({ key: 'tst', severity: 'danger', summary: 'OOPS', detail: 'Error creating the pcd' });
+      this.msg.add({ key: 'tst', severity: 'danger', summary: 'OOPS', detail: `Error creating your PCR with txHash:${result.txHash}` });
     }
   }
 

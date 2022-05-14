@@ -56,7 +56,7 @@
               </div>
             </div>
             <div class="col-12 lg:col-6 xl:col-6">
-              <user-balance (refreshEvent)="refreshBalance()"
+              <user-balance (refreshEvent)="refresh()"
               *ngIf="toUpdateMembership?.fundToken !== undefined"  [fundToken]="toUpdateMembership.fundToken"></user-balance>
        
             </div>

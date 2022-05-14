@@ -38,6 +38,7 @@ export class UserBalanceComponent implements OnChanges {
       this.msg.add({  key: 'tst', severity: 'warn', summary: 'Missing info', detail: `Please add amount to Upgrade` });
       return;
     }
+    this.showTransferState = false;
     this.store.dispatch(Web3Actions.chainBusy({ status: true }));
     const value = utils.parseEther(this.toUpgradeAmountCtrl.value.toString());
 
@@ -59,6 +60,7 @@ export class UserBalanceComponent implements OnChanges {
       this.store.dispatch(Web3Actions.chainBusy({ status: false }));
       this.msg.add({ key: 'tst', severity: 'error', summary: 'OOPS', detail: `Error Upgrading with txHash:${result.txHash}` });
     }
+   
   }
 
   /// DOWNGRADE TOKENS
@@ -69,6 +71,7 @@ export class UserBalanceComponent implements OnChanges {
    
       return;
     }
+    this.showTransferState = false;
     this.store.dispatch(Web3Actions.chainBusy({ status: true }));
     const value = utils.parseEther(this.toDowngradeAmountCtrl.value.toString());
 
@@ -82,5 +85,6 @@ export class UserBalanceComponent implements OnChanges {
       this.store.dispatch(Web3Actions.chainBusy({ status: false }));
       this.msg.add({ key: 'tst', severity: 'error', summary: 'OOPS', detail: `Error Downgrading with txHash:${result.txHash}` });
     }
+
   }
 }

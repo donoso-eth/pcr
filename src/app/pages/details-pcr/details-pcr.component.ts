@@ -182,10 +182,10 @@ export class DetailsPcrComponent extends DappBaseComponent {
       alert('addresse is not valid');
       return;
     }
-
+    this.showIssuingState = true;
     this.store.dispatch(Web3Actions.chainBusy({ status: true }));
     await doSignerTransaction(this.dapp.DAPP_STATE.contracts[+this.toUpdateReward!.id]?.pcrToken?.instance.issue(this.adressesCtrl.value, 1)!);
-    this.showIssuingState = true;
+  
   }
 
   async doBulkAddMembers() {
@@ -204,10 +204,10 @@ export class DetailsPcrComponent extends DappBaseComponent {
         return;
       }
     }
-
+    this.showBulkIssuingState = false;
     this.store.dispatch(Web3Actions.chainBusy({ status: true }));
     const result =  await doSignerTransaction(this.dapp.DAPP_STATE.contracts[+this.toUpdateReward!.id]?.pcrToken?.instance.bulkIssue(addresses, 1)!);
-    this.showBulkIssuingState = false;
+  
     if (result.success == true) {
       this.msg.add({ key: 'tst', severity: 'success', summary: 'Great!', detail: `Members Added with txHash:${result.txHash}` });
     } else {

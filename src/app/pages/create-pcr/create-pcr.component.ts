@@ -93,7 +93,7 @@ export class CreatePcrComponent extends DappBaseComponent {
     const descriptionValue = this.rewardForm.controls.questionCtrl.value;
     const urlValue = this.rewardForm.controls.urlCtrl.value;
     const customAncillaryData = utils.hexlify(
-      utils.toUtf8Bytes(`q: title: ${titleValue}?,description:${descriptionValue}. res_data: p1: 0, p2: 1, p3: 0.5. Where p2 corresponds to Yes, p1 to a No, p3 to unknown`)
+      utils.toUtf8Bytes(`q: title: ${titleValue}?, description: ${descriptionValue}, url:${urlValue} . res_data: p1: 0, p2: 1, p3: 0.5. Where p2 corresponds to Yes, p1 to a No, p3 to unknown`)
     );
 
     const title = utils.hexlify(utils.toUtf8Bytes(titleValue));

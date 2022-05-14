@@ -109,10 +109,7 @@ export class DappInjector implements OnDestroy {
           let wallet: Wallet = new Wallet(this.harhdat_local_privKeys[0].key);
           this.store.dispatch(Web3Actions.chainStatus({ status: 'wallet-not-connected' }));
           this.store.dispatch(Web3Actions.chainBusy({ status: false }));
-         // throw new Error('WALLET_NOT_CONNECTED');
-          // this.DAPP_STATE.signer = await wallet.connect(this.DAPP_STATE.defaultProvider!);
-          // this.DAPP_STATE.signerAddress = this.harhdat_local_privKeys[0].address; //await this.DAPP_STATE.signer.getAddress()
-
+ 
           break;
 
         case 'privKey':
@@ -200,10 +197,9 @@ export class DappInjector implements OnDestroy {
   ///// ---------  Contract Initialization
   private async contractInitialization() {
 
-    // UNCOMMENT THIS NEXT THREE LINES TO INTERACT WITH KOVAN already deployed contracts
-    //
-    //
-    //
+    // UNCOMMENT THIS NEXT THREE LINES TO INTERACT WITH KOVAN already deployed contracs
+    // this.contractMedatata.address = "0x7Ce006074F050B0047bd1833c6f7229882BC31F3"
+
 
     const contract = new AngularContract<PcrHost>({
       metadata: this.contractMetadata,

@@ -20,11 +20,11 @@ Depoyed dapp on kovan [https://perpetual-conditional-reward.web.app
 # Architecure
 ### Contracts
 The three solidity contracts the PCR uses:
-- PcrHost.sol. Contrat to create the Perpetual Conditional Reward. When creating a new reward, PcrHost will clone the implementations of the PcrOptimisticOracle.sol and the PcrToken.Sol.
+- PcrHost.sol. Contrat to create the Perpetual Conditional Reward. When creating a new reward, PcrHost will clone the implementations of the PcrOptimisticOracle.sol and the PcrToken.Sol. 0x7Ce006074F050B0047bd1833c6f7229882BC31F3
 
-- PcrOptimisticOracle.sol. Implementation of the the UMA Optimistic Oracle.
+- PcrOptimisticOracle.sol. Implementation of the the UMA Optimistic Oracle. 0x53E80CCab9924D28D91Fe23CBCDA543055449C59 
 
-- PcrToken.Sol. Implementation of the Superfluid Intant Distribuition agreement, implements de ERC777 receiver (PcrOptimisticOracle.sol send tokens) to launch the distribution.
+- PcrToken.Sol. Implementation of the Superfluid Intant Distribuition agreement, implements de ERC777 receiver (PcrOptimisticOracle.sol send tokens) to launch the distribution. 0x12E49B398F00E097c27526A0299E54300aDF00A5
 
 ### Subgraph
 One subgraph is created with data source the "createRewardEvent" in the PCRHost.sol contract.

@@ -37,7 +37,6 @@ export class SuperFluidServiceService {
 
     this.flow = this.sf.cfaV1;
     this.ida = this.sf.idaV1;
-    console.log(this.sf.settings);
     //675833120
   }
 
@@ -206,8 +205,8 @@ export class SuperFluidServiceService {
       publisher: this.dapp.DAPP_STATE.contracts[id].pcrToken.address,
     });
 
-    await approveOperation.exec(this.dapp.signer!)
-
+    const tx = await approveOperation.exec(this.dapp.signer!)
+    await tx.wait(1)
   }
 
   async cancelSubscription(rewardToken:string,id:number){
@@ -221,8 +220,8 @@ export class SuperFluidServiceService {
       publisher: this.dapp.DAPP_STATE.contracts[id].pcrToken.address,
     });
 
-    await approveOperation.exec(this.dapp.signer!)
-
+   const tx =  await approveOperation.exec(this.dapp.signer!)
+    await tx.wait(1)
   }
 
   async claimSubscription(rewardToken:string,id:number){
@@ -237,8 +236,8 @@ export class SuperFluidServiceService {
       publisher: this.dapp.DAPP_STATE.contracts[id].pcrToken.address,
     });
 
-    await claimOperation.exec(this.dapp.signer!)
-
+   const tx = await claimOperation.exec(this.dapp.signer!)
+   await tx.wait(1)
   }
 
 

@@ -177,7 +177,8 @@ export class DetailsMembershipComponent extends DappBaseComponent {
   }
 
   refresh() {
-    this.getMembershipDetails(this.toUpdateMembership!.id);
+  
+    this.getMembershipDetails(this.dapp.signerAddress!.toLowerCase() +  this.toUpdateMembership!.id);
   }
 
   //#endregion
@@ -189,6 +190,7 @@ export class DetailsMembershipComponent extends DappBaseComponent {
 
   //#region GET AND PREPARE DATA
   async getMembershipDetails(id: string) {
+    console.log(id)
     this.cancelQuerySubscrition.next();
     this.graphqlService
       .watchMemberships(id)

@@ -6,12 +6,10 @@ The PCR projects started when a UMA/Superfluid bounty has been communicated. Alt
 ## Major problems it solves
 
 One of the most common problems of DAO's is achieving to have steady involvement of members.
-PCR helps to solve this problem proposing a reward to be ditributed upon certain conditions periodically.
+PCR helps to solve this problem proposing a reward to be ditributed upon certain conditions (KPI's) periodically.
 
-An Example:
-If
 
-Depoyed dapp on kovan [https://perpetual-conditional-reward.web.app
+Deployed dapp on kovan [https://perpetual-conditional-reward.web.app
 ](https://perpetual-conditional-reward.web.app
 )
 
@@ -21,11 +19,13 @@ UMA Oprimist Oracle [dashboard](https://optimistic-oracle-dapp-5liuk09wg-uma.ver
 # Architecure
 ### Contracts
 The three solidity contracts the PCR uses:
-- PcrHost.sol. Contrat to create the Perpetual Conditional Reward. When creating a new reward, PcrHost will clone the implementations of the PcrOptimisticOracle.sol and the PcrToken.Sol. 
+- PcrHost.sol. Contrat to create the Perpetual Conditional Reward. When creating a new reward, PcrHost will clone the implementations of the PcrOptimisticOracle.sol and the PcrToken.Sol. [code](https://github.com/donoso-eth/pcr/blob/master/hardhat/contracts/PcrHost.sol)
 
-- PcrOptimisticOracle.sol. Implementation of the the UMA Optimistic Oracle. 0x53E80CCab9924D28D91Fe23CBCDA543055449C59 
+- PcrOptimisticOracle.sol. Implementation of the the UMA Optimistic Oracle.  [code](https://github.com/donoso-eth/pcr/blob/master/hardhat/contracts/PcrOptimisticOracle.sol)
 
-- PcrToken.Sol. Implementation of the Superfluid Intant Distribuition agreement, implements de ERC777 receiver (PcrOptimisticOracle.sol send tokens) to launch the distribution. 0x12E49B398F00E097c27526A0299E54300aDF00A5
+
+- PcrToken.Sol. Implementation of the Superfluid Intant Distribuition agreement, implements de ERC777 receiver (PcrOptimisticOracle.sol send tokens) to launch the distribution.  [code](https://github.com/donoso-eth/pcr/blob/master/hardhat/contracts/PcrToken.sol)
+
 
 ### Subgraph
 One subgraph is created with data source the "createRewardEvent" in the PCRHost.sol contract.
@@ -39,15 +39,17 @@ The major building blocks in the PCR Angualr Dapp are: Pages/Services and Shared
 #### Pages:
 The frontend has been built with Angular and has 5 main pages.
 
-- Landing Page.
+- Landing Page.[code](https://github.com/donoso-eth/pcr/tree/master/src/app/pages/landing))
 
-- Home Page. Once the wallet is connected, here we will see the list of PCR Created and PCR Memberships (if any)
+- Home Page. Once the wallet is connected, here we will see the list of PCR Created and PCR Memberships (if any)[code](https://github.com/donoso-eth/pcr/tree/master/src/app/pages/home)
 
-- Create PRC Page. Settings for the PCR creation
+- Upcoming page.the next upcoming actions in rewards [code](https://github.com/donoso-eth/pcr/tree/master/src/app/pages/upcoming-page)
+  
+- Create PRC Page. Settings for the PCR creation [code](https://github.com/donoso-eth/pcr/tree/master/src/app/pages/create-pcr)
 
-- Details PCR(only visible for the PCR creator): Details of the PCR (major properties/charts/balances) and available actions (fund/propose/execute, etc.) 
+- Details PCR(only visible for the PCR creator): Details of the PCR (major properties/charts/balances) and available actions (fund/propose/execute, etc.)  [code](https://github.com/donoso-eth/pcr/tree/master/src/app/pages/details-pcr)
 
-- Details PCR Membership(only visible for members). Details of the awarded membership (major properties/charts/balances) and available actions (claim/approve/propose/execute, etc.) 
+- Details PCR Membership(only visible for members). Details of the awarded membership (major properties/charts/balances) and available actions (claim/approve/propose/execute, etc.) [code](https://github.com/donoso-eth/pcr/tree/master/src/app/pages/details-membership)
 
 #### Services
 
@@ -62,7 +64,11 @@ The frontend has been built with Angular and has 5 main pages.
 
 - Proposal Detail Component: Proposal flow component, [code](https://github.com/donoso-eth/pcr/tree/master/src/app/shared/components/proposal-detail)
 
-- Charts
+- Charts [code](https://github.com/donoso-eth/pcr/tree/master/src/app/shared/components/charts)
+  
+- Upcoming Rewards [code](https://github.com/donoso-eth/pcr/tree/master/src/app/shared/components/upcoming-rewards)
+
+- User Balance [code](https://github.com/donoso-eth/pcr/tree/master/src/app/shared/components/user-balance)
 
 ## Tech Stack
 - Smartcontracts in Solidity
@@ -86,7 +92,6 @@ PcrToken.sol (implementation) at 0x9c1dCc4DdA69f254846a1EA26e01c80F7d5541a3[(see
 
 Subgraph deployed on [kovan](https://thegraph.com/hosted-service/subgraph/donoso-eth/perpetual-conditional-reward)
 
-For Frontend development and interaction with the deployed contracts on kovan the required config has to be .
 
 
 
@@ -95,6 +100,10 @@ For Frontend development and interaction with the deployed contracts on kovan th
 ## Kovan Fork
 
 Create a copy of /hardhat/.sample.env and input the deployer key and the kovan_url, the deployer key will only required for deployments on kovan, not to the fork.
+Please add in app-module:
+- defaulNetwork: 'kovan', 
+- DappInjectorModule.forRoot({wallet:'wallet', defaultNetwork:network})
+
 
 Open the first terminal
 ```javascript

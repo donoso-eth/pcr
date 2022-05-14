@@ -29,7 +29,7 @@ export const createDisplayDescription = (reward: IPCR_REWARD) => {
   }
 
   if (reward.priceType == 1) {
-    console.log(reward.targetCondition);
+ 
     let condition = target_conditions.filter((fil) => fil.id == +reward.targetCondition);
     if (condition.length == 1){
     displayDescription = displayDescription + '\r\n\nTarget: ' + condition[0].name + " "  + utils.formatEther(reward.target);

@@ -193,13 +193,13 @@ export class Web3ModalComponent implements AfterViewInit {
     if (this.web3Modal === undefined) {
       this.createWeb3Modal();
     }
-    console.log(this.web3Modal)
+  
     await this.web3Modal.clearCachedProvider();
  
     try {
 
     
-      await this.payload.provider.disconnect();
+    //  await this.payload.provider.disconnect();
     } catch (error) {
         console.log(error)
     }
@@ -213,6 +213,8 @@ export class Web3ModalComponent implements AfterViewInit {
 
   async connectWallet() {
     // For more WalletConnect providers: https://docs.walletconnect.org/quick-start/dapps/web3-provider#required
+
+
 
     if (this.web3Modal === undefined) {
       this.createWeb3Modal();
@@ -234,16 +236,17 @@ export class Web3ModalComponent implements AfterViewInit {
 
   createProviderHooks(provider: any) {
 
-  console.log(' I am doing hooks')
-    console.log(provider)
+ 
     // Subscribe to accounts change
     provider.on('accountsChanged', (accounts: string[]) => {
+      console.log('accounts changed')
       this.onConnect.emit(provider);
     
     });
 
     // Subscribe to chainId change
     provider.on('chainChanged', (chainId: number) => {
+      console.log('chainchanged')
        location.reload();
       //this.onConnect.emit(provider);
     });
@@ -302,7 +305,7 @@ export class Web3ModalComponent implements AfterViewInit {
           script.id = mapy.name;
           script.src = mapy.scriptTag;
           script.onload = () => {
-            console.log(mapy.name);
+         
             resolve();
           };
           this.payload.document.body.appendChild(script);
@@ -320,9 +323,12 @@ export class Web3ModalComponent implements AfterViewInit {
           this.ready = true;
           const cachedProvider =   window.localStorage.getItem('WEB3_CONNECT_CACHED_PROVIDER');
           if (cachedProvider == '"walletconnect"') {
-            await this.connectWallet()
+            
           }
+
+      
         }, 100);
+       
       })
       .catch((error) => console.log(error));
     //

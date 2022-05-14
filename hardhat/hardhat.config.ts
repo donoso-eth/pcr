@@ -30,7 +30,7 @@ if (existsSync('./typechain-types')) {
 const mainnetGwei = 21;
 
 
-const defaultNetwork = 'localhost'
+const defaultNetwork = 'kovan'
 
 const config: HardhatUserConfig = {
   solidity: {
@@ -49,7 +49,7 @@ const config: HardhatUserConfig = {
       forking: {
         //your rpc url here, in this case for Mumbai 31301672
         url: process.env.KOVAN_URL || "",
-        blockNumber: 31578143,
+        blockNumber: 31600633,
       },
     },
     localhost: {
@@ -70,7 +70,7 @@ const config: HardhatUserConfig = {
     kovan: {
       url: process.env.KOVAN_URL || "", // <---- YOUR INFURA ID! (or it won't work)
       // `https://speedy-nodes-nyc.moralis.io/${MORALIS_ID}/eth/kovan`
-      gasPrice: 4* 1000000000,
+      gasPrice: 9* 1000000000,
       accounts:
         process.env['DEPLOYER_KEY'] !== undefined
           ? [process.env['DEPLOYER_KEY']]

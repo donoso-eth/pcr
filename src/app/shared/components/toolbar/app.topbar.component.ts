@@ -37,6 +37,17 @@ export class AppTopBarComponent extends DappBaseComponent {
     this.store.dispatch(Web3Actions.chainBusy({ status: false}));
   }
 
+
+  async  connect() {
+
+    //this.dapp.localWallet(1)
+  
+    this.dapp.launchWebModal()
+  
+     // this.router.navigate(['home'])
+      
+    }
+
   override async hookContractConnected(): Promise<void> {
     this.address_to_show = await this.signer.getAddress();
 
@@ -48,6 +59,8 @@ export class AppTopBarComponent extends DappBaseComponent {
 
       this.localUserCtrl.setValue(index + 1, { emitEvent: false });
     }
+
+    this.router.navigateByUrl('home')
   }
   
 }

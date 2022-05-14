@@ -5,7 +5,7 @@
 
       <div style="margin-top: 20px" class="grid p-fluid">
         <div class="col-12">
-          <textarea pInputTextarea placeholder="Your Message" [autoResize]="true" cols="30">{{ utils.toUtf8String(toUpdateMembership!.description) }}</textarea>
+          <textarea  style="font-size:25px;line-height:30px;" pInputTextarea placeholder="Your Message" [autoResize]="true" cols="30">{{ toUpdateMembership!.displayDescription}}</textarea>
           <div style="margin-top: 20px" class="grid">
             <div class="col-12 lg:col-6 xl:col-6">
               <div
@@ -14,7 +14,7 @@
               >
                 <h4 class="mb-1">Membership</h4>
                 <div *ngIf="idaMembership?.approved == true">
-                  <p>Your membership already approved</p>
+                  <p>Your is membership already approved</p>
                   <button
                   pButton
                   pRipple

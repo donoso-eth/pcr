@@ -20,6 +20,7 @@ export class AppComponent extends DappBaseComponent implements OnInit {
         .pipe(web3Selectors.hookForceDisconnect)
         .pipe(takeUntil(this.destroyHooks))
         .subscribe(() => {
+         // location.reload();
           this.router.navigateByUrl('landing')
          
         });

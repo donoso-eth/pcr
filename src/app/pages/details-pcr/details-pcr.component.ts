@@ -27,6 +27,8 @@ export enum REWARD_STEP {
 export class DetailsPcrComponent extends DappBaseComponent {
   utils = utils;
 
+  isAdmin = false;
+
   toUpdateReward: IPCR_REWARD | undefined = undefined;
 
   valSwitch = true;
@@ -54,7 +56,8 @@ export class DetailsPcrComponent extends DappBaseComponent {
 
   public cancelQuerySubscrition: Subject<void> = new Subject();
 
-  constructor(private msg: MessageService, private router: Router, private route: ActivatedRoute, dapp: DappInjector, store: Store, private graphqlService: GraphQlService) {
+  constructor( private cd:ChangeDetectorRef,
+    private msg: MessageService, private router: Router, private route: ActivatedRoute, dapp: DappInjector, store: Store, private graphqlService: GraphQlService) {
     super(dapp, store);
     this.routeItems = [{ label: 'Qualifying' }, { label: 'Propose Period' }, { label: 'Liveness Period' }, { label: 'Execution Period' }];
   }
@@ -119,7 +122,10 @@ export class DetailsPcrComponent extends DappBaseComponent {
       return;
     }
     this.store.dispatch(Web3Actions.chainBusy({ status: true }));
+    
+    this.showFundingState = false;
     const value = utils.parseEther(this.toFundAmountCtrl.value.toString());
+
 
     //// APPROVE AMOUNT
     const resultApprove = await doSignerTransaction(
@@ -138,7 +144,7 @@ export class DetailsPcrComponent extends DappBaseComponent {
   //// SEND DEPOSIT
     const result = await doSignerTransaction(this.dapp.DAPP_STATE.contracts[+this.toUpdateReward!.id]?.pcrOptimisticOracle.instance.depositReward(value)!);
 
-    this.showFundingState = false;
+   
     if (result.success == true) {
       await this.refreshBalance();
       this.msg.add({ key: 'tst', severity: 'success', summary: 'Great!', detail: `Deposit succesful with txHash:${result.txHash}` });
@@ -156,10 +162,10 @@ export class DetailsPcrComponent extends DappBaseComponent {
     }
 
     const newAmount = utils.parseEther(this.toUpdateAmountCtrl.value.toString());
-
+    this.showingUpdateAmount = false;
     this.store.dispatch(Web3Actions.chainBusy({ status: true }));
     const result = await doSignerTransaction(this.dapp.DAPP_STATE.contracts[+this.toUpdateReward!.id]?.pcrOptimisticOracle.instance.updateRewardAmount(newAmount));
-    this.showingUpdateAmount = false;
+   
     if (result.success == true) {
 
       this.msg.add({ key: 'tst', severity: 'success', summary: 'Great!', detail: `Reward Amount changed with txHash:${result.txHash}` });
@@ -306,10 +312,15 @@ export class DetailsPcrComponent extends DappBaseComponent {
       .watchTokens(id)
       .pipe(takeUntil(this.destroyHooks), takeUntil(this.cancelQuerySubscrition))
       .subscribe(async (data: any) => {
+      
         if (data) {
           const localReward = data.data['reward'];
-          console.log(localReward)
-
+      
+          if (localReward.admin.id == this.dapp.signerAddress!.toLocaleLowerCase()){
+            this.isAdmin = true;
+          } else {
+            this.isAdmin = false;
+          }
 
           if (localReward !== undefined) {
             if (this.toUpdateReward == undefined) {
@@ -340,6 +351,7 @@ export class DetailsPcrComponent extends DappBaseComponent {
         await this.dapp.launchClones(this.toUpdateReward!.tokenImpl, this.toUpdateReward!.optimisticOracleImpl, +this.toUpdateReward!.id);
 
         this.store.dispatch(Web3Actions.chainBusy({ status: false }));
+     
       });
 
   

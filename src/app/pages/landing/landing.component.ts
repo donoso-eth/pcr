@@ -16,25 +16,13 @@ export class LandingComponent extends DappBaseComponent {
   pcrOptimisticOracleContract!: AngularContract<PcrOptimisticOracle>
   constructor(private router: Router, store: Store, dapp: DappInjector, private graphqlService:GraphQlService) {
     super(dapp, store);
-    this.getUpcomingRewarsd()
+
    
   }
 
-async getUpcomingRewarsd(){
- const result = await  this.graphqlService.queryUpcomingRewards()
- console.log(result)
 
-}
 
- async  connect() {
 
-  //this.dapp.localWallet(1)
-
-  this.dapp.launchWebModal()
-
-   // this.router.navigate(['home'])
-    
-  }
 
 
 
@@ -46,7 +34,7 @@ async getUpcomingRewarsd(){
     // this.pcrOptimisticOracleContract.instance.on('RewardDeposit',(args1,args2)=> {
     //     console.log(args1, args2)
     // })
-    this.router.navigate(['home'])
+   // this.router.navigate(['home'])
 
   }
 }

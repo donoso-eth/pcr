@@ -94,8 +94,10 @@ export class DappInjector implements OnDestroy {
           this.DAPP_STATE.signer = walletResult!.signer;
           this.DAPP_STATE.defaultProvider = walletResult!.provider;
           this.contractInitialization();
-        }
-          this.webModalInstanceLaunch();
+        } else {
+               }
+        this.webModalInstanceLaunch();
+      
          
        
 
@@ -130,11 +132,11 @@ export class DappInjector implements OnDestroy {
 
   //// Local wallet initizlization
   async localWallet(index: number) {
-    console.log(index);
+
     this.DAPP_STATE.connectedNetwork = 'localhost';
     this.store.dispatch(Web3Actions.chainBusy({ status: true }));
     this.store.dispatch(Web3Actions.chainStatus({ status: 'loading' }));
-    console.log(this.harhdat_local_privKeys[index - 1]);
+
     let wallet: Wallet = new Wallet(this.harhdat_local_privKeys[index - 1].key);
     this.DAPP_STATE.signer = await wallet.connect(this.DAPP_STATE.defaultProvider!);
     this.DAPP_STATE.signerAddress = await this.DAPP_STATE.signer.getAddress();
@@ -151,7 +153,7 @@ export class DappInjector implements OnDestroy {
     } catch (error) {
       this.store.dispatch(Web3Actions.chainStatus({ status: 'fail-to-connect-network' }));
       this.store.dispatch(Web3Actions.chainBusy({ status: false }));
-      throw new Error('FAIL_TO_CONNECT_NETWORK');
+    
     }
     return hardhatProvider;
   }
@@ -174,17 +176,28 @@ export class DappInjector implements OnDestroy {
         const providerNetwork = metamaskProvider && (await metamaskProvider.getNetwork());
         const metamaskSigner = await metamaskProvider.getSigner();
         this.DAPP_STATE.signerAddress = await metamaskSigner.getAddress();
+        this.webModal = new Web3ModalComponent(
+          {
+            document: this.document,
+            provider: ethereum,
+          },
+          this.store
+        );
         return {
           signer: metamaskSigner,
           provider: metamaskProvider,
         };
       } else {
+        this.webModal = new Web3ModalComponent({ document: this.document }, this.store);
+
         this.store.dispatch(Web3Actions.chainStatus({ status: 'wallet-not-connected' }));
         this.store.dispatch(Web3Actions.chainBusy({ status: false }));
         //throw new Error('WALLET_NOT_CONNECTED');
         return
       }
     } else {
+      this.webModal = new Web3ModalComponent({ document: this.document }, this.store);
+
       /////  NO metamask
       this.store.dispatch(Web3Actions.chainStatus({ status: 'wallet-not-connected' }));
 
@@ -215,7 +228,7 @@ export class DappInjector implements OnDestroy {
     const providerNetwork = await this.DAPP_STATE.defaultProvider!.getNetwork();
 
     const networkString = netWorkById(providerNetwork.chainId)?.name as string;
-    console.log(networkString);
+
     this.DAPP_STATE.connectedNetwork = networkString;
     this.store.dispatch(Web3Actions.setSignerNetwork({ network: networkString }));
 
@@ -227,7 +240,7 @@ export class DappInjector implements OnDestroy {
 
   private async webModalInstanceLaunch() {
     ///// create web-modal/hoos for connection/disconection .etcc.....
-    this.webModal = new Web3ModalComponent({ document: this.document }, this.store);
+
 
     await this.webModal.loadWallets();
     this.webModal.onConnect.pipe(takeUntil(this.destroyHooks)).subscribe(async (walletConnectProvider) => {
@@ -239,6 +252,7 @@ export class DappInjector implements OnDestroy {
       this.DAPP_STATE.signerAddress = await webModalSigner.getAddress();
       this.DAPP_STATE.defaultProvider = webModalProvider;
       this.DAPP_STATE.signer = webModalSigner;
+      
 
       this.contractInitialization();
     });

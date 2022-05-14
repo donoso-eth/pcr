@@ -21,8 +21,8 @@ export class CreatePcrComponent extends DappBaseComponent {
   conditions = target_conditions;
 
   rewardTypes = [
-    { Condition: 'Is the question True?', code: 'YES_OR_NO_QUERY', id: 0 },
-    { Condition: 'KPI with Target', code: 'YES_OR_NO_QUERY', id: 1 },
+    { Condition: 'KPI with Yes/No Answer?', code: 'YES_OR_NO_QUERY', id: 0 },
+    { Condition: 'KPI with Numeric Target', code: 'YES_OR_NO_QUERY', id: 1 },
   ];
 
   tokens = [
@@ -54,11 +54,11 @@ export class CreatePcrComponent extends DappBaseComponent {
     this.selectedToken = this.tokens[0];
 
     this.rewardForm = this.formBuilder.group({
-      titleCtrl: ['Follow Increase', [Validators.required, Validators.maxLength(100)]],
-      questionCtrl: ['Does Our Twitter followers increase 5%', [Validators.required, Validators.maxLength(500)]],
+      titleCtrl: ['', [Validators.required, Validators.maxLength(100)]],
+      questionCtrl: ['', [Validators.required, Validators.maxLength(500)]],
       urlCtrl: [''],
 
-      rewardTypeCtrl: [{ Condition: 'Is the question True?', code: 'YES_OR_NO_QUERY', id: 0 }, [Validators.required]],
+      rewardTypeCtrl: [{ Condition: 'KPI with Yes/No Answer?', code: 'YES_OR_NO_QUERY', id: 0 }, [Validators.required]],
 
       conditionTypeCtrl: [{ name: 'Equal', code: 'E', id: 2 }, [Validators.required]],
       targetAmountCtrl: [1, [Validators.required, Validators.min(1)]],
@@ -150,6 +150,7 @@ export class CreatePcrComponent extends DappBaseComponent {
       this.display = true;
     } else {
       this.msg.add({ key: 'tst', severity: 'error', summary: 'OOPS', detail: `Error creating your PCR with txHash:${result.txHash}` });
+      this.store.dispatch(Web3Actions.chainBusy({ status: false }));
     }
   }
 

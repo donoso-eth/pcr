@@ -44,9 +44,6 @@ export class HomeComponent extends DappBaseComponent implements OnInit {
     }
   }
 
-  changeStatus(value: boolean, i: number) {
-    console.log(i, value);
-  }
 
 
 
@@ -60,10 +57,6 @@ export class HomeComponent extends DappBaseComponent implements OnInit {
   goDetailsMembership(membership:any){
     this.router.navigateByUrl(`details-membership/${membership.id}`)
   }
-
-
-
-
 
   transformRewardObject(reward: IPCR_REWARD) {
 
@@ -82,8 +75,7 @@ export class HomeComponent extends DappBaseComponent implements OnInit {
     this.pcrTokens = [];
     this.pcrMemberships = [];
     const  users = this.graphqlService.queryUser(this.dapp.signerAddress!).pipe(takeUntil(this.destroyHooks)).subscribe((val=> {
-      console.log(val)
-     
+   
       if (!!val && !!val.data && !!val.data.user) {
         const user = val.data.user;
         const localTokens = user.rewardsCreated;
@@ -122,7 +114,7 @@ export class HomeComponent extends DappBaseComponent implements OnInit {
        
       }
    
-      console.log(this.pcrMemberships)
+   
 
     }))
   

@@ -2,7 +2,7 @@
 export const GET_UPCOMING_REWARDS = 
 `
     {
-      rewards(first: 5, where: {rewardStatus:"0"}, orderBy: earliestNextAction, orderDirection: desc) {
+      rewards(first: 5, where: {rewardStatus:"0"}, orderBy: earliestNextAction, orderDirection: asc) {
         id
         title
         rewardStep 

@@ -190,13 +190,13 @@ export class DetailsMembershipComponent extends DappBaseComponent {
 
   //#region GET AND PREPARE DATA
   async getMembershipDetails(id: string) {
-    console.log(id)
+
     this.cancelQuerySubscrition.next();
     this.graphqlService
       .watchMemberships(id)
       .pipe(takeUntil(this.destroyHooks), takeUntil(this.cancelQuerySubscrition))
       .subscribe(async (data: any) => {
-        console.log(data);
+      
         if (data) {
           let localmembership = data.data['userMembership'];
 
@@ -227,6 +227,8 @@ export class DetailsMembershipComponent extends DappBaseComponent {
 
         this.idaMembership = await this.superFluidService.getSubscription(this.toUpdateMembership.fundToken.superToken, +this.toUpdateMembership!.id);
 
+       
+
         this.chartConfig = { id: this.toUpdateMembership?.id!, priceType: +this.toUpdateMembership?.priceType, target: +this.toUpdateMembership?.target! };
 
         this.store.dispatch(Web3Actions.chainBusy({ status: false }));
@@ -250,7 +252,7 @@ export class DetailsMembershipComponent extends DappBaseComponent {
     //this.getTokens();
     this.store.dispatch(Web3Actions.chainBusy({ status: true }));
     const params = this.route.snapshot.params;
-    console.log(params);
+
     if (params['id'] !== undefined) {
       this.getMembershipDetails(params['id']);
     }

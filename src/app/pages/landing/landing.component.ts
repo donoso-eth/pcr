@@ -2,11 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { AngularContract, DappBaseComponent, DappInjector } from 'angular-web3';
-import { doSignerTransaction } from 'src/app/dapp-injector/classes/transactor';
 import { GraphQlService } from 'src/app/dapp-injector/services/graph-ql/graph-ql.service';
-import { PcrHost } from 'src/assets/contracts/interfaces/PcrHost';
+
 import { PcrOptimisticOracle } from 'src/assets/contracts/interfaces/PcrOptimisticOracle';
-import { PcrToken } from 'src/assets/contracts/interfaces/PcrToken';
+
 
 @Component({
   selector: 'app-landing',
@@ -17,7 +16,15 @@ export class LandingComponent extends DappBaseComponent {
   pcrOptimisticOracleContract!: AngularContract<PcrOptimisticOracle>
   constructor(private router: Router, store: Store, dapp: DappInjector, private graphqlService:GraphQlService) {
     super(dapp, store);
+    this.getUpcomingRewarsd()
+   
   }
+
+async getUpcomingRewarsd(){
+ const result = await  this.graphqlService.queryUpcomingRewards()
+ console.log(result)
+
+}
 
  async  connect() {
 

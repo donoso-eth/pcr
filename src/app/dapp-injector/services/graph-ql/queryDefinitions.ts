@@ -1,4 +1,20 @@
 
+export const GET_UPCOMING_REWARDS = 
+`
+    {
+      rewards(first: 5, where: {rewardStatus:"0"}, orderBy: earliestNextAction, orderDirection: desc) {
+        id
+        title
+        rewardStep 
+        earliestNextAction
+        rewardToken
+        rewardAmount
+        rewardStatus
+      }
+    }
+  `;
+
+
 export const GET_USER = `
 query($address: String!){
     user(id:$address) {

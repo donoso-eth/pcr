@@ -1,7 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { Apollo, QueryRef, gql } from 'apollo-angular';
 import { BehaviorSubject, firstValueFrom, Subject, Subscription } from 'rxjs';
-import { GET_REWARD, GET_MEMBERSHIP, GET_PROPOSALS, GET_INDEXES, GET_USER } from './queryDefinitions';
+import { GET_REWARD, GET_MEMBERSHIP, GET_PROPOSALS, GET_INDEXES, GET_USER, GET_UPCOMING_REWARDS } from './queryDefinitions';
 
 
 
@@ -30,11 +30,27 @@ export class GraphQlService implements OnDestroy {
     }).valueChanges;
   }
 
+  async queryUpcomingRewards():Promise<any> {
+    try {
+ 
+      const posts = await this.apollo
+      .query<any>({
+        query: gql(GET_UPCOMING_REWARDS)
+      })
+        .toPromise();
 
+     
+      return posts;
+    } catch (error) {
+      console.log(error);
+      return {};
+    }
+
+  }
 
   async queryProposals(id:string):Promise<any> {
     try {
-      console.log(id)
+
       const variables = { id };
       const posts = await this.apollo
       .query<any>({

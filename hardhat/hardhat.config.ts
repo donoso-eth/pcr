@@ -30,7 +30,7 @@ if (existsSync('./typechain-types')) {
 const mainnetGwei = 21;
 
 
-const defaultNetwork = 'kovan';
+const defaultNetwork = 'localhost'
 
 const config: HardhatUserConfig = {
   solidity: {

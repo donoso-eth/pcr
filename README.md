@@ -15,12 +15,13 @@ Depoyed dapp on kovan [https://perpetual-conditional-reward.web.app
 ](https://perpetual-conditional-reward.web.app
 )
 
+UMA Oprimist Oracle [dashboard](https://optimistic-oracle-dapp-5liuk09wg-uma.vercel.app/)
  
  &nbsp;
 # Architecure
 ### Contracts
 The three solidity contracts the PCR uses:
-- PcrHost.sol. Contrat to create the Perpetual Conditional Reward. When creating a new reward, PcrHost will clone the implementations of the PcrOptimisticOracle.sol and the PcrToken.Sol. 0x7Ce006074F050B0047bd1833c6f7229882BC31F3
+- PcrHost.sol. Contrat to create the Perpetual Conditional Reward. When creating a new reward, PcrHost will clone the implementations of the PcrOptimisticOracle.sol and the PcrToken.Sol. 
 
 - PcrOptimisticOracle.sol. Implementation of the the UMA Optimistic Oracle. 0x53E80CCab9924D28D91Fe23CBCDA543055449C59 
 
@@ -75,12 +76,12 @@ The frontend has been built with Angular and has 5 main pages.
 The contracts are deployed on kovan: 
  &nbsp; 
 
-Pcrhost.sol at 0xC9aA24Bb16a018Cb10323821f7cF06d9CDF121E4 [(see on kovan)](https://kovan.etherscan.io/address/0xc9aa24bb16a018cb10323821f7cf06d9cdf121e4) 
+Pcrhost.sol at 0x8806Cdb4b2a77C76C5e62cCd576E3Fd1268C262D [(see on kovan)](https://kovan.etherscan.io/address/0x8806Cdb4b2a77C76C5e62cCd576E3Fd1268C262D) 
   &nbsp; 
 
- PcrOptimisticOracle.sol (implementation) at 0x6B64E524FEDB8C2B5B4104738E4F2205bB7fcc14 [(see on kovan)](https://kovan.etherscan.io/address/0x6B64E524FEDB8C2B5B4104738E4F2205bB7fcc14) 
+ PcrOptimisticOracle.sol (implementation) at 0x64Cd0BA7e51736679e45e2Bc5Ef44d7094f5719c [(see on kovan)](https://kovan.etherscan.io/address/0x64Cd0BA7e51736679e45e2Bc5Ef44d7094f5719c) 
   
-PcrToken.sol (implementation) at 0xE918889eFB033D2fa197237F5eE27dACEec3ebb8 [(see on kovan)](https://kovan.etherscan.io/address/0xE918889eFB033D2fa197237F5eE27dACEec3ebb8) 
+PcrToken.sol (implementation) at 0x9c1dCc4DdA69f254846a1EA26e01c80F7d5541a3[(see on kovan)](https://kovan.etherscan.io/address/0x9c1dCc4DdA69f254846a1EA26e01c80F7d5541a3) 
  &nbsp;
 
 Subgraph deployed on [kovan](https://thegraph.com/hosted-service/subgraph/donoso-eth/perpetual-conditional-reward)

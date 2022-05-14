@@ -211,7 +211,7 @@ export class DappInjector implements OnDestroy {
   private async contractInitialization() {
 
     // UNCOMMENT THIS NEXT THREE LINES TO INTERACT WITH KOVAN already deployed contracs
-    // this.contractMedatata.address = "0x7Ce006074F050B0047bd1833c6f7229882BC31F3"
+    // this.contractMedatata.address = " 0x8806Cdb4b2a77C76C5e62cCd576E3Fd1268C262D"
 
 
     const contract = new AngularContract<PcrHost>({

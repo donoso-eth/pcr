@@ -105,6 +105,9 @@ query($id: String!)
       units
       reward {
       id
+      admin {
+        id
+      }
       rewardAmount
       rewardToken
       currentdeposit
@@ -124,6 +127,13 @@ query($id: String!)
       totalDistributed
       currentIndex
       unitsIssued
+      currentProposal {
+        id
+        startQualifying
+        startLivenessPeriod
+        status
+        priceProposed
+      }
       }
     }
   }

@@ -68,7 +68,7 @@ export class DetailsPcrComponent extends DappBaseComponent {
       this.msg.add({ key: 'tst', severity: 'success', summary: 'Great!', detail: `PCR Status changed with txHash:${result.txHash}` });
     } else {
       this.store.dispatch(Web3Actions.chainBusy({ status: false }));
-      this.msg.add({ key: 'tst', severity: 'danger', summary: 'OOPS', detail: `Error toggling PCR Status with txHash:${result.txHash}` });
+      this.msg.add({ key: 'tst', severity: 'error', summary: 'OOPS', detail: `Error toggling PCR Status with txHash:${result.txHash}` });
     }
   }
 
@@ -115,7 +115,7 @@ export class DetailsPcrComponent extends DappBaseComponent {
    // do actions from dialogs
   async doFunding() {
     if (this.toFundAmountCtrl.value <= 0) {
-      alert('please add a numer');
+      this.msg.add({ key: 'tst', severity: 'warn', summary: 'OOPS',detail: `Please Input Amount` });
       return;
     }
     this.store.dispatch(Web3Actions.chainBusy({ status: true }));
@@ -131,7 +131,7 @@ export class DetailsPcrComponent extends DappBaseComponent {
     if (resultApprove.success == true) {} 
     else {
       this.store.dispatch(Web3Actions.chainBusy({ status: false }));
-      this.msg.add({ key: 'tst', severity: 'danger', summary: 'OOPS', detail: `Error Approving Amount with txHash:${resultApprove.txHash}` });
+      this.msg.add({ key: 'tst', severity: 'error', summary: 'OOPS', detail: `Error Approving Amount with txHash:${resultApprove.txHash}` });
       return
     }
 
@@ -144,13 +144,14 @@ export class DetailsPcrComponent extends DappBaseComponent {
       this.msg.add({ key: 'tst', severity: 'success', summary: 'Great!', detail: `Deposit succesful with txHash:${result.txHash}` });
     } else {
       this.store.dispatch(Web3Actions.chainBusy({ status: false }));
-      this.msg.add({ key: 'tst', severity: 'danger', summary: 'OOPS', detail: `Error Depositing with txHash:${result.txHash}` });
+      this.msg.add({ key: 'tst', severity: 'error', summary: 'OOPS', detail: `Error Depositing with txHash:${result.txHash}` });
     }
   }
 
   async doUpdateRewardAmount() {
     if (this.toUpdateAmountCtrl.value <= 0) {
-      alert('please onput a positive value');
+      this.msg.add({ key: 'tst', severity: 'warn', summary: 'OOPS',detail: `Please Input a positive value`});
+
       return;
     }
 
@@ -164,7 +165,7 @@ export class DetailsPcrComponent extends DappBaseComponent {
       this.msg.add({ key: 'tst', severity: 'success', summary: 'Great!', detail: `Reward Amount changed with txHash:${result.txHash}` });
     } else {
       this.store.dispatch(Web3Actions.chainBusy({ status: false }));
-      this.msg.add({ key: 'tst', severity: 'danger', summary: 'OOPS', detail: `Error Changing Reward Amount with txHash:${result.txHash}` });
+      this.msg.add({ key: 'tst', severity: 'error', summary: 'OOPS', detail: `Error Changing Reward Amount with txHash:${result.txHash}` });
     }
      //// APPROVE AMOUNT
 
@@ -172,7 +173,8 @@ export class DetailsPcrComponent extends DappBaseComponent {
 
   async doAddMember() {
     if (this.adressesCtrl.invalid) {
-      alert('please add and adresse');
+        this.msg.add({ key: 'tst', severity: 'warn', summary: 'OOPS',detail: `Please add Address` });
+
       return;
     }
 
@@ -188,7 +190,7 @@ export class DetailsPcrComponent extends DappBaseComponent {
 
   async doBulkAddMembers() {
     if (this.bulkAdressesCtrl.invalid) {
-      this.msg.add({ key: 'tst', severity: 'warning', summary: 'Missing info', detail: `Please add at least one address` });
+      this.msg.add({ key: 'tst', severity: 'warn', summary: 'Missing info', detail: `Please add at least one address` });
       return
     }
 
@@ -196,7 +198,9 @@ export class DetailsPcrComponent extends DappBaseComponent {
 
     for (const checkAddress of addresses) {
       if (isAddress(checkAddress) == false) {
-        alert(`Address ${checkAddress} is not valid`);
+ 
+        this.msg.add({ key: 'tst', severity: 'warn', summary: 'OOPS',detail: `Address ${checkAddress} is not valid` });
+
         return;
       }
     }
@@ -208,7 +212,7 @@ export class DetailsPcrComponent extends DappBaseComponent {
       this.msg.add({ key: 'tst', severity: 'success', summary: 'Great!', detail: `Members Added with txHash:${result.txHash}` });
     } else {
       this.store.dispatch(Web3Actions.chainBusy({ status: false }));
-      this.msg.add({ key: 'tst', severity: 'danger', summary: 'OOPS', detail: `Error Adding Members with txHash:${result.txHash}` });
+      this.msg.add({ key: 'tst', severity: 'error', summary: 'OOPS', detail: `Error Adding Members with txHash:${result.txHash}` });
     }
     
 
@@ -229,7 +233,7 @@ export class DetailsPcrComponent extends DappBaseComponent {
       this.msg.add({ key: 'tst', severity: 'success', summary: 'Great!', detail: `Proposal successful sent with txHash:${result.txHash}` });
     } else {
       this.store.dispatch(Web3Actions.chainBusy({ status: false }));
-      this.msg.add({ key: 'tst', severity: 'danger', summary: 'OOPS', detail: `Error Proposing value with txHash:${result.txHash}` });
+      this.msg.add({ key: 'tst', severity: 'error', summary: 'OOPS', detail: `Error Proposing value with txHash:${result.txHash}` });
     }
   }
 
@@ -240,19 +244,22 @@ export class DetailsPcrComponent extends DappBaseComponent {
       this.msg.add({ key: 'tst', severity: 'success', summary: 'Great!', detail: `Proposal Disputed with txHash:${result.txHash}` });
     } else {
       this.store.dispatch(Web3Actions.chainBusy({ status: false }));
-      this.msg.add({ key: 'tst', severity: 'danger', summary: 'OOPS', detail: `Error Disputing Price with txHash:${result.txHash}` });
+      this.msg.add({ key: 'tst', severity: 'error', summary: 'OOPS', detail: `Error Disputing Price with txHash:${result.txHash}` });
     }
   }
 
   async executeProposal() {
     /// TO dO CHAEK IF CURRENT DEPOSIT and ISSUER MEMBERs
     if (+this.toUpdateReward!.rewardAmount > +this.toUpdateReward!.currentdeposit) {
-      alert('Please Fund The Deposit');
+ 
+      this.msg.add({ key: 'tst', severity: 'warn', summary: 'OOPS',detail: `Please fund the contract with a deposit` });
+
       return;
     }
 
     if (+this.toUpdateReward!.unitsIssued <= 0) {
-      alert('No members yet');
+      this.msg.add({ key: 'tst', severity: 'warn', summary: 'OOPS',detail: `You have not yet add members` });
+
       return;
     }
     this.store.dispatch(Web3Actions.chainBusy({ status: true }));
@@ -274,10 +281,10 @@ export class DetailsPcrComponent extends DappBaseComponent {
  
      if (result.success == true) {
       await this.refreshBalance();
-      this.msg.add({ key: 'tst', severity: 'success', summary: 'Great!', detail: `Proposal Execited Successfully  with txHash:${result.txHash}` });
+      this.msg.add({ key: 'tst', severity: 'success', summary: 'Great!', detail: `Proposal Executed Successfully  with txHash:${result.txHash}` });
     } else {
       this.store.dispatch(Web3Actions.chainBusy({ status: false }));
-      this.msg.add({ key: 'tst', severity: 'danger', summary: 'OOPS', detail: `Error Executing Proposal value with txHash:${result.txHash}` });
+      this.msg.add({ key: 'tst', severity: 'error', summary: 'OOPS', detail: `Error Executing Proposal value with txHash:${result.txHash}` });
     }
 
 
@@ -314,6 +321,7 @@ export class DetailsPcrComponent extends DappBaseComponent {
                 ...{
                   displayTargetCondition: utils.formatEther(localReward.target),
                   step: calculateStep(localReward.rewardStep, localReward.earliestNextAction),
+                  displayDescription: createDisplayDescription(localReward)
                 },
               };
             }
@@ -334,7 +342,7 @@ export class DetailsPcrComponent extends DappBaseComponent {
         this.store.dispatch(Web3Actions.chainBusy({ status: false }));
       });
 
-    this.store.dispatch(Web3Actions.chainBusy({ status: false }));
+  
   }
   transformRewardObject(reward: IPCR_REWARD) {
     reward.displayDescription = createDisplayDescription(reward);

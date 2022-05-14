@@ -40,13 +40,14 @@ export class AppTopBarComponent extends DappBaseComponent {
   override async hookContractConnected(): Promise<void> {
     this.address_to_show = await this.signer.getAddress();
 
-    this.network = this.dapp.connectedNetwork!;
+    this.network = this.dapp.dappConfig.defaultNetwork!;
     // console.log(this.network)
-    // if (this.network == 'localhost') {
+     if (this.network == 'localhost') {
       this.harhdat_local_privKeys = (await import('../../../../assets/contracts/local_accouts.json')).default;
       const index = this.harhdat_local_privKeys.map((map) => map.address.toLowerCase()).indexOf(this.dapp.signerAddress!.toLowerCase());
 
       this.localUserCtrl.setValue(index + 1, { emitEvent: false });
-   // }
+    }
   }
+  
 }

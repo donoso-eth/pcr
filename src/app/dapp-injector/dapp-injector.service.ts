@@ -134,6 +134,7 @@ export class DappInjector implements OnDestroy {
   //// Local wallet initizlization
   async localWallet(index: number) {
     console.log(index);
+    this.DAPP_STATE.connectedNetwork = 'localhost';
     this.store.dispatch(Web3Actions.chainBusy({ status: true }));
     this.store.dispatch(Web3Actions.chainStatus({ status: 'loading' }));
     console.log(this.harhdat_local_privKeys[index - 1]);

@@ -35,7 +35,7 @@ export class UserBalanceComponent implements OnChanges {
   //// UPGRADE TOKENS
   async doUpgrade() {
     if (this.toUpgradeAmountCtrl.value <= 0) {
-      this.msg.add({ key: 'tst', severity: 'warning', summary: 'Missing info', detail: `Please add amount to Upgrade` });
+      this.msg.add({  key: 'tst', severity: 'warn', summary: 'Missing info', detail: `Please add amount to Upgrade` });
       return;
     }
     this.store.dispatch(Web3Actions.chainBusy({ status: true }));
@@ -45,7 +45,7 @@ export class UserBalanceComponent implements OnChanges {
     if (resultApprove.success == true) {
     } else {
       this.store.dispatch(Web3Actions.chainBusy({ status: false }));
-      this.msg.add({ key: 'tst', severity: 'danger', summary: 'OOPS', detail: `Error Approving Amount with txHash:${resultApprove.txHash}` });
+      this.msg.add({ key: 'tst', severity: 'error', summary: 'OOPS', detail: `Error Approving Amount with txHash:${resultApprove.txHash}` });
       return;
     }
 
@@ -57,7 +57,7 @@ export class UserBalanceComponent implements OnChanges {
       this.msg.add({ key: 'tst', severity: 'success', summary: 'Great!', detail: `Upgrade Operation succesful with txHash:${result.txHash}` });
     } else {
       this.store.dispatch(Web3Actions.chainBusy({ status: false }));
-      this.msg.add({ key: 'tst', severity: 'danger', summary: 'OOPS', detail: `Error Upgrading with txHash:${result.txHash}` });
+      this.msg.add({ key: 'tst', severity: 'error', summary: 'OOPS', detail: `Error Upgrading with txHash:${result.txHash}` });
     }
   }
 
@@ -65,7 +65,7 @@ export class UserBalanceComponent implements OnChanges {
   async doDowngrade() {
     if (this.toDowngradeAmountCtrl.value <= 0) {
 
-      this.msg.add({ key: 'tst', severity: 'warning', summary: 'Missing info', detail: `Please add amount to Downgrade` });
+      this.msg.add({ key: 'tst', severity: 'warn', summary: 'Missing info', detail: `Please add amount to Downgrade` });
    
       return;
     }
@@ -80,7 +80,7 @@ export class UserBalanceComponent implements OnChanges {
       this.msg.add({ key: 'tst', severity: 'success', summary: 'Great!', detail: `Downgrade Operation succesful with txHash:${result.txHash}` });
     } else {
       this.store.dispatch(Web3Actions.chainBusy({ status: false }));
-      this.msg.add({ key: 'tst', severity: 'danger', summary: 'OOPS', detail: `Error Downgrading with txHash:${result.txHash}` });
+      this.msg.add({ key: 'tst', severity: 'error', summary: 'OOPS', detail: `Error Downgrading with txHash:${result.txHash}` });
     }
   }
 }

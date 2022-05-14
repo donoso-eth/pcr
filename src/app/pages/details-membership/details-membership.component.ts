@@ -5,16 +5,14 @@ import { Store } from '@ngrx/store';
 import { IWeb3Subscription } from '@superfluid-finance/sdk-core';
 import { DappBaseComponent, DappInjector, global_tokens, Web3Actions } from 'angular-web3';
 import { Contract, utils } from 'ethers';
-import { takeUntil } from 'rxjs';
+import { MessageService } from 'primeng/api';
+import { Subject, takeUntil } from 'rxjs';
 import { doSignerTransaction } from 'src/app/dapp-injector/classes/transactor';
 
 import { GraphQlService } from 'src/app/dapp-injector/services/graph-ql/graph-ql.service';
 import { SuperFluidServiceService } from 'src/app/dapp-injector/services/super-fluid/super-fluid-service.service';
-import { createERC20Instance, createSuperTokenInstance, prepareDisplayProposal } from 'src/app/shared/helpers/helpers';
+import { calculateStep, createDisplayDescription, createERC20Instance, createSuperTokenInstance, prepareDisplayProposal } from 'src/app/shared/helpers/helpers';
 import { IPCR_REWARD, IPROPOSAL } from 'src/app/shared/models/pcr';
-
-import { abi_ERC20 } from './abis/erc20';
-import { abi_SuperToken } from './abis/superToken';
 
 export enum REWARD_STEP {
   QUALIFYING,
@@ -29,15 +27,13 @@ export enum REWARD_STEP {
   styleUrls: ['./details-membership.component.scss'],
 })
 export class DetailsMembershipComponent extends DappBaseComponent {
-  
   utils = utils;
-  
+
   toUpdateMembership: any | undefined = undefined;
 
   //// FormControls
   toFundAmountCtrl = new FormControl(0, Validators.required);
   adressesCtrl = new FormControl('', [Validators.required, Validators.minLength(32), Validators.maxLength(32)]);
-
 
   activeStep = 0;
 
@@ -45,9 +41,12 @@ export class DetailsMembershipComponent extends DappBaseComponent {
 
   idaMembership!: IWeb3Subscription;
 
-  chartConfig!:{id:string, priceType:number, target:number }
+  chartConfig!: { id: string; priceType: number; target: number };
+
+  public cancelQuerySubscrition: Subject<void> = new Subject();
 
   constructor(
+    private msg: MessageService,
     private router: Router,
     private superFluidService: SuperFluidServiceService,
     private route: ActivatedRoute,
@@ -56,124 +55,144 @@ export class DetailsMembershipComponent extends DappBaseComponent {
     private graphqlService: GraphQlService
   ) {
     super(dapp, store);
-  
   }
 
+  async refreshBalance() {
+    const superToken = createSuperTokenInstance(this.toUpdateMembership!.fundToken.superToken, this.dapp.signer!);
+    const balanceSupertoken = await superToken.realtimeBalanceOfNow(this.dapp.signerAddress);
 
-back (){
-  this.router.navigateByUrl('home')
-}
+    this.toUpdateMembership!.fundToken.superTokenBalance = utils.formatEther(balanceSupertoken[0]).substring(0, 6);
 
+    const rewardToken = createERC20Instance(this.toUpdateMembership!.fundToken.rewardToken, this.dapp.signer!);
+    const balanceRewardToken = await rewardToken.balanceOf(this.dapp.signerAddress);
+
+    this.toUpdateMembership!.fundToken.rewardTokenBalance = utils.formatEther(balanceRewardToken).substring(0, 6);
+  }
+
+  //#region  SUBSCRIPTION ACTIONS //////
+  async approveMembership() {
+    this.store.dispatch(Web3Actions.chainBusy({ status: true }));
+
+    try {
+      await this.superFluidService.approveSubscription(this.toUpdateMembership.fundToken.superToken, +this.toUpdateMembership!.id);
+
+      await this.refresh();
+      this.msg.add({ key: 'tst', severity: 'success', summary: 'Done!', detail: `Subscription Approved` });
+    } catch (error) {
+      this.store.dispatch(Web3Actions.chainBusy({ status: false }));
+      this.msg.add({ key: 'tst', severity: 'error', summary: 'OOPS', detail: `Error Approving the subscription` });
+    }
+  }
+
+  async cancelMembership() {
+    this.store.dispatch(Web3Actions.chainBusy({ status: true }));
+    try {
+      await this.superFluidService.cancelSubscription(this.toUpdateMembership.fundToken.superToken, +this.toUpdateMembership!.id);
+
+      await this.refresh();
+      this.msg.add({ key: 'tst', severity: 'success', summary: 'Done!', detail: `Subscription Cancelled` });
+    } catch (error) {
+      this.store.dispatch(Web3Actions.chainBusy({ status: false }));
+      this.msg.add({ key: 'tst', severity: 'error', summary: 'OOPS', detail: `Error Cancelling the subscription` });
+    }
+  }
+
+  async claim() {
+    this.store.dispatch(Web3Actions.chainBusy({ status: true }));
+    try {
+      await this.superFluidService.claimSubscription(this.toUpdateMembership.fundToken.superToken, +this.toUpdateMembership!.id);
+
+      await this.refresh();
+      this.msg.add({ key: 'tst', severity: 'success', summary: 'Done!', detail: `Subscription Claimed` });
+    } catch (error) {
+      this.store.dispatch(Web3Actions.chainBusy({ status: false }));
+      this.msg.add({ key: 'tst', severity: 'error', summary: 'OOPS', detail: `Error Claiming the subscription` });
+    }
+  }
+  //#endregion
+
+  //#region  HOOKS PROPOSALS INTERACTION
   async proposeValue(value: number) {
     this.store.dispatch(Web3Actions.chainBusy({ status: true }));
-    await doSignerTransaction(this.dapp.DAPP_STATE.contracts[+this.toUpdateMembership!.id]?.pcrOptimisticOracle.instance.proposeDistribution(value)!);
+
+    const answer = utils.parseEther(value.toString());
+
+    const result = await doSignerTransaction(this.dapp.DAPP_STATE.contracts[+this.toUpdateMembership!.id]?.pcrOptimisticOracle.instance.proposeDistribution(answer)!);
+
+    if (result.success == true) {
+      this.msg.add({ key: 'tst', severity: 'success', summary: 'Great!', detail: `Proposal successful sent with txHash:${result.txHash}` });
+    } else {
+      this.store.dispatch(Web3Actions.chainBusy({ status: false }));
+      this.msg.add({ key: 'tst', severity: 'error', summary: 'OOPS', detail: `Error Proposing value with txHash:${result.txHash}` });
+    }
   }
 
-  async disputeProposal(){
+  async disputeProposal() {
     this.store.dispatch(Web3Actions.chainBusy({ status: true }));
-    await doSignerTransaction(this.dapp.DAPP_STATE.contracts[+this.toUpdateMembership!.id]?.pcrOptimisticOracle.instance.disputeDistribution()!);
-
+    const result = await doSignerTransaction(this.dapp.DAPP_STATE.contracts[+this.toUpdateMembership!.id]?.pcrOptimisticOracle.instance.disputeDistribution()!);
+    if (result.success == true) {
+      this.msg.add({ key: 'tst', severity: 'success', summary: 'Great!', detail: `Proposal Disputed with txHash:${result.txHash}` });
+    } else {
+      this.store.dispatch(Web3Actions.chainBusy({ status: false }));
+      this.msg.add({ key: 'tst', severity: 'error', summary: 'OOPS', detail: `Error Disputing Price with txHash:${result.txHash}` });
+    }
   }
 
   async executeProposal() {
     /// TO dO CHAEK IF CURRENT DEPOSIT and ISSUER MEMBERs
     if (+this.toUpdateMembership!.rewardAmount > +this.toUpdateMembership!.currentdeposit) {
-      alert('Please Fund The Deposit');
+      this.msg.add({ key: 'tst', severity: 'warn', summary: 'OOPS', detail: `Please fund the contract with a deposit` });
+
       return;
     }
 
     if (+this.toUpdateMembership!.unitsIssued <= 0) {
-      alert('No members yet');
+      this.msg.add({ key: 'tst', severity: 'warn', summary: 'OOPS', detail: `You have not yet add members` });
+
       return;
     }
+    this.store.dispatch(Web3Actions.chainBusy({ status: true }));
 
-    try {
-      const tx = await doSignerTransaction(this.dapp.DAPP_STATE.contracts[+this.toUpdateMembership!.id]?.pcrOptimisticOracle.instance.executeDistribution());
-    } catch (error) {
-      console.log(error);
+    this.dapp.DAPP_STATE.contracts[+this.toUpdateMembership!.id]?.pcrOptimisticOracle.instance.on('ProposalRejected', (pcrId, proposalId, newProposalId) => {
+      if (proposalId.toString() == this.currentProposal.id && pcrId.toString() == this.currentProposal.rewardId) {
+        this.store.dispatch(Web3Actions.chainBusy({ status: false }));
+      }
+    });
+
+    this.dapp.DAPP_STATE.contracts[+this.toUpdateMembership!.id]?.pcrOptimisticOracle.instance.on('ProposalAcceptedAndDistribuition', (pcrId, proposalId, newProposalId) => {
+      if (proposalId.toString() == this.currentProposal.id && pcrId.toString() == this.currentProposal.rewardId) {
+        this.store.dispatch(Web3Actions.chainBusy({ status: false }));
+      }
+    });
+
+    const result = await doSignerTransaction(this.dapp.DAPP_STATE.contracts[+this.toUpdateMembership!.id]?.pcrOptimisticOracle.instance.executeDistribution());
+
+    if (result.success == true) {
+      await this.refreshBalance();
+      this.msg.add({ key: 'tst', severity: 'success', summary: 'Great!', detail: `Proposal Executed Successfully  with txHash:${result.txHash}` });
+    } else {
+      this.store.dispatch(Web3Actions.chainBusy({ status: false }));
+      this.msg.add({ key: 'tst', severity: 'error', summary: 'OOPS', detail: `Error Executing Proposal value with txHash:${result.txHash}` });
     }
   }
 
-  async approveMembership() {
-    this.store.dispatch(Web3Actions.chainBusy({ status: true }));
-    await this.superFluidService.approveSubscription(this.toUpdateMembership.fundToken.superToken,+this.toUpdateMembership!.id)
-    this.idaMembership = await this.superFluidService.getSubscription(this.toUpdateMembership.fundToken.superToken,+this.toUpdateMembership!.id);
-    console.log(this.idaMembership)
-    await this.refreshBalance()
-    this.store.dispatch(Web3Actions.chainBusy({ status: false }));
+  refresh() {
+    this.getMembershipDetails(this.toUpdateMembership!.id);
   }
 
-  async cancelMembership(){
-    this.store.dispatch(Web3Actions.chainBusy({ status: true }));
-    await this.superFluidService.cancelSubscription(this.toUpdateMembership.fundToken.superToken,+this.toUpdateMembership!.id)
-    this.idaMembership = await this.superFluidService.getSubscription(this.toUpdateMembership.fundToken.superToken,+this.toUpdateMembership!.id);
-    await this.refreshBalance()
-    console.log(this.idaMembership)
-    this.store.dispatch(Web3Actions.chainBusy({ status: false }));
+  //#endregion
+
+  /// navigation
+  back() {
+    this.router.navigateByUrl('home');
   }
 
-  async claim(){
-    this.store.dispatch(Web3Actions.chainBusy({ status: true }));
-    await this.superFluidService.claimSubscription(this.toUpdateMembership.fundToken.superToken,+this.toUpdateMembership!.id)
-    this.idaMembership = await this.superFluidService.getSubscription(this.toUpdateMembership.fundToken.superToken,+this.toUpdateMembership!.id);
-   await this.refreshBalance()
-    this.store.dispatch(Web3Actions.chainBusy({ status: false }));
-  }
-
-  async doPropose(reward: IPCR_REWARD) {
-    this.store.dispatch(Web3Actions.chainBusy({ status: true }));
-    await doSignerTransaction(this.dapp.DAPP_STATE.contracts[+reward.id]?.pcrOptimisticOracle.instance.proposeDistribution(1)!);
-  }
-
-  calculateStep(reward: IPCR_REWARD): REWARD_STEP {
-    let rewardStep = +reward.rewardStep.toString();
-    let timeStamp = +(new Date().getTime() / 1000).toFixed(0);
-    let earliestNextAction = +reward.earliestNextAction.toString();
-    let step: REWARD_STEP = REWARD_STEP.QUALIFYING;
-    if (rewardStep == 0 && timeStamp < earliestNextAction) {
-      step = REWARD_STEP.QUALIFYING;
-    } else if (rewardStep == 0 && timeStamp >= earliestNextAction) {
-      step = REWARD_STEP.AWAITING_PROPOSAL;
-    } else if (rewardStep == 1 && timeStamp < earliestNextAction) {
-      step = REWARD_STEP.LIVENESS_PERIOD;
-    } else if (rewardStep == 1 && timeStamp >= earliestNextAction) {
-      step = REWARD_STEP.AWAITING_EXECUTION;
-    }
-    return step;
-  }
-
-  transformRewardObject(reward: IPCR_REWARD) {
-    //reward.displayCustomAncillaryData = utils.toUtf8String(reward.customAncillaryData);
-    console.log(new Date(+reward.earliestNextAction * 1000).toLocaleString());
-    // reward.status = true;
-    // reward.step = 0);
-
-    const displayReward = global_tokens.filter((fil) => fil.superToken == reward.rewardToken)[0];
-    reward.fundToken = displayReward;
-    reward.displayStep = this.calculateStep(reward);
-
-    return reward;
-  }
-
-
-  async refreshBalance(){
-    const superToken = createSuperTokenInstance(this.toUpdateMembership!.fundToken.superToken, this.dapp.signer!);
-    const balanceSupertoken = await superToken.realtimeBalanceOfNow(this.dapp.signerAddress);
-
-    this.toUpdateMembership!.fundToken.superTokenBalance = (utils.formatEther(balanceSupertoken[0])).substring(0,6);
-
-    const rewardToken = createERC20Instance(this.toUpdateMembership!.fundToken.rewardToken, this.dapp.signer!);
-    const balanceRewardToken = await rewardToken.balanceOf(this.dapp.signerAddress);
-
-    this.toUpdateMembership!.fundToken.rewardTokenBalance = (utils.formatEther(balanceRewardToken)).substring(0,6);
-    this.store.dispatch(Web3Actions.chainBusy({ status: false}));
-  }
-
-  async getMemberships(id: string) {
-    console.log(id);
+  //#region GET AND PREPARE DATA
+  async getMembershipDetails(id: string) {
+    this.cancelQuerySubscrition.next();
     this.graphqlService
       .watchMemberships(id)
-      .pipe(takeUntil(this.destroyHooks))
+      .pipe(takeUntil(this.destroyHooks), takeUntil(this.cancelQuerySubscrition))
       .subscribe(async (data: any) => {
         console.log(data);
         if (data) {
@@ -185,22 +204,28 @@ back (){
             if (this.toUpdateMembership == undefined) {
               this.toUpdateMembership = this.transformRewardObject(membership);
             } else {
-              this.toUpdateMembership = { ...this.toUpdateMembership, ...membership, ...{ step: this.calculateStep(membership) } };
+              this.toUpdateMembership = {
+                ...this.toUpdateMembership,
+                ...membership,
+                ...{
+                  displayDescription: createDisplayDescription(membership),
+                  step: calculateStep(membership.rewardStep, membership.earliestNextAction),
+                },
+              };
             }
-            await this.refreshBalance()
-            this.currentProposal = prepareDisplayProposal(this.toUpdateMembership!);
           } else {
             this.toUpdateMembership = undefined;
           }
+          await this.refreshBalance();
+
+          this.currentProposal = prepareDisplayProposal(this.toUpdateMembership!);
         }
 
         await this.dapp.launchClones(this.toUpdateMembership!.tokenImpl, this.toUpdateMembership!.optimisticOracleImpl, +this.toUpdateMembership!.id);
 
-        this.idaMembership = await this.superFluidService.getSubscription(this.toUpdateMembership.fundToken.superToken,+this.toUpdateMembership!.id);
+        this.idaMembership = await this.superFluidService.getSubscription(this.toUpdateMembership.fundToken.superToken, +this.toUpdateMembership!.id);
 
-    
-
-        this.chartConfig = { id: this.toUpdateMembership?.id!, priceType:+this.toUpdateMembership?.priceType,target:+this.toUpdateMembership?.target! }
+        this.chartConfig = { id: this.toUpdateMembership?.id!, priceType: +this.toUpdateMembership?.priceType, target: +this.toUpdateMembership?.target! };
 
         this.store.dispatch(Web3Actions.chainBusy({ status: false }));
       });
@@ -208,9 +233,16 @@ back (){
     this.store.dispatch(Web3Actions.chainBusy({ status: false }));
   }
 
-  createPcr() {
-    this.router.navigateByUrl('create-pcr');
+  transformRewardObject(reward: IPCR_REWARD) {
+    reward.displayDescription = createDisplayDescription(reward);
+
+    const displayReward = global_tokens.filter((fil) => fil.superToken == reward.rewardToken)[0];
+    reward.fundToken = displayReward;
+    reward.displayStep = calculateStep(+reward.rewardStep, reward.earliestNextAction);
+
+    return reward;
   }
+  //#endregion
 
   override async hookContractConnected(): Promise<void> {
     //this.getTokens();
@@ -218,8 +250,7 @@ back (){
     const params = this.route.snapshot.params;
     console.log(params);
     if (params['id'] !== undefined) {
-      this.getMemberships(params['id']);
+      this.getMembershipDetails(params['id']);
     }
-
   }
 }

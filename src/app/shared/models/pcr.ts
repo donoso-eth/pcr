@@ -23,6 +23,7 @@ export interface IPCR_REWARD {
   targetCondition:string;
   rewardToken: string;
   title: string;
+  description: string;
   url: string | null;
   token: string;
   
@@ -47,7 +48,7 @@ export interface IPCR_REWARD {
   fundToken: IFUND_TOKEN
   
   displayStep: number;
-  displayCustomAncillaryData: string;
+  displayDescription: string;
   displayTime: { started:number, finish:number, percentage:number}
   displayDate: string;
   displayTarget:string;

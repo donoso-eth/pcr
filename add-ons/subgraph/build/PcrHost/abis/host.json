@@ -102,14 +102,19 @@
             "type": "address"
           },
           {
-            "internalType": "string",
+            "internalType": "bytes",
             "name": "title",
-            "type": "string"
+            "type": "bytes"
           },
           {
-            "internalType": "string",
+            "internalType": "bytes",
+            "name": "description",
+            "type": "bytes"
+          },
+          {
+            "internalType": "bytes",
             "name": "url",
-            "type": "string"
+            "type": "bytes"
           }
         ],
         "indexed": false,

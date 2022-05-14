@@ -73,12 +73,16 @@ export class RewardCreatedRewardStruct extends ethereum.Tuple {
     return this[9].toAddress();
   }
 
-  get title(): string {
-    return this[10].toString();
+  get title(): Bytes {
+    return this[10].toBytes();
   }
 
-  get url(): string {
-    return this[11].toString();
+  get description(): Bytes {
+    return this[11].toBytes();
+  }
+
+  get url(): Bytes {
+    return this[12].toBytes();
   }
 }
 

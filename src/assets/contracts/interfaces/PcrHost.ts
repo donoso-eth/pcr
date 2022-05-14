@@ -20,11 +20,13 @@ import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 export type PCRHOSTCONFIGINPUTStruct = {
   pcrTokenImpl: string;
   pcrOptimisticOracleImpl: string;
-  title: string;
-  url: string;
+  title: BytesLike;
+  description: BytesLike;
+  url: BytesLike;
 };
 
 export type PCRHOSTCONFIGINPUTStructOutput = [
+  string,
   string,
   string,
   string,
@@ -33,6 +35,7 @@ export type PCRHOSTCONFIGINPUTStructOutput = [
   pcrTokenImpl: string;
   pcrOptimisticOracleImpl: string;
   title: string;
+  description: string;
   url: string;
 };
 
@@ -91,7 +94,7 @@ export type PcrAddressesStructOutput = [string, string] & {
 export interface PcrHostInterface extends utils.Interface {
   functions: {
     "_pcrTokensIssued()": FunctionFragment;
-    "createPcrReward((address,address,string,string),(address,address,address),(address,int256,uint8,uint256,uint256,uint256,bytes32,uint8,bytes))": FunctionFragment;
+    "createPcrReward((address,address,bytes,bytes,bytes),(address,address,address),(address,int256,uint8,uint256,uint256,uint256,bytes32,uint8,bytes))": FunctionFragment;
     "getNumbersOfPcrTokens()": FunctionFragment;
     "getTokensAddressByUserAndId(address,uint256)": FunctionFragment;
     "getTotalPcrTokensByUser(address)": FunctionFragment;

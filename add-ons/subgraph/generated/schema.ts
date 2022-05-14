@@ -17,6 +17,9 @@ export class Reward extends Entity {
     super();
     this.set("id", Value.fromString(id));
 
+    this.set("title", Value.fromBytes(Bytes.empty()));
+    this.set("description", Value.fromBytes(Bytes.empty()));
+    this.set("url", Value.fromBytes(Bytes.empty()));
     this.set("admin", Value.fromString(""));
     this.set("tokenImpl", Value.fromString(""));
     this.set("optimisticOracleImpl", Value.fromString(""));
@@ -62,38 +65,31 @@ export class Reward extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get title(): string | null {
+  get title(): Bytes {
     let value = this.get("title");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toString();
-    }
+    return value!.toBytes();
   }
 
-  set title(value: string | null) {
-    if (!value) {
-      this.unset("title");
-    } else {
-      this.set("title", Value.fromString(<string>value));
-    }
+  set title(value: Bytes) {
+    this.set("title", Value.fromBytes(value));
   }
 
-  get url(): string | null {
+  get description(): Bytes {
+    let value = this.get("description");
+    return value!.toBytes();
+  }
+
+  set description(value: Bytes) {
+    this.set("description", Value.fromBytes(value));
+  }
+
+  get url(): Bytes {
     let value = this.get("url");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toString();
-    }
+    return value!.toBytes();
   }
 
-  set url(value: string | null) {
-    if (!value) {
-      this.unset("url");
-    } else {
-      this.set("url", Value.fromString(<string>value));
-    }
+  set url(value: Bytes) {
+    this.set("url", Value.fromBytes(value));
   }
 
   get admin(): string {

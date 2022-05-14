@@ -1,7 +1,7 @@
 <div class="grid">
   <div class="col-12">
     <div *ngIf="toUpdateReward !== undefined" style="position: relative; border-color: transparent" class="card">
-      <h5><i (click)="back()" style="color: var(--primary-color); font-size: large;cursor:pointer;" class="pi pi-arrow-left"></i>   {{ toUpdateReward!.title }}</h5>
+      <h5><i (click)="back()" style="color: var(--primary-color); font-size: large;cursor:pointer;" class="pi pi-arrow-left"></i>   {{ utils.toUtf8String(toUpdateReward!.title) }}</h5>
 
       <div style="margin-top: 20px" class="grid p-fluid">
         <div class="col-12">
@@ -10,19 +10,24 @@
           </div>
 
           <br />
-          <textarea pInputTextarea placeholder="Your Message" readonly [autoResize]="true" cols="30">{{ toUpdateReward!.displayCustomAncillaryData }}</textarea>
+          <textarea pInputTextarea placeholder="Your Message" readonly [autoResize]="true" cols="30">{{toUpdateReward?.displayDescription}}
+       
+          </textarea>
+         
+      
+
+
+
 
           <!-- ////// STATUS PROPOSAL -->
 
           <div style="position: relative; background-color: var(--surface-ground)" class="card mt-3 flex align-items-center flex-column justify-content-center">
-            <!-- <div style="width:100%;" class="grid p-fluid">
-                          <p-steps class="col-12" [model]="routeItems" (activeIndexChange)="activeStep = 0"
-                            [(activeIndex)]="activeStep" styleClass="mt-5" [readonly]="false"></p-steps>
-                        </div> -->
+
             <proposal-detail
               (proposeValue)="proposeValue($event)"
               (executeProposal)="executeProposal()"
               (disputeProposal)="disputeProposal()"
+              (refresh)="refresh()"
               style="width: 100%"
               *ngIf="currentProposal !== undefined"
               [proposal]="currentProposal"

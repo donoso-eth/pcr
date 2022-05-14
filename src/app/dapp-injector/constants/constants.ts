@@ -113,6 +113,14 @@ export const global_address = {
 };
 
 
+export const target_conditions  = [
+  { name: 'Greater Than', code: 'GT', id: 0 },
+  { name: 'Greater Than Equal', code: 'GTE', id: 1 },
+  { name: 'Equal', code: 'E', id: 2 },
+  { name: 'Less Than Equal', code: 'LTE', id: 3 },
+  { name: 'Less Than', code: 'LT', id: 4 },
+];
+
 export const global_tokens = [
   { name: 'DAI', id: 0, image: 'dai', rewardToken:global_address.kovan.fDai, superToken:global_address.kovan.fDaix },
  // { name: 'DAIx', id: 1, image: 'dai', rewardToken:global_address.kovan.fDaix,superToken:global_address.kovan.fDaix  },

@@ -140,7 +140,7 @@ contract PcrToken is ERC20Upgradeable, IPcrToken, IERC777Recipient {
     // );
     (int256 availableBalance, , ) = _rewardToken.realtimeBalanceOf(address(this), _host.getNow());
 
-    console.log("juppy jey key token");
+
     //  _rewardToken.transferFrom(owner(), address(this), actualCashAmount);
 
     _idaLib.distribute(_rewardToken, INDEX_ID, cashAmount);

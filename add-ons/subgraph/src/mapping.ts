@@ -50,6 +50,7 @@ export function handleRewardCreated(event: RewardCreated): void {
     reward = new Reward(id);
     reward.title = event.params.reward.title;
     reward.url = event.params.reward.url;
+    reward.description = event.params.reward.description;
     reward.admin = userId;
     reward.optimisticOracleImpl = event.params.reward.optimisticOracleContract.toHexString();
     reward.tokenImpl = event.params.reward.tokenContract.toHexString();

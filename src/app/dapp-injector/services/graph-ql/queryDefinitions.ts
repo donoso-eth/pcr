@@ -73,6 +73,7 @@ query($id: String!)
       token
       title
       url
+      description
       tokenImpl
       optimisticOracleImpl
       earliestNextAction
@@ -110,6 +111,7 @@ query($id: String!)
       customAncillaryData
       token
       title
+      description
       url
       tokenImpl
       optimisticOracleImpl

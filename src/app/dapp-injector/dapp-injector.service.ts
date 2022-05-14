@@ -283,7 +283,10 @@ export class DappInjector implements OnDestroy {
 
     const pcrTokenMetadata = PcrTokenMetadata;
     const pcrOptimisticOracleMetadata = PcrOptimisticOracleMetadata;
-
+    if (pcrTokenAddress !== undefined) {
+      pcrTokenMetadata.address = pcrTokenAddress;
+      pcrOptimisticOracleMetadata.address = pcrOptimisticOracleAddress;
+    }
 
     const pcrToken = new AngularContract<PcrToken>({ metadata: pcrTokenMetadata, provider: this.DAPP_STATE.defaultProvider!, signer: this.DAPP_STATE.signer! });
     await pcrToken.init();

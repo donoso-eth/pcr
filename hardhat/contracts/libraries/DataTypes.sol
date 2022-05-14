@@ -25,8 +25,10 @@ library DataTypes {
     struct PCRHOST_CONFIG_INPUT {
         address pcrTokenImpl;
         address pcrOptimisticOracleImpl;
-        string title;
-        string url;
+        bytes title;
+        bytes description;
+        bytes url;
+
     }
 
     /**
@@ -205,8 +207,9 @@ library DataTypes {
         address tokenContract;  // Required for the subgraph template cereation
         address optimisticOracleContract; // Required for the subgraph template cereation
         
-        string title;
-        string url;
+        bytes title;
+        bytes description;
+        bytes url;
     }
 
     // endregion  Events

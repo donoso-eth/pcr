@@ -1,6 +1,6 @@
 <div *ngIf="proposal.rewardStatus == '0'" style="width: 100%; text-align: center" class="grid p-fluid">
   <h5 style="margin: 20px auto 5px" class="mb-1">
-    Current Status: <span style="color: var(--primary-color)">{{ stepItems[display_step].label }}</span>
+    <i (click)="doRefresh()" style="color: var(--primary-color); font-size: 30px;cursor:pointer;margin-right:10px" class="pi pi-refresh"></i>  Current Status: <span style="color: var(--primary-color)">{{ stepItems[display_step].label }}</span> 
   </h5>
 
     <p-steps class="col-12" [model]="stepItems" (activeIndexChange)="activeStep = 0" [(activeIndex)]="activeStep" styleClass="mt-5" [readonly]="false"></p-steps>

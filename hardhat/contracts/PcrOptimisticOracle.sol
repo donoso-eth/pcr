@@ -37,7 +37,6 @@ contract PcrOptimisticOracle is IPcrOptimisticOracle, Initializable, MultiCaller
   using SafeERC20 for IERC20;
   using Counters for Counters.Counter;
 
-
   /********************************************
    *      STATE VARIABLES AND CONSTANTS       *
    ********************************************/
@@ -62,10 +61,10 @@ contract PcrOptimisticOracle is IPcrOptimisticOracle, Initializable, MultiCaller
   // Adress of the instantiate IDA Superfluid Contract for token transfer
   address public TOKEN_INDEX_PUBLISHER_ADDRESS;
 
-  // Proposal counter 
+  // Proposal counter
   Counters.Counter public _proposalId;
 
-  // Proposal 
+  // Proposal
   DataTypes.Proposal public proposal;
 
   // Uma finder address
@@ -137,21 +136,18 @@ contract PcrOptimisticOracle is IPcrOptimisticOracle, Initializable, MultiCaller
     // Update rewardAmount and log new amount.
     emit Events.RewardDeposit(pcrId, depositAmount);
 
-    console.log("event reward");
+
   }
 
   /**
    * @notice Allows the admin to change the Reward Amount
-   * 
+   *
    * @param newRewardAmount New reward amount that the admin is posting for distribution.
    */
   function updateRewardAmount(uint256 newRewardAmount) external onlyAdmin {
-
     reward.rewardAmount = newRewardAmount;
 
     emit Events.RewardAmountUpdated(pcrId, newRewardAmount);
-
-
   }
 
   /**
@@ -194,9 +190,9 @@ contract PcrOptimisticOracle is IPcrOptimisticOracle, Initializable, MultiCaller
    */
   function proposeDistribution(int256 _proposedPrice) external onlyActiveRewards {
     uint256 timestamp = block.timestamp;
-    console.log(timestamp);
-    require(timestamp >= reward.earliestNextAction, "Cannot propose in funding period");
-    require(reward.rewardStep == DataTypes.RewardStep.Funding, "New proposals blocked");
+
+    require(timestamp >= reward.earliestNextAction, "NOT_IN_FUNDING");
+    require(reward.rewardStep == DataTypes.RewardStep.Funding, "NOT_PROPOSALS");
 
     uint256 id = _proposalId.current();
 
@@ -220,29 +216,18 @@ contract PcrOptimisticOracle is IPcrOptimisticOracle, Initializable, MultiCaller
     emit Events.ProposalCreated(msg.sender, id, pcrId, _proposedPrice);
   }
 
-
   function disputeDistribution() external onlyActiveRewards {
     uint256 timestamp = block.timestamp;
-    console.log(timestamp); console.log(reward.earliestNextAction);
-    require(timestamp > reward.earliestNextAction &&  timestamp <= reward.earliestNextAction +reward.optimisticOracleLivenessTime, "NOT_LIVENESS_PERIOD");
-    require(reward.rewardStep == DataTypes.RewardStep.Pending, "NOT_IN_LIVENESS_PERIOD");
-
-    uint256 id = _proposalId.current();
-
+    require(timestamp > reward.earliestNextAction, "NOT_YET_LIVENESS_PERIOD");
+    require(timestamp <= reward.earliestNextAction + reward.optimisticOracleLivenessTime, "PASSED_LIVENESS_PERIOD");
+    require(reward.rewardStep == DataTypes.RewardStep.Pending, "STEP_NOT_PENDING");
 
     // Append pcrId to ancillary data.
     bytes memory ancillaryData = _appendpcrId(reward.customAncillaryData);
 
     // Dispute Price
-    optimisticOracle.disputePriceFor(msg.sender, address(this), reward.priceIdentifier, timestamp, ancillaryData);
-
-    reward.rewardStep = DataTypes.RewardStep.Funding;
-    reward.earliestNextAction = reward.earliestNextAction - reward.optimisticOracleLivenessTime;
-
-
-     emit Events.ProposalDisputed(msg.sender, id, pcrId);
+    optimisticOracle.disputePriceFor(msg.sender, address(this), reward.priceIdentifier, proposal.timestamp, ancillaryData);
   }
-
 
   /**
    * @notice Allows any caller to execute distribution that has been validated by the Optimistic Oracle.
@@ -272,7 +257,6 @@ contract PcrOptimisticOracle is IPcrOptimisticOracle, Initializable, MultiCaller
     // Prepare the reward for the next distribution and propsal
     reward.earliestNextAction = block.timestamp + reward.interval;
     reward.rewardStep = DataTypes.RewardStep.Funding;
-
 
     if (isConditionMet == true) {
       SuperToken(rewardToken).approve(TOKEN_INDEX_PUBLISHER_ADDRESS, reward.rewardAmount);
@@ -323,10 +307,12 @@ contract PcrOptimisticOracle is IPcrOptimisticOracle, Initializable, MultiCaller
   ) external {
     require(msg.sender == address(optimisticOracle), "Not authorized");
 
-    console.log('pricedisputed huahau');
-
-    // Flag the associated reward unblocked for new distribution proposals unless rewards already distributed.
     reward.rewardStep = DataTypes.RewardStep.Funding;
+  
+    uint256 id = _proposalId.current();
+    emit Events.ProposalDisputed(msg.sender, id, pcrId);
+
+ 
   }
 
   /********************************************

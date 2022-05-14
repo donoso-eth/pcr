@@ -1,11 +1,11 @@
 <div class="grid">
   <div class="col-12">
     <div *ngIf="toUpdateMembership !== undefined" style="position: relative; border-color: transparent" class="card">
-      <h5><i (click)="back()" style="color: var(--primary-color); font-size: large;cursor:pointer;" class="pi pi-arrow-left"></i>   {{ toUpdateMembership!.title }}</h5>
+      <h5><i (click)="back()" style="color: var(--primary-color); font-size: large;cursor:pointer;" class="pi pi-arrow-left"></i>   {{utils.toUtf8String( toUpdateMembership!.title) }}</h5>
 
       <div style="margin-top: 20px" class="grid p-fluid">
         <div class="col-12">
-          <textarea pInputTextarea placeholder="Your Message" [autoResize]="true" cols="30">{{ toUpdateMembership!.displayCustomAncillaryData }}</textarea>
+          <textarea pInputTextarea placeholder="Your Message" [autoResize]="true" cols="30">{{ utils.toUtf8String(toUpdateMembership!.description) }}</textarea>
           <div style="margin-top: 20px" class="grid">
             <div class="col-12 lg:col-6 xl:col-6">
               <div

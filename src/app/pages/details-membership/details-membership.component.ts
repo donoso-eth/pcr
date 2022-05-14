@@ -143,7 +143,7 @@ back (){
   }
 
   transformRewardObject(reward: IPCR_REWARD) {
-    reward.displayCustomAncillaryData = utils.toUtf8String(reward.customAncillaryData);
+    //reward.displayCustomAncillaryData = utils.toUtf8String(reward.customAncillaryData);
     console.log(new Date(+reward.earliestNextAction * 1000).toLocaleString());
     // reward.status = true;
     // reward.step = 0);

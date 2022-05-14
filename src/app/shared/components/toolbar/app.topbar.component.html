@@ -15,7 +15,7 @@
  <div  *ngIf="blockchain_status == 'wallet-connected'"  style="align-items: center;
  margin-right: 30px;" class="layout-topbar-menu" >
     <a>{{ address_to_show}}</a>
-    <p-dropdown *ngIf="network == 'localhost'" class="ml-4" [options]="users"  [formControl]="localUserCtrl"  placeholder="Select a RewardType">
+    <p-dropdown class="ml-4" [options]="users"  [formControl]="localUserCtrl"  placeholder="Select a RewardType">
         <ng-template pTemplate="selectedItem">
             <div  style="display:inline-flex; width: 100%;" class="country-item country-item-value" >
                         <div>User {{localUserCtrl.value}}</div>

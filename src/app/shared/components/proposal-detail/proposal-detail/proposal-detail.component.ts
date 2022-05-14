@@ -34,11 +34,13 @@ export class ProposalDetailComponent implements OnChanges {
   @Output() private proposeValue = new EventEmitter<number>();
   @Output() private executeProposal = new EventEmitter();
   @Output() private disputeProposal = new EventEmitter();
+  @Output() private refresh = new EventEmitter();
 
   ngOnChanges(changes: SimpleChanges): void {
      this.display_step = calculateStep(+this.proposal.step,this.proposal.earliestNextAction)
    
-    
+      console.log(this.display_step)
+      console.log(this.proposal)
 
     if (this.display_step == 0) {
       this.startProposePeriod = new Date (this.proposal.earliestNextAction * 1000).toLocaleString();
@@ -84,5 +86,8 @@ export class ProposalDetailComponent implements OnChanges {
     this.executeProposal.emit();
   }
 
+  doRefresh(){
+    this.refresh.emit()
+  }
 
 }

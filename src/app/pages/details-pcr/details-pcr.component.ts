@@ -8,7 +8,7 @@ import { takeUntil } from 'rxjs';
 import { doSignerTransaction } from 'src/app/dapp-injector/classes/transactor';
 
 import { GraphQlService } from 'src/app/dapp-injector/services/graph-ql/graph-ql.service';
-import { calculateStep, createERC20Instance, createSuperTokenInstance, isAddress, prepareDisplayProposal } from 'src/app/shared/helpers/helpers';
+import { calculateStep, createDisplayDescription, createERC20Instance, createSuperTokenInstance, isAddress, prepareDisplayProposal } from 'src/app/shared/helpers/helpers';
 import { IPCR_REWARD, IPROPOSAL } from 'src/app/shared/models/pcr';
 
 
@@ -245,10 +245,10 @@ export class DetailsPcrComponent extends DappBaseComponent {
   }
 
   transformRewardObject(reward: IPCR_REWARD) {
-    reward.displayCustomAncillaryData = utils
-      .toUtf8String(reward.customAncillaryData)
-      .replace(`q: title: `, '')
-      .replace(', p1: 0, p2: 1, p3: 0.5. Where p2 corresponds to YES, p1 to a NO, p3 to unknown', '');
+
+ 
+      reward.displayDescription = createDisplayDescription(reward)
+
 
     const displayReward = global_tokens.filter((fil) => fil.superToken == reward.rewardToken)[0];
     reward.fundToken = displayReward;
@@ -257,6 +257,10 @@ export class DetailsPcrComponent extends DappBaseComponent {
     return reward;
   }
 
+
+  refresh(){
+    this.getTokens(this.toUpdateReward!.id)
+  }
 
   async getTokens(id: string) {
     this.graphqlService

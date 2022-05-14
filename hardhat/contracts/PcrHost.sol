@@ -90,6 +90,7 @@ contract PcrHost is IPcrHost {
       _tokenContract,
       _optimisticOracleContract,
       pcrHostConfig.title,
+      pcrHostConfig.description,
       pcrHostConfig.url
     );
 

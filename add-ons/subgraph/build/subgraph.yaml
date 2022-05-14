@@ -6,7 +6,7 @@ dataSources:
     name: PcrHost
     network: localhost
     source:
-      address: "0xD5f071F2D8BF6E7d6BC25A1D89e9b1430AC78A58"
+      address: "0x03c8633D1D79696aD106AcCCA81950810eb8Ce74"
       abi: PcrHost
       startBlock: 31578143
     mapping:
@@ -20,11 +20,11 @@ dataSources:
         - UserMembership
       abis:
         - name: PcrHost
-          file: PcrHost/abis/host.json
+          file: PcrHost\abis\host.json
       eventHandlers:
-        - event: RewardCreated((address,int256,uint8,address,string,uint256,uint256,(address,int256,uint8,uint256,uint256,uint256,bytes32,uint8,bytes),address,address,string,string))
+        - event: RewardCreated((address,int256,uint8,address,string,uint256,uint256,(address,int256,uint8,uint256,uint256,uint256,bytes32,uint8,bytes),address,address,bytes,bytes,bytes))
           handler: handleRewardCreated
-      file: PcrHost/PcrHost.wasm
+      file: PcrHost\PcrHost.wasm
 templates:
   - name: PcrOptimisticOracle
     kind: ethereum/contract
@@ -35,7 +35,7 @@ templates:
       kind: ethereum/events
       apiVersion: 0.0.5
       language: wasm/assemblyscript
-      file: PcrHost/PcrHost.wasm
+      file: PcrHost\PcrHost.wasm
       entities:
         - Reward
         - Proposal
@@ -43,7 +43,7 @@ templates:
         - UserMembership
       abis:
         - name: PcrOptimisticOracle
-          file: PcrOptimisticOracle/abis/pcr_optimistic_oracle.json
+          file: PcrOptimisticOracle\abis\pcr_optimistic_oracle.json
       eventHandlers:
         - event: RewardDeposit(uint256,uint256)
           handler: handleRewardDeposit
@@ -70,7 +70,7 @@ templates:
       kind: ethereum/events
       apiVersion: 0.0.5
       language: wasm/assemblyscript
-      file: PcrHost/PcrHost.wasm
+      file: PcrHost\PcrHost.wasm
       entities:
         - Reward
         - Proposal
@@ -78,7 +78,7 @@ templates:
         - UserMembership
       abis:
         - name: PcrToken
-          file: PcrToken/abis/pcr_token.json
+          file: PcrToken\abis\pcr_token.json
       eventHandlers:
         - event: RewardUnitsIssued(uint256,address,uint256)
           handler: handleRewardUnitsIssued

@@ -6,8 +6,10 @@ enum ProposalStatus {
 
 type Reward @entity {
   id: ID!
-  title: String
-  url: String
+  title: Bytes!
+  description: Bytes!
+  url: Bytes!
+
   admin: User!
   tokenImpl:String!
   optimisticOracleImpl:String!

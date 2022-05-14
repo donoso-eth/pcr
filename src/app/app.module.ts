@@ -28,7 +28,7 @@ export const contractMetadata = new InjectionToken<ICONTRACT_METADATA>('contract
 
 export const contractProvider= {provide: 'contractMetadata', useValue:PcrHostMetadata };
 
-const network = 'kovan';
+const network = 'localhost';
 
 
 @NgModule({
@@ -47,7 +47,7 @@ const network = 'kovan';
     FormsModule,
     ReactiveFormsModule,
     AppRoutingModule,
-    DappInjectorModule.forRoot({wallet:'wallet', defaultNetwork:network}),
+    DappInjectorModule.forRoot({wallet:'local', defaultNetwork:network}),
     StoreModule.forRoot({web3: we3ReducerFunction}),
     GraphQlModule.forRoot({uri: global_address[network].graphUri}),
 

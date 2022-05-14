@@ -231,6 +231,6 @@
     }
   ],
   "name": "PcrHost",
-  "address": "0x8806Cdb4b2a77C76C5e62cCd576E3Fd1268C262D",
-  "network": "kovan"
+  "address": "0xc3d6be0415e8257fE8Cec8317A25d73C8C57c0A0",
+  "network": "localhost"
 }
